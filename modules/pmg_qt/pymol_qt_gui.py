@@ -1223,6 +1223,14 @@ def execapp():
     app = PyMOLApplication(['PyMOL'])
     app.setWindowIcon(make_pymol_qicon())
 
+    # Install .qm translators before any window/widget is created so that
+    # every _tr() call picks up the UI language (PYMOL_LANG / QSettings /
+    # locale). Also push translated viewport texts into settings 798-810,
+    # which layer1/ButMode.cpp reads for the on-screen mouse/movie labels.
+    from pymol.Qt import i18n
+    i18n.install(app)
+    i18n.apply_viewport_texts(pymol.cmd)
+
     window = PyMOLQtGUI()
     window.setWindowTitle(_tr('PyMOLQtGUI', "PyMOL"))
 

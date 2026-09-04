@@ -131,3 +131,32 @@ def set_language(app, lang, domain='pymol'):
 
 def tr(context, text, disambiguation=None, n=-1):
     return QtCore.QCoreApplication.translate(context, text, disambiguation, n)
+
+
+# Settings 798-810 (see layer1/SettingInfo.h): viewport texts drawn by
+# layer1/ButMode.cpp, which reads them from settings instead of literals.
+# Their defaults are the English source strings; when translators are
+# installed, push the translated values so the viewport follows the UI
+# language.
+_VIEWPORT_TEXT_SETTINGS = {
+    'mouse_mode_text': 'Mouse Mode ',
+    'selecting_text': 'Selecting ',
+    'picking_text': 'Picking ',
+    'sel_mode_atoms': 'Atoms',
+    'sel_mode_residues': 'Residues',
+    'sel_mode_chains': 'Chains',
+    'sel_mode_segments': 'Segments',
+    'sel_mode_objects': 'Objects',
+    'sel_mode_molecules': 'Molecules',
+    'sel_mode_ca': 'C-alphas',
+    'sel_mode_atoms_joints': 'Atoms (and Joints)',
+    'movie_frame_text': 'Frame ',
+    'movie_state_text': 'State ',
+}
+
+
+def apply_viewport_texts(cmd):
+    for setting, source in _VIEWPORT_TEXT_SETTINGS.items():
+        translated = tr('Menu', source)
+        if translated and translated != source:
+            cmd.set(setting, translated, quiet=1)

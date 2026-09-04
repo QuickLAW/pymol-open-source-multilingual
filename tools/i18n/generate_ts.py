@@ -89,6 +89,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Sphere": "球体",
         "Stick": "棍状",
         "1 Cycle per Update": "每次更新 1 次循环",
+        # Mouse mode names (controlling.py mode_name_dict values, rendered
+        # via _mtr in the viewport status line and Mouse menu)
+        "2-Btn. Selecting": "双键选择模式",
+        "3-Button Maestro": "三键 Maestro 模式",
 
         # ---- PluginInstallation ----
         " Warning: Version parsing failed for": " 警告：版本解析失败：",
@@ -822,6 +826,9 @@ MENU_SPLIT = {
     "Camera": "menu_scene",
     "Reps": "menu_scene",
     "Reps + Color": "menu_scene",
+    # controlling.py mode_name_dict values
+    "2-Btn. Selecting": "menu_mouse",
+    "3-Button Maestro": "menu_mouse",
 }
 
 
@@ -843,6 +850,8 @@ _SUPPLEMENTAL_STRINGS: dict[str, list[str]] = {
         "Camera", "Default (Atomic)", "Gray", "Light Gray",
         "Reps", "Reps + Color", "Sphere", "Stick",
         "1 Cycle per Update", "Ignore .pymolrc and plugins (-k)",
+        # controlling.py mode_name_dict values
+        "2-Btn. Selecting", "3-Button Maestro",
     ],
 }
 
