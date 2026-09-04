@@ -11,6 +11,8 @@ import importlib
 from pymol.Qt import QtCore, QtWidgets
 from pymol.Qt.utils import loadUi, AsyncFunc, MainThreadCaller
 
+_tr = QtCore.QCoreApplication.translate
+
 getOpenFileNames = QtWidgets.QFileDialog.getOpenFileNames
 
 from . import electrostatics
@@ -142,8 +144,8 @@ Execute the pipeline (prep, apbs, surface vis)
         if warnings:
             @form._callInMainThread
             def result():
-                msgbox = QMessageBox(QMessageBox.Icon.Question, 'Continue?',
-                    method + ' emmitted warnings, do you want to continue?',
+                msgbox = QMessageBox(QMessageBox.Icon.Question, _tr('APBS', 'Continue?'),
+                    method + _tr('APBS', ' emmitted warnings, do you want to continue?'),
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No , form._dialog)
                 msgbox.setDetailedText(warnings)
                 return msgbox.exec()
@@ -239,7 +241,7 @@ def dialog(_self=None):
         form.tabWidget.setEnabled(False)
         form.button_ok.clicked.disconnect()
         form.button_ok.clicked.connect(abort)
-        form.button_ok.setText('Abort')
+        form.button_ok.setText(_tr('APBS', 'Abort'))
 
         form._capture = StdOutCapture()
 
@@ -255,7 +257,7 @@ def dialog(_self=None):
         stdout = form._capture.release()
         print(stdout)
 
-        form.button_ok.setText('Run')
+        form.button_ok.setText(_tr('APBS', 'Run'))
         form.button_ok.clicked.disconnect()
         form.button_ok.clicked.connect(run)
         form.button_ok.setEnabled(True)
@@ -265,9 +267,9 @@ def dialog(_self=None):
             handle_exception(exception, stdout)
             return
 
-        quit_msg = "Finished with Success. Close the APBS dialog?"
+        quit_msg = _tr('APBS', "Finished with Success. Close the APBS dialog?")
         if QMessageBox.StandardButton.Yes == QMessageBox.question(
-                form._dialog, 'Finished', quit_msg, QMessageBox.StandardButton.Yes,
+                form._dialog, _tr('APBS', 'Finished'), quit_msg, QMessageBox.StandardButton.Yes,
                 QMessageBox.StandardButton.No):
             form._dialog.close()
 
@@ -276,7 +278,7 @@ def dialog(_self=None):
             return
 
         msg = str(e) or 'unknown error'
-        msgbox = QMessageBox(QMessageBox.Icon.Critical, 'Error', msg, QMessageBox.StandardButton.Close, form._dialog)
+        msgbox = QMessageBox(QMessageBox.Icon.Critical, _tr('APBS', 'Error'), msg, QMessageBox.StandardButton.Close, form._dialog)
         if stdout.strip():
             msgbox.setDetailedText(stdout)
         msgbox.exec()
@@ -326,15 +328,15 @@ def dialog(_self=None):
             form.apbs_grid.setValue(grid)
 
         if n < 1:
-            label = 'Selection is invalid'
+            label = _tr('APBS', 'Selection is invalid')
             color = '#f66'
         elif has_props == ['YES', 'YES']:
-            label = 'No preparation necessary, selection has charges and radii'
+            label = _tr('APBS', 'No preparation necessary, selection has charges and radii')
             form.do_prepare.setChecked(False)
             color = '#6f6'
         else:
-            label = 'Selection needs preparation (partial_charge: %s, elec_radius: %s)' % tuple(
-                has_props)
+            label = _tr('APBS', 'Selection needs preparation (partial_charge: %s, elec_radius: %s)') % (
+                _tr('APBS', has_props[0]), _tr('APBS', has_props[1]))
             form.do_prepare.setChecked(True)
             color = '#fc6'
 
@@ -432,8 +434,8 @@ def load_apbs_in(form, filename, contents=''):
                     line = ' '.join(a)
                 else:
                     QMessageBox.warning(
-                        form._dialog, "Warning",
-                        f'Warning: File "{filename}" does not exist')
+                        form._dialog, _tr('APBS', "Warning"),
+                        _tr('APBS', 'Warning: File "%s" does not exist') % filename)
 
         elif section == 'elec':
             if key == 'write':

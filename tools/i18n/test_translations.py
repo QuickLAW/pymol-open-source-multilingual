@@ -72,6 +72,13 @@ def main(argv: list[str]) -> int:
         ('Dialog', 'Show All', '显示全部'),
         ('Dialog', 'Load Session', '加载会话'),
         ('Menu', 'Edit', '编辑'),
+        # Plugins (data/startup)
+        ('APBS', 'Continue?', '继续？'),
+        ('APBS', 'Abort', '中止'),
+        ('APBS', 'Selection is invalid', '选择无效'),
+        ('LightingSettings', 'Lighting Settings', '光照设置'),
+        ('LightingSettings', 'Presets:', '预设：'),
+        ('LightingSettings', 'Metal', '金属'),
     ]
 
     print('\n=== Translation Tests ===')

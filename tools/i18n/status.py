@@ -18,8 +18,13 @@ for f in sorted(glob.glob(pattern)):
     c_total, c_done, c_untr, c_van = 0, 0, 0, 0
     for msg in root.iter('message'):
         c_total += 1
+        src = msg.findtext('source') or ''
         tr = msg.find('translation')
-        if tr is not None and tr.get('type') != 'unfinished' and (tr.text or '').strip():
+        # Whitespace-only sources are passthrough (translation == source);
+        # count them as done when a finished translation is present.
+        is_done = (tr is not None and tr.get('type') != 'unfinished'
+                   and (bool((tr.text or '').strip()) or not src.strip()))
+        if is_done:
             c_done += 1
         else:
             c_untr += 1

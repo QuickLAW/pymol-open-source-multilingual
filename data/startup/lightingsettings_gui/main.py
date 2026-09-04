@@ -8,6 +8,8 @@ Lighting Settings Plugin
 from pymol import cmd, plugins
 from pymol.Qt import QtGui, QtCore, QtWidgets
 
+_tr = QtCore.QCoreApplication.translate
+
 Qt = QtCore.Qt
 
 class SettingSlider(QtWidgets.QSlider):
@@ -153,7 +155,7 @@ def lightingsettings():
 def create_dialog():
 
     dialog = QtWidgets.QDialog()
-    dialog.setWindowTitle('Lighting Settings')
+    dialog.setWindowTitle(_tr('LightingSettings', 'Lighting Settings'))
 
     sliders = [
         "Diffuse Reflection",
@@ -192,7 +194,8 @@ def create_dialog():
     button_layout = QtWidgets.QHBoxLayout()
     layout.addLayout(button_layout)
     layout.setContentsMargins(5, 0, 5, 0)
-    button_layout.addWidget(QtWidgets.QLabel("<font color=red>Presets:</font>"))
+    button_layout.addWidget(QtWidgets.QLabel(
+        "<font color=red>" + _tr('LightingSettings', "Presets:") + "</font>"))
 
     presets = [
         ( "Default", preset_default ),
@@ -203,7 +206,7 @@ def create_dialog():
     ]
 
     for name, fun in presets:
-        btn = QtWidgets.QPushButton(name, dialog)
+        btn = QtWidgets.QPushButton(_tr('LightingSettings', name), dialog)
         btn.pressed.connect(fun)
         btn.setAutoDefault(False)
         button_layout.addWidget(btn)
@@ -216,7 +219,8 @@ def create_dialog():
 
     for i, item in enumerate(sliders, 1):
         if isinstance(item, str):
-            label = QtWidgets.QLabel("<font color=blue>"+item+"</font>")
+            label = QtWidgets.QLabel(
+                "<font color=blue>" + _tr('LightingSettings', item) + "</font>")
             form_layout.addRow(label)
             continue
 
@@ -232,6 +236,6 @@ def create_dialog():
         h_layout.addWidget(slider, 3)
         h_layout.addWidget(line_edit, 1)
 
-        form_layout.addRow(name, h_layout)
+        form_layout.addRow(_tr('LightingSettings', name), h_layout)
 
     return dialog

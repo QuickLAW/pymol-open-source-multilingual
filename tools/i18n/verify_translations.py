@@ -9,7 +9,8 @@ from PySide6 import QtCore
 from pathlib import Path
 
 app = QtCore.QCoreApplication([])
-tdir = Path(r'd:\Codes\GitHub\pymol-open-source-multilingual\data\pmg_qt\i18n\zh_CN')
+tdir = (Path(__file__).resolve().parents[2]
+        / 'data' / 'pmg_qt' / 'i18n' / 'zh_CN')
 
 # Keep references! Otherwise QTranslator objects get GC'd and removed from
 # the translator chain.

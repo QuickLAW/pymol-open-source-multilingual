@@ -77,6 +77,18 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
 
         # ---- Menu (additional) ----
         "Edit": "编辑",
+        # Labels in _gui.py get_menudata() tuples (item[1]) that the literal
+        # _tr/_mtr regex cannot see; routed to their menu file via MENU_SPLIT.
+        "Camera": "相机",
+        "Default (Atomic)": "默认（按原子）",
+        "Gray": "灰色",
+        "Ignore .pymolrc and plugins (-k)": "忽略 .pymolrc 和插件 (-k)",
+        "Light Gray": "浅灰色",
+        "Reps": "表示方式",
+        "Reps + Color": "表示方式 + 颜色",
+        "Sphere": "球体",
+        "Stick": "棍状",
+        "1 Cycle per Update": "每次更新 1 次循环",
 
         # ---- PluginInstallation ----
         " Warning: Version parsing failed for": " 警告：版本解析失败：",
@@ -275,6 +287,40 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
 
         # ---- Existing PluginManager strings (already in pluginmanager.ts, preserved) ----
         # These are listed for safety; existing translations are kept.
+
+        # ---- APBS plugin (data/startup/apbs_gui) ----
+        "Continue?": "继续？",
+        " emmitted warnings, do you want to continue?": " 报告了警告，是否继续？",
+        "Abort": "中止",
+        "Run": "运行",
+        "Finished": "完成",
+        "Finished with Success. Close the APBS dialog?": "已成功完成。关闭 APBS 对话框？",
+        "Error": "错误",
+        "Warning": "警告",
+        'Warning: File "%s" does not exist': '警告：文件 "%s" 不存在',
+        "Selection is invalid": "选择无效",
+        "No preparation necessary, selection has charges and radii": "无需准备，选择已具有电荷和半径",
+        "Selection needs preparation (partial_charge: %s, elec_radius: %s)":
+            "选择需要准备（partial_charge: %s, elec_radius: %s）",
+        "YES": "是",
+        "no": "否",
+
+        # ---- Lighting Settings plugin (data/startup/lightingsettings_gui) ----
+        "Lighting Settings": "光照设置",
+        "Presets:": "预设：",
+        "Default": "默认",
+        "Metal": "金属",
+        "Plastic": "塑料",
+        "Rubber": "橡胶",
+        "X-Ray": "X 射线",
+        "Diffuse Reflection": "漫反射",
+        "Direct Light from Front": "正面直射光",
+        "Free placeable directed Lights": "可自由放置的定向光",
+        "Specular Reflection": "镜面反射",
+        "Ambient Occlusion (Surface only)": "环境光遮蔽（仅表面）",
+        "Ray trace only": "仅光线追踪",
+        "direct (+reflect)": "直射（+反射）",
+        "specular_intensity (=specular)": "镜面强度（=specular）",
     },
 }
 
@@ -294,6 +340,8 @@ CONTEXT_FILES = {
     "ShortcutMenu": "shortcut_menu",
     "TextEditor": "text_editor",
     "Volume": "volume",
+    "APBS": "apbs",
+    "LightingSettings": "lighting_settings",
     # UI form classes (used as Qt translation contexts for .ui files)
     "Form": "forms",
     "Dialog": "dialogs",
@@ -763,6 +811,39 @@ UI_TRANSLATIONS["zh_CN"].pop("__dialog_extras__", None)
 # For new menu strings, we put them into menu_misc.ts as a fallback.
 MENU_SPLIT = {
     "Edit": "menu_edit",
+    # _gui.py labels (see TRANSLATIONS above) -> top-level menu file
+    "Ignore .pymolrc and plugins (-k)": "menu_file",
+    "1 Cycle per Update": "menu_build",
+    "Light Gray": "menu_setting",
+    "Gray": "menu_setting",
+    "Default (Atomic)": "menu_setting",
+    "Sphere": "menu_setting",
+    "Stick": "menu_setting",
+    "Camera": "menu_scene",
+    "Reps": "menu_scene",
+    "Reps + Color": "menu_scene",
+}
+
+
+# Strings passed to _tr() via variables (not matched by the literal regex).
+# Manually listed per context so they land in the .ts files.
+_SUPPLEMENTAL_STRINGS: dict[str, list[str]] = {
+    "LightingSettings": [
+        "Default", "Metal", "Plastic", "Rubber", "X-Ray",
+        "Diffuse Reflection", "Direct Light from Front",
+        "Free placeable directed Lights", "Specular Reflection",
+        "Ambient Occlusion (Surface only)", "Ray trace only",
+        "direct (+reflect)", "specular_intensity (=specular)",
+    ],
+    "APBS": ["YES", "no"],
+    # Menu labels defined as tuple items in _gui.py get_menudata(); the
+    # literal _tr/_mtr regex cannot match them, so list them here. Each is
+    # routed to its top-level menu file via MENU_SPLIT.
+    "Menu": [
+        "Camera", "Default (Atomic)", "Gray", "Light Gray",
+        "Reps", "Reps + Color", "Sphere", "Stick",
+        "1 Cycle per Update", "Ignore .pymolrc and plugins (-k)",
+    ],
 }
 
 
@@ -776,6 +857,7 @@ def _collect_sources(root: Path) -> list[Path]:
         "modules/pymol/Qt/**/*.py",
         "modules/pymol/_gui.py",
         "modules/pymol/plugins/**/*.py",
+        "data/startup/**/*.py",
     ]
     files: list[Path] = []
     for g in globs:
@@ -1049,6 +1131,9 @@ def main(argv: list[str]) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     contexts = extract_strings(root)
+    # Merge in strings passed via variables (see _SUPPLEMENTAL_STRINGS)
+    for ctx, strings in _SUPPLEMENTAL_STRINGS.items():
+        contexts.setdefault(ctx, set()).update(strings)
     # Merge in .ui strings
     ui_contexts = extract_ui_strings(root)
     ui_total = 0
