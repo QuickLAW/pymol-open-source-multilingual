@@ -29,6 +29,12 @@ except ImportError:
         print('import _Qt_pre failed')
 
 import os
+import sys
+
+# Add local site-packages if exists
+local_site = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'ext', 'lib', 'python')
+if os.path.exists(local_site) and local_site not in sys.path:
+    sys.path.insert(0, local_site)
 
 qt_api = os.environ.get('QT_API', '')
 

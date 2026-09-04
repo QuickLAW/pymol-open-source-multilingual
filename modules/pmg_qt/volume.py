@@ -10,6 +10,7 @@ from pymol.Qt import QtGui, QtCore
 from pymol.Qt import QtWidgets
 
 Qt = QtCore.Qt
+_tr = QtCore.QCoreApplication.translate
 
 DOT_RADIUS = 5
 ALPHA_LOG_BASE = 10.0
@@ -295,16 +296,19 @@ class VolumeEditorWidget(QtWidgets.QWidget):
             for key, rect in self.text_boxes.items():
                 if rect.contains(event.pos()):
                     if key == "amax":
-                        self.amax = self.enterValue("Maximum Alpha Value",
-                                                    self.amax, EPS, 1.0)
+                        self.amax = self.enterValue(
+                            _tr('Volume', "Maximum Alpha Value"),
+                            self.amax, EPS, 1.0)
                     elif key == "vmin":
-                        self.vmin = self.enterValue("Minimum Data Value",
-                                                    self.vmin, -1e8,
-                                                    self.vmax - EPS)
+                        self.vmin = self.enterValue(
+                            _tr('Volume', "Minimum Data Value"),
+                            self.vmin, -1e8,
+                            self.vmax - EPS)
                     else:
-                        self.vmax = self.enterValue("Maximum Data Value",
-                                                    self.vmax, self.vmin + EPS,
-                                                    1e8)
+                        self.vmax = self.enterValue(
+                            _tr('Volume', "Maximum Data Value"),
+                            self.vmax, self.vmin + EPS,
+                            1e8)
                     self.repaint()
                     return
 
@@ -770,7 +774,7 @@ class VolumeEditorWidget(QtWidgets.QWidget):
         """
         Displays text dialog with help.
         """
-        self.displayTextDialog(VOLUME_HELP)
+        self.displayTextDialog(_tr('Volume', VOLUME_HELP))
 
     def displayScript(self):
         """
@@ -790,8 +794,9 @@ class VolumeEditorWidget(QtWidgets.QWidget):
 
         s += [
             '\n',
-            'Paste into a .pml or .py script or your pymolrc file and use this\n',
-            'named color ramp on the PyMOL command line like this:\n',
+            _tr('Volume',
+                'Paste into a .pml or .py script or your pymolrc file and use this\n'
+                'named color ramp on the PyMOL command line like this:\n'),
             '\n',
             'PyMOL> volume_color yourvolume, %s\n' % rname,
         ]
@@ -834,7 +839,7 @@ class _VolumePanel(object):
     def __init__(self, widget, window=None, name='', _self=None):
 
         if window:
-            window.setWindowTitle(name + ' - Volume Color Map Editor')
+            window.setWindowTitle(name + ' - ' + _tr('Volume', 'Volume Color Map Editor'))
 
         cmd = _self
 
@@ -844,17 +849,17 @@ class _VolumePanel(object):
         widget.editor = VolumeEditorWidget(widget, name, _self)
         layout.addWidget(widget.editor)
         layout.setContentsMargins(5, 5, 5, 5)
-        get_colors_btn = QtWidgets.QPushButton("Get colors as script")
+        get_colors_btn = QtWidgets.QPushButton(_tr('Volume', "Get colors as script"))
         get_colors_btn.setAutoDefault(False)
         get_colors_btn.clicked.connect(widget.editor.displayScript)
-        help_btn = QtWidgets.QPushButton("Help")
+        help_btn = QtWidgets.QPushButton(_tr('Volume', "Help"))
         help_btn.setAutoDefault(False)
         help_btn.clicked.connect(widget.editor.displayHelp)
-        reset_btn = QtWidgets.QPushButton("Reset Data Range")
+        reset_btn = QtWidgets.QPushButton(_tr('Volume', "Reset Data Range"))
         reset_btn.setAutoDefault(False)
         reset_btn.clicked.connect(widget.editor.reset)
         widget.editor.update_cb = QtWidgets.QCheckBox(
-            "Update volume colors in real-time")
+            _tr('Volume', "Update volume colors in real-time"))
         widget.editor.update_cb.setObjectName("volume_checkbox")
         widget.editor.update_cb.setChecked(True)
         widget.editor.update_cb.setMinimumWidth(30)

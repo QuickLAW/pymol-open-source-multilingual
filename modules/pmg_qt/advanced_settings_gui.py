@@ -3,6 +3,7 @@ from pymol.Qt import QtGui, QtWidgets
 from pymol.Qt import QtCore, QtCoreModels
 Qt = QtCore.Qt
 QSI = QtGui.QStandardItem  # For brevity
+_tr = QtCore.QCoreApplication.translate
 
 
 class PyMOLAdvancedSettings(QtWidgets.QWidget):
@@ -19,12 +20,12 @@ class PyMOLAdvancedSettings(QtWidgets.QWidget):
         self.proxy_model = QtCoreModels.QSortFilterProxyModel(self)
         self.proxy_model.setSourceModel(self.model)
 
-        self.setWindowTitle('PyMOL Advanced Settings')
+        self.setWindowTitle(_tr('AdvancedSettings', 'PyMOL Advanced Settings'))
         layout = QtWidgets.QVBoxLayout(self)
         self.setLayout(layout)
         self.filter_le = QtWidgets.QLineEdit(self)
         layout.addWidget(self.filter_le)
-        self.filter_le.setPlaceholderText("Filter")
+        self.filter_le.setPlaceholderText(_tr('AdvancedSettings', "Filter"))
         self.filter_le.textChanged.connect(self.proxy_model.setFilterRegExp)
 
         self.populateData()

@@ -8,6 +8,8 @@ from pymol.Qt.utils import PopupOnException
 
 import urllib.request as urllib
 
+_tr = QtCore.QCoreApplication.translate
+
 
 def _get_cms_traj_file(fname):
     """For a .cms file, get the filename of the corresponding trajectory file.
@@ -65,7 +67,8 @@ def load_dialog(parent, fname, **kwargs):
         try:
             parent.cmd.load(fname, quiet=0, **kwargs)
         except BaseException as e:
-            QtWidgets.QMessageBox.critical(parent, "Error", str(e))
+            QtWidgets.QMessageBox.critical(
+                parent, _tr('FileDialogs', "Error"), str(e))
             return
 
         # auto-load desmond trajectory
@@ -104,8 +107,10 @@ def load_traj_dialog(parent, filename):
     names = parent.cmd.get_object_list()
 
     if not names:
-        msg = "To load a trajectory, you first need to load a molecular object"  #noqa
-        QtWidgets.QMessageBox.warning(parent, "Warning", msg)
+        msg = _tr('FileDialogs',
+                  "To load a trajectory, you first need to load a molecular object")  #noqa
+        QtWidgets.QMessageBox.warning(
+            parent, _tr('FileDialogs', "Warning"), msg)
         return
 
     form = parent.load_form('load_traj')
@@ -194,7 +199,8 @@ def load_mtz_dialog(parent, filename):
                     form.input_reso_max.value(),
                     quiet=0)
         except BaseException as e:
-            QtWidgets.QMessageBox.critical(parent, "Error", str(e))
+            QtWidgets.QMessageBox.critical(
+                parent, _tr('FileDialogs', "Error"), str(e))
 
     form._dialog.accepted.connect(run)
     form._dialog.setModal(True)
@@ -269,8 +275,9 @@ def load_aln_dialog(parent, filename, format):
     def cancel():
         form._dialog.close()
         if format == 'fasta' and QtWidgets.QMessageBox.question(
-                parent, "Load as structures?",
-                "Load sequences as extended structures instead?"
+                parent,
+                _tr('FileDialogs', "Load as structures?"),
+                _tr('FileDialogs', "Load sequences as extended structures instead?")
         ) == QtWidgets.QMessageBox.Yes:
             _self.load(filename)
 
@@ -418,7 +425,7 @@ def _get_assemblies(pdbid):
     except LookupError:
         pass
     except Exception as e:
-        print('_get_assemblies failed')
+        print(_tr('FileDialogs', '_get_assemblies failed'))
         print(e)
     return []
 
@@ -436,7 +443,7 @@ def _get_chains(pdbid):
             for chain in molecule['chains']
         ]
     except Exception as e:
-        print('_get_chains failed')
+        print(_tr('FileDialogs', '_get_chains failed'))
         print(e)
     return []
 
@@ -491,7 +498,10 @@ def file_fetch_pdb(parent):
 
     def run():
         if len(form.input_code.text()) != 4:
-            QtWidgets.QMessageBox.warning(parent, "Error", "Need 4 letter PDB code")
+            QtWidgets.QMessageBox.warning(
+                parent,
+                _tr('FileDialogs', "Error"),
+                _tr('FileDialogs', "Need 4 letter PDB code"))
             return
         parent.cmd.do(get_command())
         form._dialog.close()
@@ -575,7 +585,7 @@ def file_save(parent):
 
         for fname, selection, state in fss:
             fname = getSaveFileNameWithExt(parent,
-                'Save Molecule As...',
+                _tr('FileDialogs', 'Save Molecule As...'),
                 os.path.join(parent.initialdir, fname),
                 filter=';;'.join(formats))
 
@@ -611,8 +621,9 @@ def file_save_png(parent):  #noqa
 
     def run():
         from pymol import exporting
-        fname = getSaveFileNameWithExt(parent, 'Save As...', parent.initialdir,
-                                filter='PNG File (*.png)')
+        fname = getSaveFileNameWithExt(
+            parent, _tr('FileDialogs', 'Save As...'), parent.initialdir,
+            filter='PNG File (*.png)')
         if not fname:
             return
 
@@ -725,11 +736,12 @@ def file_save_mpeg(parent, _preselect=None):
         form.input_quality.setEnabled(encoder not in ("", "convert"))
 
         if encoder and not has_exe(encoder):
-            msg = "Encoder '%s' is not installed." % encoder
+            msg = _tr('FileDialogs', "Encoder '%s' is not installed.") % encoder
             pkg = None
             url = None
             if not pkg:
-                QtWidgets.QMessageBox.warning(parent, "Warning", msg)
+                QtWidgets.QMessageBox.warning(
+                    parent, _tr('FileDialogs', "Warning"), msg)
             else:
                 from pymol.Qt import utils
                 utils.conda_ask_install(pkg[1], pkg[0], msg, url=url)
@@ -762,7 +774,7 @@ def file_save_mpeg(parent, _preselect=None):
             if w.isChecked():
                 break
         fname = getSaveFileNameWithExt(parent,
-                'Save As...', parent.initialdir,
+                _tr('FileDialogs', 'Save As...'), parent.initialdir,
                 filter=filters[fmt])
         if not fname:
             return
@@ -817,18 +829,20 @@ def _file_save_object(self, otype, formats, noobjectsmsg):
     names = self.cmd.get_names_of_type(otype)
 
     if not names:
-        QtWidgets.QMessageBox.warning(self, "Warning", noobjectsmsg)
+        QtWidgets.QMessageBox.warning(
+            self, _tr('FileDialogs', "Warning"), noobjectsmsg)
         return
 
     form = self.load_form('save_object')
     form.input_name.addItems(names)
-    form._dialog.setWindowTitle('Save ' + otype)
+    form._dialog.setWindowTitle(
+        _tr('FileDialogs', 'Save ') + otype)
 
     def run():
         name = form.input_name.currentText()
 
         fname = getSaveFileNameWithExt(self,
-            'Save As...',
+            _tr('FileDialogs', 'Save As...'),
             self.initialdir,
             filter=';;'.join(formats))
 
@@ -844,12 +858,12 @@ def _file_save_object(self, otype, formats, noobjectsmsg):
 
 def file_save_map(self):
     return _file_save_object(self, 'object:map', ['CCP4 (*.ccp4 *.map)'],
-            'No map objects loaded')
+            _tr('FileDialogs', 'No map objects loaded'))
 
 
 def file_save_aln(self):
     url = "http://pymolwiki.org/index.php/Align#Alignment_Objects"
     return _file_save_object(self, 'object:alignment', ['clustalw (*.aln)'],
-            'No alignment objects loaded\n\n'
-            'Hint: create alignment objects with "align" and\n'
-            '"super" using the "object=..." argument.')
+            _tr('FileDialogs', 'No alignment objects loaded\n\n'
+                'Hint: create alignment objects with "align" and\n'
+                '"super" using the "object=..." argument.'))

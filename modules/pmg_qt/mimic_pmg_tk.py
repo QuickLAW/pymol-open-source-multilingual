@@ -50,6 +50,7 @@ class PmwMenuBar:
 
     def addmenuitem(self, menuName, itemType, statusHelp='',
                     traverseSpec=None, **kw):
+        from pymol.Qt import i18n
         menu = self._get_menu(menuName)
         if menu is None:
             return
@@ -74,10 +75,13 @@ class PmwMenuBar:
                 QtWidgets.QMessageBox.critical(None, 'Error', str(e))
 
         label = kw.get('label', statusHelp)
-        menu.addAction(label, wrapper)
+        # Use translation
+        translated_label = i18n.tr('Menu', label) if label else label
+        menu.addAction(translated_label, wrapper)
 
     def addcascademenu(self, parentMenuName, menuName, statusHelp='',
                        traverseSpec=None, **kw):
+        from pymol.Qt import i18n
         menu = self._get_menu(parentMenuName)
         if menu is None:
             return
@@ -86,7 +90,9 @@ class PmwMenuBar:
             raise ValueError('menu ' + repr(menuName) + ' exists')
 
         label = kw.get('label', statusHelp) or menuName
-        menu = menu.addMenu(label)
+        # Use translation
+        translated_label = i18n.tr('Menu', label) if label else label
+        menu = menu.addMenu(translated_label)
         menu.setTearOffEnabled(True)
         self._menudict[menuName] = menu
 

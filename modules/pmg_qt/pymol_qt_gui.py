@@ -27,6 +27,9 @@ Qt = QtCore.Qt
 QFileDialog = QtWidgets.QFileDialog
 getOpenFileNames = QFileDialog.getOpenFileNames
 
+_tr = QtCore.QCoreApplication.translate
+_mtr = lambda text: _tr('Menu', text) if text else text
+
 
 class PyMOLQtGUI(QtWidgets.QMainWindow, pymol._gui.PyMOLDesktopGUI):
     '''
@@ -83,7 +86,7 @@ class PyMOLQtGUI(QtWidgets.QMainWindow, pymol._gui.PyMOLDesktopGUI):
     def get_view(self):
         self.cmd.get_view(2, quiet=0)
         QtWidgets.QApplication.clipboard().setText(self.cmd.get_view(3))
-        print(" get_view: matrix copied to clipboard.")
+        print(_tr('PyMOLQtGUI', " get_view: matrix copied to clipboard."))
 
     def __init__(self):  # noqa
         QtWidgets.QMainWindow.__init__(self)
@@ -112,7 +115,7 @@ class PyMOLQtGUI(QtWidgets.QMainWindow, pymol._gui.PyMOLDesktopGUI):
 
         # "session_file" setting in window title
         self.setting_callbacks[440].append(
-            lambda v: self.setWindowTitle("PyMOL (" + os.path.basename(v) + ")")
+            lambda v: self.setWindowTitle(_tr('PyMOLQtGUI', 'PyMOL (%s)') % os.path.basename(v))
         )
 
         # "External" Command Line and Loggin Widget
@@ -138,11 +141,11 @@ class PyMOLQtGUI(QtWidgets.QMainWindow, pymol._gui.PyMOLDesktopGUI):
         connectFontContextMenu(self.browser)
 
         lineeditlayout = QtWidgets.QHBoxLayout()
-        command_label = QtWidgets.QLabel("PyMOL>")
+        command_label = QtWidgets.QLabel(_tr('PyMOLQtGUI', "PyMOL>"))
         command_label.setObjectName("command_label")
         lineeditlayout.addWidget(command_label)
         lineeditlayout.addWidget(self.lineedit)
-        self.lineedit.setToolTip('''Command Input Area
+        self.lineedit.setToolTip(_tr('PyMOLQtGUI', '''Command Input Area
 
 Get the list of commands by hitting <TAB>
 
@@ -154,7 +157,7 @@ PyMOL> help color
 
 Get autocompletion for many arguments by hitting <TAB>
 PyMOL> color ye<TAB>    (will autocomplete "yellow")
-''')
+'''))
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.browser)
@@ -183,7 +186,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
 
         self.ext_window = \
             dockWidget = QtWidgets.QDockWidget(self)
-        dockWidget.setWindowTitle("External GUI")
+        dockWidget.setWindowTitle(_tr('PyMOLQtGUI', "External GUI"))
         dockWidget.setWidget(dockWidgetContents)
         if options.external_gui:
             dockWidget.setTitleBarWidget(QtWidgets.QWidget())
@@ -222,34 +225,34 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
         # Quick Buttons
         for row in [
             [
-                ('Reset', cmd.reset),
-                ('Zoom', lambda: cmd.zoom(animate=1.0)),
-                ('Orient', lambda: cmd.orient(animate=1.0)),
+                (_tr('PyMOLQtGUI', 'Reset'), cmd.reset),
+                (_tr('PyMOLQtGUI', 'Zoom'), lambda: cmd.zoom(animate=1.0)),
+                (_tr('PyMOLQtGUI', 'Orient'), lambda: cmd.orient(animate=1.0)),
 
                 # render dialog will be constructed when the menu is shown
                 # for the first time. This way it's populated with the current
                 # viewport and settings. Also defers parsing of the ui file.
-                ('Draw/Ray', WidgetMenu(self).setSetupUi(self.render_dialog)),
+                (_tr('PyMOLQtGUI', 'Draw/Ray'), WidgetMenu(self).setSetupUi(self.render_dialog)),
             ],
             [
-                ('Unpick', cmd.unpick),
-                ('Deselect', cmd.deselect),
-                ('Rock', cmd.rock),
-                ('Get View', self.get_view),
+                (_tr('PyMOLQtGUI', 'Unpick'), cmd.unpick),
+                (_tr('PyMOLQtGUI', 'Deselect'), cmd.deselect),
+                (_tr('PyMOLQtGUI', 'Rock'), cmd.rock),
+                (_tr('PyMOLQtGUI', 'Get View'), self.get_view),
             ],
             [
-                ('|<', cmd.rewind),
-                ('<', cmd.backward),
-                ('Stop', cmd.mstop),
-                ('Play', cmd.mplay),
-                ('>', cmd.forward),
-                ('>|', cmd.ending),
-                ('MClear', cmd.mclear),
+                (_tr('PyMOLQtGUI', '|<'), cmd.rewind),
+                (_tr('PyMOLQtGUI', '<'), cmd.backward),
+                (_tr('PyMOLQtGUI', 'Stop'), cmd.mstop),
+                (_tr('PyMOLQtGUI', 'Play'), cmd.mplay),
+                (_tr('PyMOLQtGUI', '>'), cmd.forward),
+                (_tr('PyMOLQtGUI', '>|'), cmd.ending),
+                (_tr('PyMOLQtGUI', 'MClear'), cmd.mclear),
             ],
             [
-                ('Builder', self.open_builder_panel),
-                ('Properties', self.open_props_dialog),
-                ('Rebuild', cmd.rebuild),
+                (_tr('PyMOLQtGUI', 'Builder'), self.open_builder_panel),
+                (_tr('PyMOLQtGUI', 'Properties'), self.open_props_dialog),
+                (_tr('PyMOLQtGUI', 'Rebuild'), cmd.rebuild),
             ],
         ]:
             hbox = QtWidgets.QHBoxLayout()
@@ -277,7 +280,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
                 QtWidgets.QSizePolicy.Minimum,
                 QtWidgets.QSizePolicy.Minimum)
         hbox.addWidget(self.progressbar)
-        self.abortbutton = QtWidgets.QPushButton('Abort')
+        self.abortbutton = QtWidgets.QPushButton(_tr('PyMOLQtGUI', 'Abort'))
         self.abortbutton.setStyleSheet("background: #FF0000; color: #FFFFFF")
         self.abortbutton.released.connect(cmd.interrupt)
         hbox.addWidget(self.abortbutton)
@@ -300,7 +303,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
                 if item[0] == 'separator':
                     menu.addSeparator()
                 elif item[0] == 'menu':
-                    _addmenu(item[2], menu.addMenu(item[1].replace('&', '&&')))
+                    _addmenu(item[2], menu.addMenu(_mtr(item[1]).replace('&', '&&')))
                 elif item[0] == 'command':
                     command = item[2]
                     if command is None:
@@ -308,15 +311,15 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
                     else:
                         if isinstance(command, str):
                             command = lambda c=command: cmd.do(c)
-                        menu.addAction(item[1], command)
+                        menu.addAction(_mtr(item[1]), command)
                 elif item[0] == 'check':
                     if len(item) > 4:
                         menu.addAction(
-                            SettingAction(self, cmd, item[2], item[1],
+                            SettingAction(self, cmd, item[2], _mtr(item[1]),
                                           item[3], item[4]))
                     else:
                         menu.addAction(
-                            SettingAction(self, cmd, item[2], item[1]))
+                            SettingAction(self, cmd, item[2], _mtr(item[1])))
                 elif item[0] == 'radio':
                     label, name, value = item[1:4]
                     try:
@@ -325,7 +328,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
                         group = QtWidgets.QActionGroup(self)
                         type_, values = cmd.get_setting_tuple(name)
                         actiongroups[item[2]] = group, type_, values
-                    action = QtWidgets.QAction(label, self)
+                    action = QtWidgets.QAction(_mtr(label), self)
                     action.triggered.connect(lambda _=0, args=(name, value):
                                              cmd.set(*args, log=1, quiet=0))
 
@@ -339,7 +342,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
                     if values[0] == value:
                         action.setChecked(True)
                 elif item[0] == 'open_recent_menu':
-                    self.open_recent_menu = menu.addMenu('Open Recent...')
+                    self.open_recent_menu = menu.addMenu(_tr('PyMOLQtGUI', 'Open Recent...'))
                 else:
                     print('error:', item)
 
@@ -352,7 +355,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
         # menu
         for _, label, data in self.get_menudata(cmd):
             assert _ == 'menu'
-            menu = menubar.addMenu(label)
+            menu = menubar.addMenu(_mtr(label))
             self.menudict[label] = menu
             _addmenu(data, menu)
 
@@ -361,7 +364,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
         if pymol.IS_MACOS:
             self.menudict['Edit'].setTitle('Edit_')
             QtCore.QTimer.singleShot(10, lambda:
-                    self.menudict['Edit'].setTitle('Edit'))
+                    self.menudict['Edit'].setTitle(_mtr('Edit')))
 
         # recent files menu
         if self.open_recent_menu:
@@ -375,12 +378,12 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
 
         # some experimental window control
         menu = self.menudict['Display'].addSeparator()
-        menu = self.menudict['Display'].addMenu('External GUI')
-        menu.addAction('Toggle dockable', self.toggle_ext_window_dockable).setShortcut(
+        menu = self.menudict['Display'].addMenu(_tr('PyMOLQtGUI', 'External GUI'))
+        menu.addAction(_tr('PyMOLQtGUI', 'Toggle dockable'), self.toggle_ext_window_dockable).setShortcut(
             QtGui.QKeySequence('Ctrl+E'))
 
         ext_vis_action = self.ext_window.toggleViewAction()
-        ext_vis_action.setText('Visible')
+        ext_vis_action.setText(_tr('PyMOLQtGUI', 'Visible'))
         menu.addAction(ext_vis_action)
 
         # extra key mappings (MacPyMOL compatible)
@@ -395,7 +398,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
 
         # legacy plugin system
         self.menudict['Plugin'].addAction(
-            'Initialize Plugin System', self.initializePlugins)
+            _tr('PyMOLQtGUI', 'Initialize Plugin System'), self.initializePlugins)
 
         # focus in command line
         if options.external_gui:
@@ -408,7 +411,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
             with open(cmd.exp_path('$PYMOL_DATA/pmg_qt/styles/pymol.sty')) as f:
                 style = f.read()
         except IOError:
-            print('Could not read PyMOL stylesheet.')
+            print(_tr('PyMOLQtGUI', 'Could not read PyMOL stylesheet.'))
             print('DEBUG: PYMOL_DATA=' + repr(os.getenv('PYMOL_DATA')))
             style = ""
 
@@ -641,7 +644,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
     ##################
 
     def file_open(self):
-        fnames = getOpenFileNames(self, 'Open file', self.initialdir)[0]
+        fnames = getOpenFileNames(self, _tr('PyMOLQtGUI', 'Open file'), self.initialdir)[0]
         partial = 0
         for fname in fnames:
             if not self.load_dialog(fname, partial=partial):
@@ -662,7 +665,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
         if not fname:
             fname = getSaveFileNameWithExt(
                 self,
-                'Save Session As...',
+                _tr('PyMOLQtGUI', 'Save Session As...'),
                 self.initialdir,
                 filter=';;'.join(formats))
         if fname:
@@ -742,7 +745,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
             run_draw(ray=True)
 
         def run_save():
-            fname = getSaveFileNameWithExt(self, 'Save As...', self.initialdir,
+            fname = getSaveFileNameWithExt(self, _tr('PyMOLQtGUI', 'Save As...'), self.initialdir,
                     filter='PNG File (*.png)')
             if not fname:
                 return
@@ -793,7 +796,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
     def _file_save(self, filter, format):
         fname = getSaveFileNameWithExt(
             self,
-            'Save As...',
+            _tr('PyMOLQtGUI', 'Save As...'),
             self.initialdir,
             filter=filter)
         if fname:
@@ -828,7 +831,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
 
     def log_open(self, fname='', mode='w'):
         if not fname:
-            fname = getSaveFileNameWithExt(self, 'Open Logfile...', self.initialdir,
+            fname = getSaveFileNameWithExt(self, _tr('PyMOLQtGUI', 'Open Logfile...'), self.initialdir,
                                     filter=';;'.join(self.LOG_FORMATS))
         if fname:
             self.initialdir = os.path.dirname(fname)
@@ -838,7 +841,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
         return self.log_open(mode='a')
 
     def log_resume(self):
-        fname = getSaveFileNameWithExt(self, 'Open Logfile...', self.initialdir,
+        fname = getSaveFileNameWithExt(self, _tr('PyMOLQtGUI', 'Open Logfile...'), self.initialdir,
                                 filter=';;'.join(self.LOG_FORMATS))
         if fname:
             self.initialdir = os.path.dirname(fname)
@@ -854,7 +857,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
             'All Files(*)',
         ]
         fnames, selectedfilter = getOpenFileNames(
-            self, 'Open file', self.initialdir, filter=';;'.join(formats))
+            self, _tr('PyMOLQtGUI', 'Open file'), self.initialdir, filter=';;'.join(formats))
         is_py = selectedfilter.startswith('Python')
 
         with PopupOnException():
@@ -869,7 +872,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
 
     def cd_dialog(self):
         dname = QFileDialog.getExistingDirectory(
-            self, "Change Working Directory", self.initialdir)
+            self, _tr('PyMOLQtGUI', "Change Working Directory"), self.initialdir)
         self.cmd.cd(dname or '.', quiet=0)
 
     def confirm_quit(self):
@@ -898,22 +901,22 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
 
     def show_about(self):
         msg = [
-            'The PyMOL Molecular Graphics System\n',
-            'Version %s' % (self.cmd.get_version()[0]),
-            u'Copyright (C) Schr\xF6dinger, LLC.',
-            'All rights reserved.\n',
-            'License information:',
+            _tr('PyMOLQtGUI', 'The PyMOL Molecular Graphics System\n'),
+            _tr('PyMOLQtGUI', 'Version %s') % (self.cmd.get_version()[0]),
+            _tr('PyMOLQtGUI', u'Copyright (C) Schr\xF6dinger, LLC.'),
+            _tr('PyMOLQtGUI', 'All rights reserved.\n'),
+            _tr('PyMOLQtGUI', 'License information:'),
         ]
 
-        msg.append('Open-Source Build')
+        msg.append(_tr('PyMOLQtGUI', 'Open-Source Build'))
 
         msg += [
             '',
-            'For more information:',
+            _tr('PyMOLQtGUI', 'For more information:'),
             'https://pymol.org',
             'sales@schrodinger.com',
         ]
-        QtWidgets.QMessageBox.about(self, "About PyMOL", '\n'.join(msg))
+        QtWidgets.QMessageBox.about(self, _tr('PyMOLQtGUI', "About PyMOL"), '\n'.join(msg))
 
     #################
     # GUI callbacks
@@ -980,7 +983,7 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
 
         # Redirect to Legacy submenu
         self.menudict['PluginQt'] = self.menudict['Plugin']
-        self.menudict['Plugin'] = self.menudict['PluginQt'].addMenu('Legacy Plugins')
+        self.menudict['Plugin'] = self.menudict['PluginQt'].addMenu(_tr('PyMOLQtGUI', 'Legacy Plugins'))
         self.menudict['Plugin'].setTearOffEnabled(True)
         self.menudict['PluginQt'].addSeparator()
 
@@ -1172,7 +1175,7 @@ def _copy_image(_self=pymol.cmd, quiet=1, dpi=-1):
     fname = tempfile.mktemp('.png')
 
     if not _self.png(fname, prior=1, dpi=dpi):
-        print("no prior image")
+        print(_tr('PyMOLQtGUI', "no prior image"))
         return
 
     try:
@@ -1182,7 +1185,7 @@ def _copy_image(_self=pymol.cmd, quiet=1, dpi=-1):
         os.unlink(fname)
 
     if not quiet:
-        print(" Image copied to clipboard")
+        print(_tr('PyMOLQtGUI', " Image copied to clipboard"))
 
 
 def make_pymol_qicon():
@@ -1221,7 +1224,7 @@ def execapp():
     app.setWindowIcon(make_pymol_qicon())
 
     window = PyMOLQtGUI()
-    window.setWindowTitle("PyMOL")
+    window.setWindowTitle(_tr('PyMOLQtGUI', "PyMOL"))
 
     # fix gnome/wayland dash icon/missing wmclass
     app.setDesktopFileName("org.pymol.PyMOL")

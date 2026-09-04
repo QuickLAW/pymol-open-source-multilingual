@@ -905,6 +905,19 @@ enum {
   REC_f( 795, salt_bridge_distance                        , global    , 5.0f ),
   REC_b( 796, use_tessellation_shaders                , global    , true ),
   REC_c( 797, cell_color                              , ostate    , "-1" ),
+  REC_s( 798, mouse_mode_text                         , global    , "Mouse Mode " ),
+  REC_s( 799, selecting_text                          , global    , "Selecting " ),
+  REC_s( 800, picking_text                           , global    , "Picking " ),
+  REC_s( 801, sel_mode_atoms                          , global    , "Atoms" ),
+  REC_s( 802, sel_mode_residues                       , global    , "Residues" ),
+  REC_s( 803, sel_mode_chains                         , global    , "Chains" ),
+  REC_s( 804, sel_mode_segments                       , global    , "Segments" ),
+  REC_s( 805, sel_mode_objects                        , global    , "Objects" ),
+  REC_s( 806, sel_mode_molecules                      , global    , "Molecules" ),
+  REC_s( 807, sel_mode_ca                             , global    , "C-alphas" ),
+  REC_s( 808, sel_mode_atoms_joints                  , global    , "Atoms (and Joints)" ),
+  REC_s( 809, movie_frame_text                       , global    , "Frame " ),
+  REC_s( 810, movie_state_text                       , global    , "State " ),
 
 #ifdef SETTINGINFO_IMPLEMENTATION
 #undef SETTINGINFO_IMPLEMENTATION

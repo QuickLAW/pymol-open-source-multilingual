@@ -13,6 +13,8 @@
 #Z* -------------------------------------------------------------------
 
 from pymol.shortcut import Shortcut
+from pymol.Qt import QtCore
+_mtr = lambda text: QtCore.QCoreApplication.translate('Menu', text) if text else text
 
 if True:
     try:
@@ -651,22 +653,22 @@ USAGE
                 if bm>=0:
                     bm = bm % len(mouse_ring)
                     mode = mouse_ring[bm]
-                    _self.set("button_mode_name",mode_name_dict.get(mode,mode))
+                    _self.set("button_mode_name", _mtr(mode_name_dict.get(mode,mode)))
                     mode_list = mode_dict[mode]
                 else:
                     bm = (-1-bm) % len(mode_name_list)
                     mode = mode_name_list[bm]
-                    _self.set("button_mode_name",mode_name_dict.get(mode,mode))
+                    _self.set("button_mode_name", _mtr(mode_name_dict.get(mode,mode)))
                     mode_list = mode_dict[mode]
             elif action in mouse_ring:
                 mode = action
-                _self.set("button_mode_name",mode_name_dict.get(mode,mode))
+                _self.set("button_mode_name", _mtr(mode_name_dict.get(mode,mode)))
                 bm = mouse_ring.index(mode)
                 _self.set("button_mode",bm)
                 mode_list = mode_dict[mode]
             elif action in mode_dict:
                 mode = action
-                _self.set("button_mode_name",mode_name_dict.get(mode,mode))
+                _self.set("button_mode_name", _mtr(mode_name_dict.get(mode,mode)))
                 bm = -1 - mode_name_list.index(action)
                 _self.set("button_mode",bm)
                 mode_list = mode_dict[mode]

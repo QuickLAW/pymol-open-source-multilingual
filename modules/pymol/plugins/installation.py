@@ -8,6 +8,9 @@ License: BSD-2-Clause
 
 import os
 
+from pymol.Qt import QtCore
+_tr = QtCore.QCoreApplication.translate
+
 # supported file types for installation. Do not support pyc and pyo binaries,
 # we want text files that can be parsed for metadata.
 zip_extensions = ['zip', 'tar.gz']
@@ -57,7 +60,7 @@ def cmp_version(v1, v2):
         v2_parts = list(map(int, v2.split('.')))
         return (v1_parts > v2_parts) - (v1_parts < v2_parts)
     except:
-        print(' Warning: Version parsing failed for', v1, 'and/or', v2)
+        print(_tr('PluginInstallation', ' Warning: Version parsing failed for'), v1, _tr('PluginInstallation', 'and/or'), v2)
         return 0
 
 def get_name_and_ext(ofile):
@@ -155,8 +158,8 @@ def get_plugdir(parent=None):
     if 'pmg_qt.mimic_tk' in sys.modules:
         from pymol.Qt import QtWidgets
         value, result = QtWidgets.QInputDialog.getItem(None,
-            'Select plugin directory',
-            'In which directory should the plugin be installed?', plugdirs)
+            _tr('PluginInstallation', 'Select plugin directory'),
+            _tr('PluginInstallation', 'In which directory should the plugin be installed?'), plugdirs)
         return value if result else ''
 
     dialog_selection = []
@@ -166,10 +169,10 @@ def get_plugdir(parent=None):
         dialog.destroy()
 
     import Pmw
-    dialog = Pmw.SelectionDialog(parent, title='Select plugin directory',
+    dialog = Pmw.SelectionDialog(parent, title=_tr('PluginInstallation', 'Select plugin directory'),
             buttons = ('OK', 'Cancel'), defaultbutton='OK',
             scrolledlist_labelpos='n',
-            label_text='In which directory should the plugin be installed?',
+            label_text=_tr('PluginInstallation', 'In which directory should the plugin be installed?'),
             scrolledlist_items=plugdirs,
             command=plugdir_callback)
     dialog.component('scrolledlist').selection_set(0)
@@ -208,18 +211,18 @@ def installPluginFromFile(ofile, parent=None, plugdir=None):
 
     if not is_writable(plugdir):
         user_plugdir = get_default_user_plugin_path()
-        if not askyesno('Warning',
-                'Unable to write to the plugin directory.\n'
-                'Should a user plugin directory be created at\n' + user_plugdir + '?',
+        if not askyesno(_tr('PluginInstallation', 'Warning'),
+                _tr('PluginInstallation', 'Unable to write to the plugin directory.\n'
+                'Should a user plugin directory be created at\n') + user_plugdir + '?',
                 parent=parent):
-            showinfo('Error', 'Installation aborted', parent=parent)
+            showinfo(_tr('PluginInstallation', 'Error'), _tr('PluginInstallation', 'Installation aborted'), parent=parent)
             return
 
         if not os.path.exists(user_plugdir):
             try:
                 os.makedirs(user_plugdir)
             except OSError:
-                showinfo('Error', 'Could not create user plugin directory', parent=parent)
+                showinfo(_tr('PluginInstallation', 'Error'), _tr('PluginInstallation', 'Could not create user plugin directory'), parent=parent)
                 return
 
         plugdir = user_plugdir
@@ -239,10 +242,10 @@ def installPluginFromFile(ofile, parent=None, plugdir=None):
 
         if ask:
             if is_dir:
-                msg = 'Directory "%s" already exists, overwrite?' % pathname
+                msg = _tr('PluginInstallation', 'Directory "%s" already exists, overwrite?') % pathname
             else:
-                msg = 'File "%s" already exists, overwrite?' % pathname
-            if not tkMessageBox.askyesno('Confirm', msg, parent=parent):
+                msg = _tr('PluginInstallation', 'File "%s" already exists, overwrite?') % pathname
+            if not tkMessageBox.askyesno(_tr('PluginInstallation', 'Confirm'), msg, parent=parent):
                 raise InstallationCancelled('will not overwrite "%s"' % pathname)
 
         if is_dir:
@@ -261,13 +264,13 @@ def installPluginFromFile(ofile, parent=None, plugdir=None):
         v_new = PluginInfo(name, ofile).get_version()
         c = cmp_version(v_new, v_installed)
         if c > 0:
-            msg = 'An older version (%s) of this plugin is already installed. Install version %s now?' % (v_installed, v_new)
+            msg = _tr('PluginInstallation', 'An older version (%s) of this plugin is already installed. Install version %s now?') % (v_installed, v_new)
         elif c == 0:
-            msg = 'Plugin already installed. Reinstall?'
+            msg = _tr('PluginInstallation', 'Plugin already installed. Reinstall?')
         else:
-            msg = 'A newer version (%s) of this plugin is already installed. Install anyway?' % (v_installed)
+            msg = _tr('PluginInstallation', 'A newer version (%s) of this plugin is already installed. Install anyway?') % (v_installed)
 
-        if not tkMessageBox.askokcancel('Confirm', msg, parent=parent):
+        if not tkMessageBox.askokcancel(_tr('PluginInstallation', 'Confirm'), msg, parent=parent):
             raise InstallationCancelled
 
         remove_if_exists(pathname, False)
@@ -317,15 +320,15 @@ def installPluginFromFile(ofile, parent=None, plugdir=None):
             raise UserWarning('this should never happen')
 
     except InstallationCancelled:
-        showinfo('Info', 'Installation cancelled', parent=parent)
+        showinfo(_tr('PluginInstallation', 'Info'), _tr('PluginInstallation', 'Installation cancelled'), parent=parent)
         return
 
     except Exception as e:
         if pref_get('verbose', False):
             import traceback
             traceback.print_exc()
-        msg = 'Unable to install plugin "{}".\n{}'.format(name, e)
-        showinfo('Error', msg, parent=parent)
+        msg = _tr('PluginInstallation', 'Unable to install plugin "{}".\n{}').format(name, e)
+        showinfo(_tr('PluginInstallation', 'Error'), msg, parent=parent)
         return
 
     finally:
@@ -339,13 +342,13 @@ def installPluginFromFile(ofile, parent=None, plugdir=None):
     info = PluginInfo(name, mod_file, prefix + '.' + name)
 
     if info.load(force=1):
-        showinfo('Success', 'Plugin "%s" has been installed.' % name, parent=parent)
+        showinfo(_tr('PluginInstallation', 'Success'), _tr('PluginInstallation', 'Plugin "%s" has been installed.') % name, parent=parent)
     else:
-        showinfo('Error', 'Plugin "%s" has been installed but initialization failed.' % name, parent=parent)
+        showinfo(_tr('PluginInstallation', 'Error'), _tr('PluginInstallation', 'Plugin "%s" has been installed but initialization failed.') % name, parent=parent)
 
     if info.get_citation_required():
-        if askyesno('Citation Required', 'This plugin requires citation. Show information now?'
-                '\n\n(You can always get this information from the Plugin Manager, click the "Info" button there)',
+        if askyesno(_tr('PluginInstallation', 'Citation Required'), _tr('PluginInstallation', 'This plugin requires citation. Show information now?'
+                '\n\n(You can always get this information from the Plugin Manager, click the "Info" button there)'),
                 parent=parent):
             from .managergui import plugin_info_dialog
             plugin_info_dialog(parent, info)

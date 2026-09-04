@@ -5,6 +5,7 @@ from pymol.Qt import QtGui, QtWidgets
 from pymol.Qt import QtCore
 Qt = QtCore.Qt
 QSI = QtGui.QStandardItem  # For brevity
+_tr = QtCore.QCoreApplication.translate
 
 
 class SceneDictIndex(IntEnum):
@@ -49,7 +50,7 @@ class ScenePanel(QtWidgets.QWidget):
         Create the various elements in the table and add them to the
         proper layout.
         '''
-        self.setWindowTitle('Scene Panel')
+        self.setWindowTitle(_tr('ScenePanel', 'Scene Panel'))
         layout = QtWidgets.QVBoxLayout(self)
         self.setLayout(layout)
 
@@ -63,11 +64,11 @@ class ScenePanel(QtWidgets.QWidget):
         # Top Elements
         self.instructionLabel = QtWidgets.QLabel(self)
         self.instructionLabel.setText(
-            'Double click selected thumbnail to \nload into Workspace.')
+            _tr('ScenePanel', 'Double click selected thumbnail to \nload into Workspace.'))
         top_layout.addWidget(self.instructionLabel, 0, 0)
 
         self.addSceneButton = QtWidgets.QPushButton(self)
-        self.addSceneButton.setText('Add Scene')
+        self.addSceneButton.setText(_tr('ScenePanel', 'Add Scene'))
         top_layout.addWidget(self.addSceneButton, 0, 1)
 
         # Mid Elements
@@ -84,12 +85,12 @@ class ScenePanel(QtWidgets.QWidget):
 
         # Lower Buttom Elements
         self.deleteButton = QtWidgets.QPushButton(self)
-        self.deleteButton.setText("Delete Scene")
+        self.deleteButton.setText(_tr('ScenePanel', "Delete Scene"))
         low_layout.addWidget(self.deleteButton, 0, 1)
         self.deleteButton.setEnabled(False)
 
         self.updateButton = QtWidgets.QPushButton(self)
-        self.updateButton.setText("Update Scene")
+        self.updateButton.setText(_tr('ScenePanel', "Update Scene"))
         low_layout.addWidget(self.updateButton, 0, 0)
         self.updateButton.setEnabled(False)
 
@@ -212,7 +213,7 @@ class ScenePanel(QtWidgets.QWidget):
         self.resize(300, self.height())
         self.sceneTableWidget.setColumnCount(2)
         self.sceneTableWidget.setHorizontalHeaderLabels(
-            ['Name', 'Scene Preview'])
+            [_tr('ScenePanel', 'Name'), _tr('ScenePanel', 'Scene Preview')])
         self.sceneTableWidget.resize(260, 500)
 
     def _format_table(self):
@@ -285,7 +286,7 @@ class ScenePanel(QtWidgets.QWidget):
             self.scene_dict.pop(name)
             self.scene_list.remove(name)
         except Exception as e:
-            print("Item not found")
+            print(_tr('ScenePanel', "Item not found"))
             print(e)
         self._update_table()
 
@@ -363,10 +364,10 @@ class ScenePanel(QtWidgets.QWidget):
         calling scene with 'rename'.
         '''
         if ' ' in item.text():
-            print("Scene names with spaces are not supported")
+            print(_tr('ScenePanel', "Scene names with spaces are not supported"))
             self._update_table()
         elif not item.text():
-            print("Blank scene names are not allowed")
+            print(_tr('ScenePanel', "Blank scene names are not allowed"))
             self._update_table()
         else:
             diff_list = self._compare_scene_lists(

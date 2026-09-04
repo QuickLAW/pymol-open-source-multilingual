@@ -4,6 +4,7 @@ from pymol.Qt import QtGui, QtCore, QtWidgets
 from pymol.Qt.utils import UpdateLock, PopupOnException
 import pymol
 Qt = QtCore.Qt
+_tr = QtCore.QCoreApplication.translate
 
 from pymol.setting import name_dict
 
@@ -69,25 +70,25 @@ class PropsDialog(QtWidgets.QWidget):
     def setup_tree_widget(self):
         self.form.treeWidget.setItemDelegateForColumn(0, UneditableDelegate())
 
-        self.item_object = self.make_cat(self.form.treeWidget, "Object-Level")
-        self.item_object_ttt = self.make_entry(self.item_object, "TTT Matrix")
-        self.item_object_settings = self.make_cat(self.item_object, "Settings")
+        self.item_object = self.make_cat(self.form.treeWidget, _tr('PropertiesDialog', "Object-Level"))
+        self.item_object_ttt = self.make_entry(self.item_object, _tr('PropertiesDialog', "TTT Matrix"))
+        self.item_object_settings = self.make_cat(self.item_object, _tr('PropertiesDialog', "Settings"))
 
-        self.item_ostate = self.make_cat(self.form.treeWidget, "Object-State-Level")
-        self.item_ostate_title = self.make_entry(self.item_ostate, "Title")
-        self.item_ostate_matrix = self.make_entry(self.item_ostate, "State Matrix")
-        self.item_ostate_settings = self.make_cat(self.item_ostate, "Settings")
+        self.item_ostate = self.make_cat(self.form.treeWidget, _tr('PropertiesDialog', "Object-State-Level"))
+        self.item_ostate_title = self.make_entry(self.item_ostate, _tr('PropertiesDialog', "Title"))
+        self.item_ostate_matrix = self.make_entry(self.item_ostate, _tr('PropertiesDialog', "State Matrix"))
+        self.item_ostate_settings = self.make_cat(self.item_ostate, _tr('PropertiesDialog', "Settings"))
         self.item_ostate_properties = Ellipsis  # Incentive PyMOL only
 
-        self.item_atom = self.make_cat(self.form.treeWidget, "Atom-Level")
-        self.item_atom_identifiers = self.make_cat(self.item_atom, "Identifiers")
-        self.item_atom_builtins = self.make_cat(self.item_atom, "Properties (built-in)")
-        self.item_atom_settings = self.make_cat(self.item_atom, "Settings")
+        self.item_atom = self.make_cat(self.form.treeWidget, _tr('PropertiesDialog', "Atom-Level"))
+        self.item_atom_identifiers = self.make_cat(self.item_atom, _tr('PropertiesDialog', "Identifiers"))
+        self.item_atom_builtins = self.make_cat(self.item_atom, _tr('PropertiesDialog', "Properties (built-in)"))
+        self.item_atom_settings = self.make_cat(self.item_atom, _tr('PropertiesDialog', "Settings"))
         self.item_atom_properties = Ellipsis  # Incentive PyMOL only
 
-        self.item_astate = self.make_cat(self.form.treeWidget, "Atom-State-Level")
-        self.item_astate_builtins = self.make_cat(self.item_astate, "Properties (built-in)")
-        self.item_astate_settings = self.make_cat(self.item_astate, "Settings")
+        self.item_astate = self.make_cat(self.form.treeWidget, _tr('PropertiesDialog', "Atom-State-Level"))
+        self.item_astate_builtins = self.make_cat(self.item_astate, _tr('PropertiesDialog', "Properties (built-in)"))
+        self.item_astate_settings = self.make_cat(self.item_astate, _tr('PropertiesDialog', "Settings"))
 
         self.keys_atom_identifiers = ['model', 'index', 'segi', 'chain', 'resi',
                                 'resn',

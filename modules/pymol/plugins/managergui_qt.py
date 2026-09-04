@@ -7,6 +7,7 @@ from pymol.Qt import QtWidgets
 from . import pref_get
 
 Qt = QtCore.Qt
+_tr = QtCore.QCoreApplication.translate
 
 def confirm_network_access():
     '''
@@ -14,14 +15,18 @@ def confirm_network_access():
     '''
     self = confirm_network_access
     if self.ok < 0:
-        check = QtWidgets.QMessageBox.information(None, 'Info',
-            'Network download has been disabled, sorry!')
+        QtWidgets.QMessageBox.information(
+            None,
+            _tr('PluginManager', 'Info'),
+            _tr('PluginManager', 'Network download has been disabled, sorry!'))
         return False
     if self.ok > 0:
         return True
-    if QtWidgets.QMessageBox.question(None, 'Confirm',
-        'PyMOL will now download executable code from the internet!'
-        ' Proceed?') == QtWidgets.QMessageBox.Yes:
+    if QtWidgets.QMessageBox.question(
+        None,
+        _tr('PluginManager', 'Confirm'),
+        _tr('PluginManager', 'PyMOL will now download executable code from the internet! Proceed?')
+    ) == QtWidgets.QMessageBox.Yes:
         self.ok = 1
     else:
         self.ok = 0
@@ -150,7 +155,7 @@ class PluginManager(QtCore.QObject):
                 installPluginFromFile(filename, None, plugdir)
         except:
             err = str(sys.exc_info()[1])
-            tkMessageBox.showinfo('Error', 'Could not install plugin ' + name + '\n\n' + err)
+            tkMessageBox.showinfo(_tr('PluginManager', 'Error'), _tr('PluginManager', 'Could not install plugin ') + name + '\n\n' + err)
         finally:
             shutil.rmtree(tmpdir)
         self.reload_plugins()
@@ -177,7 +182,7 @@ class PluginManager(QtCore.QObject):
             info = PluginInfo(name, filename)
             self.show_plugin_info_dialog(info)
         except:
-            tkMessageBox.showinfo('Error', 'Could not get plugin info')
+            tkMessageBox.showinfo(_tr('PluginManager', 'Error'), _tr('PluginManager', 'Could not get plugin info'))
         finally:
             for tmpdir in tmpdirs:
                 shutil.rmtree(tmpdir)
@@ -193,7 +198,7 @@ class PluginManager(QtCore.QObject):
 
     def add_repository(self):
         repo, result = QtWidgets.QInputDialog.getText(None,
-            'Add repository', 'Enter repository URL')
+            _tr('PluginManager', 'Add repository'), _tr('PluginManager', 'Enter repository URL'))
         if result and repo.startswith('http'):
             self.form.l_repositories.addItem(repo)
 
@@ -244,9 +249,9 @@ class PluginManager(QtCore.QObject):
                 item.w_settings.setVisible(False)
             item.w_info.pressed.connect(self.show_info)
             if info.loadtime:
-                item.w_loadtime.setText("Took %.3f seconds to load" % info.loadtime)
+                item.w_loadtime.setText(_tr('PluginManager', "Took %.3f seconds to load") % info.loadtime)
             else:
-                item.w_loadtime.setText("Not loaded")
+                item.w_loadtime.setText(_tr('PluginManager', "Not loaded"))
 
             item._widget._form = item
             self.plugin_info[item] = info
@@ -317,8 +322,8 @@ class PluginManager(QtCore.QObject):
         try:
             filename = fetchscript(url, tmpdir, False)
         except BaseException as e:
-            QtWidgets.QMessageBox.critical(None, 'Error',
-                'Fetching Plugin failed.\n' + str(e))
+            QtWidgets.QMessageBox.critical(None, _tr('PluginManager', 'Error'),
+                _tr('PluginManager', 'Fetching Plugin failed.\n') + str(e))
             return
 
         if filename:
@@ -337,7 +342,7 @@ class PluginManager(QtCore.QObject):
 
     def show_plugin_info_dialog(self, info):
         dialog = QtWidgets.QDialog(None)
-        dialog.setWindowTitle('Plugin Information')
+        dialog.setWindowTitle(_tr('PluginManager', 'Plugin Information'))
         layout = QtWidgets.QVBoxLayout()
         table = QtWidgets.QTableWidget(0, 2)
         table.verticalHeader().hide()
@@ -358,10 +363,10 @@ class PluginManager(QtCore.QObject):
                  ~(Qt.ItemIsEditable))
             table.setItem(row, 1, table_item)
 
-        add_line('Name', info.name)
+        add_line(_tr('PluginManager', 'Name'), info.name)
         if not info.is_temporary:
-            add_line('Python Module Name', info.mod_name)
-            add_line('Filename', info.filename)
+            add_line(_tr('PluginManager', 'Python Module Name'), info.mod_name)
+            add_line(_tr('PluginManager', 'Filename'), info.filename)
 
         metadata = info.get_metadata()
         for label, value in metadata.items():
@@ -369,8 +374,8 @@ class PluginManager(QtCore.QObject):
 
         if not info.is_temporary:
             if info.loaded:
-                add_line('commands', ', '.join(info.commands))
-        docstring = info.get_docstring() or 'No documentation available.'
+                add_line(_tr('PluginManager', 'commands'), ', '.join(info.commands))
+        docstring = info.get_docstring() or _tr('PluginManager', 'No documentation available.')
 
         browser = QtWidgets.QTextBrowser()
         browser.setPlainText(docstring)
@@ -384,7 +389,7 @@ class PluginManager(QtCore.QObject):
     def add_path(self):
         from .installation import get_default_user_plugin_path as userpath
         d = QtWidgets.QFileDialog.getExistingDirectory(None,
-            'Add plugin directory', userpath())
+            _tr('PluginManager', 'Add plugin directory'), userpath())
         if len(d) > 0:
             self.form.slb_path.addItem(d)
         self.update_startup_paths()

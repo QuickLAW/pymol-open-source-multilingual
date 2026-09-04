@@ -14,6 +14,8 @@ except ImportError:
     connectFontContextMenu = lambda *a: None
     getMonospaceFont = lambda: QtGui.QFont()
 
+_tr = QtCore.QCoreApplication.translate
+
 
 class TextEditor(QtWidgets.QMainWindow):
 
@@ -68,7 +70,7 @@ class TextEditor(QtWidgets.QMainWindow):
 
     def doSaveAs(self, *args):
         fname, selectedfilter = QtWidgets.QFileDialog.getSaveFileName(
-            None, 'Save As...', os.path.dirname(self.filename))
+            None, _tr('TextEditor', 'Save As...'), os.path.dirname(self.filename))
         if not fname:
             return
 
@@ -86,16 +88,20 @@ class TextEditor(QtWidgets.QMainWindow):
         if not self.check_ask_save():
             return
 
-        fnames = QtWidgets.QFileDialog.getOpenFileNames(None, 'Open file')[0]
+        fnames = QtWidgets.QFileDialog.getOpenFileNames(
+            None, _tr('TextEditor', 'Open file'))[0]
         if fnames:
             self._open(fnames[0])
 
     def check_ask_save(self):
         QMessageBox = QtWidgets.QMessageBox
         if self._get() != self._savedcontent:
-            ok = QMessageBox.question(None, "Save?", "Save changes?",
-                                      QMessageBox.Yes | QMessageBox.No |
-                                      QMessageBox.Cancel, QMessageBox.Yes)
+            ok = QMessageBox.question(
+                None,
+                _tr('TextEditor', "Save?"),
+                _tr('TextEditor', "Save changes?"),
+                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
+                QMessageBox.Yes)
             if ok == QMessageBox.Yes:
                 self.doSave()
             elif ok == QMessageBox.Cancel:
@@ -108,26 +114,33 @@ class TextEditor(QtWidgets.QMainWindow):
             return
         self.close()
 
-    def __init__(self, parent=None, filename='', title='Text Editor'):
+    def __init__(self, parent=None, filename='', title=None):
         super(TextEditor, self).__init__()
 
         self.highlight = None
 
         self.root = self
-        self.root.setWindowTitle(title)
+        self.root.setWindowTitle(
+            title if title is not None else _tr('TextEditor', 'Text Editor'))
 
         menubar = self.root.menuBar()
-        filemenu = menubar.addMenu("File")
-        filemenu.addAction("Open", self.doOpen, QtGui.QKeySequence("Ctrl+O"))
-        filemenu.addAction("Save", self.doSave, QtGui.QKeySequence("Ctrl+S"))
-        filemenu.addAction("Save as ...", self.doSaveAs,
+        filemenu = menubar.addMenu(_tr('TextEditor', "File"))
+        filemenu.addAction(_tr('TextEditor', "Open"), self.doOpen,
+                           QtGui.QKeySequence("Ctrl+O"))
+        filemenu.addAction(_tr('TextEditor', "Save"), self.doSave,
+                           QtGui.QKeySequence("Ctrl+S"))
+        filemenu.addAction(_tr('TextEditor', "Save as ..."), self.doSaveAs,
                            QtGui.QKeySequence("Ctrl+Shift+S"))
 
-        syntaxmenu = menubar.addMenu("Syntax")
+        syntaxmenu = menubar.addMenu(_tr('TextEditor', "Syntax"))
         syntaxgroup = QtWidgets.QActionGroup(self)
         self.syntaxactions = {}
 
-        for label in ['Python', 'PML', 'Plain Text']:
+        for label in [
+            _tr('TextEditor', 'Python'),
+            _tr('TextEditor', 'PML'),
+            _tr('TextEditor', 'Plain Text'),
+        ]:
             key = label.split()[0].lower()
             action = syntaxmenu.addAction(label,
                     lambda t=key: self.setSyntax(t))
@@ -159,7 +172,10 @@ def edit_pymolrc(app=None):
         return
 
     s, ok = QtWidgets.QInputDialog.getItem(
-        None, 'Select pymolrc file', 'Active pymolrc files:', pymolrc_list)
+        None,
+        _tr('TextEditor', 'Select pymolrc file'),
+        _tr('TextEditor', 'Active pymolrc files:'),
+        pymolrc_list)
 
     if ok:
         _edit_pymolrc(app, [s])
@@ -175,7 +191,9 @@ def _edit_pymolrc(app, _list=()):
             pymolrc = os.path.expandvars(r'$HOME/.pymolrc')
 
         pymolrc, ok = QtWidgets.QInputDialog.getText(
-            None, 'Create new pymolrc?', 'Filename of new pymolrc',
+            None,
+            _tr('TextEditor', 'Create new pymolrc?'),
+            _tr('TextEditor', 'Filename of new pymolrc'),
             QtWidgets.QLineEdit.Normal, pymolrc)
 
         if not ok:

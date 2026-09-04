@@ -3,3 +3,6 @@
 generated
 build
 .vscode
+.trae
+*.egg-info/
+__pycache__/

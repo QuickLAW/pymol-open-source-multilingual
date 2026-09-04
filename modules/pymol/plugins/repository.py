@@ -14,6 +14,9 @@ if True:
     from urllib.parse import urlparse
     from urllib.error import URLError, HTTPError
 
+from pymol.Qt import QtCore
+_tr = QtCore.QCoreApplication.translate
+
 from .installation import supported_extensions
 
 def urlopen(url):
@@ -310,7 +313,7 @@ ARGUMENTS
         rawscript = 1
 
     if not quiet:
-        print('Downloading', url)
+        print(_tr('PluginRepository', 'Downloading'), url)
 
     # get page content
     try:
@@ -325,7 +328,7 @@ ARGUMENTS
     filename = os.path.join(dest, filename.rsplit('/')[-1])
     if os.path.exists(filename):
         if not quiet:
-            print('File "%s" exists, will not redownload')
+            print(_tr('PluginRepository', 'File "%s" exists, will not redownload'))
     else:
         if not rawscript:
             # redirect
@@ -340,7 +343,7 @@ ARGUMENTS
                 try:
                     return fetchscript(git_master + chunks2[0], dest, run, quiet)
                 except HTTPError:
-                    print('Warning: Infobox filename found, but download failed')
+                    print(_tr('PluginRepository', 'Warning: Infobox filename found, but download failed'))
 
             # parse for <source ...>...</source>
             pattern = re.compile(r'<(?:source|syntaxhighlight)\b[^>]*>(.*?)</(?:source|syntaxhighlight)>', re.DOTALL)
@@ -352,7 +355,7 @@ ARGUMENTS
             if len(chunks) == 0:
                 raise CmdException('No <source> or <syntaxhighlight> block with cmd.extend found')
             if len(chunks) > 1:
-                print('Warning: %d chunks found, only saving first' % (len(chunks)))
+                print(_tr('PluginRepository', 'Warning: %d chunks found, only saving first') % (len(chunks)))
 
             content = chunks[0]
 

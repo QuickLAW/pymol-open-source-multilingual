@@ -11,6 +11,7 @@ from pymol.Qt import QtWidgets
 from pymol.Qt.utils import PopupOnException
 
 Qt = QtCore.Qt
+_tr = QtCore.QCoreApplication.translate
 
 from pymol.wizard import Wizard
 
@@ -114,7 +115,7 @@ class CleanWizard(ActionWizard):
         if isinstance(obj_list,list) and (len(obj_list)==1):
             self.run_job()
         else:
-            print("Error: can only clean one object at a time")
+            print(_tr('Builder', "Error: can only clean one object at a time"))
 
     def toggle(self):
         if self.activateOrDismiss():
@@ -152,7 +153,7 @@ class SculptWizard(ActionWizard):
                 self.cmd.unpick()
                 self.cmd.refresh_wizard()
             else:
-                print("Error: cannot sculpt more than one object at a time")
+                print(_tr('Builder', "Error: cannot sculpt more than one object at a time"))
 
     def sculpt_deactivate(self):
         if ((self.sculpt_object is not None) and
@@ -1033,7 +1034,7 @@ class _BuilderPanel(QtWidgets.QWidget):
     def __init__(self, parent=None, app=None):
         super(_BuilderPanel, self).__init__(parent)
 
-        self.setWindowTitle("Builder")
+        self.setWindowTitle(_tr('Builder', "Builder"))
         self.setObjectName("builder")
         self.cmd = app.pymol.cmd
 
@@ -1065,9 +1066,9 @@ class _BuilderPanel(QtWidgets.QWidget):
         self.nucleic_acid_tab = QtWidgets.QWidget()
         self.nucleic_acid_tab.setLayout(self.nucleic_acid_layout)
 
-        self.tabs.addTab(self.fragments_tab, "Chemical")
-        self.tabs.addTab(self.protein_tab, "Protein")
-        self.tabs.addTab(self.nucleic_acid_tab, "Nucleic Acid")
+        self.tabs.addTab(self.fragments_tab, _tr('Builder', "Chemical"))
+        self.tabs.addTab(self.protein_tab, _tr('Builder', "Protein"))
+        self.tabs.addTab(self.nucleic_acid_tab, _tr('Builder', "Nucleic Acid"))
 
         self.getIcons()
 
@@ -1137,18 +1138,18 @@ class _BuilderPanel(QtWidgets.QWidget):
             for col, btn_label in enumerate(btn_row):
                 btn = makeFragmentButton()
                 btn.setText(btn_label)
-                btn.setToolTip("Build %s residue" % btn_label)
+                btn.setToolTip(_tr('Builder', "Build %s residue") % btn_label)
                 res = btn_label.lower()
                 slot = lambda val=None, s=self,r=res: s.attach(r)
                 btn.clicked.connect(slot)
                 self.protein_layout.addWidget(btn, row, col)
 
-        lab = QtWidgets.QLabel('Secondary Structure:')
+        lab = QtWidgets.QLabel(_tr('Builder', 'Secondary Structure:'))
         lab_cols = 3
         self.ss_cbox = QtWidgets.QComboBox()
-        self.ss_cbox.addItem("Alpha Helix")
-        self.ss_cbox.addItem("Beta Sheet (Anti-Parallel)")
-        self.ss_cbox.addItem("Beta Sheet (Parallel)")
+        self.ss_cbox.addItem(_tr('Builder', "Alpha Helix"))
+        self.ss_cbox.addItem(_tr('Builder', "Beta Sheet (Anti-Parallel)"))
+        self.ss_cbox.addItem(_tr('Builder', "Beta Sheet (Parallel)"))
         self.protein_layout.addWidget(lab, 2, 0, 1, lab_cols)
         self.protein_layout.addWidget(self.ss_cbox, 2, lab_cols, 1, 4)
         self.ss_cbox.currentIndexChanged[int].connect(self.ssIndexChanged)
@@ -1168,8 +1169,8 @@ class _BuilderPanel(QtWidgets.QWidget):
         self.rna_tab = QtWidgets.QWidget()
         self.rna_tab.setLayout(self.nucleic_acid_rna_layout)
 
-        self.nucleic_acid_tab.addTab(self.dna_tab, "DNA")
-        self.nucleic_acid_tab.addTab(self.rna_tab, "RNA")
+        self.nucleic_acid_tab.addTab(self.dna_tab, _tr('Builder', "DNA"))
+        self.nucleic_acid_tab.addTab(self.rna_tab, _tr('Builder', "RNA"))
 
         self._nuc_acid_prop = NucleicAcidProperties()
 
@@ -1217,9 +1218,9 @@ class _BuilderPanel(QtWidgets.QWidget):
             btn.clicked.connect(btn_command)
             self.nucleic_acid_rna_layout.addWidget(btn, 0, col_num)
 
-        btn = QtWidgets.QLabel('Hint: Also check out '
+        btn = QtWidgets.QLabel(_tr('Builder', 'Hint: Also check out '
                 '<a href="http://x3dna.org/articles/3dna-fiber-models">fiber</a> and its '
-                '<a href="http://x3dna.org/articles/pymol-wrapper-to-3dna-fiber-models">PyMOL wrapper</a>')
+                '<a href="http://x3dna.org/articles/pymol-wrapper-to-3dna-fiber-models">PyMOL wrapper</a>'))
         btn.setOpenExternalLinks(True)
         self.nucleic_acid_rna_layout.addWidget(btn, 0, col_num + 1)
 
@@ -1312,10 +1313,10 @@ class _BuilderPanel(QtWidgets.QWidget):
 
         if on_per_object:
             QMB = QtWidgets.QMessageBox
-            check = QMB.question(None, 'Enable for objects?',
-                    'Building "Undo" is disabled for the following objects:\n\n' +
-                    '\n'.join(on_per_object) + '\n\n'
-                    'Enable "Undo" for these objects?', QMB.Yes | QMB.No)
+            check = QMB.question(None, _tr('Builder', 'Enable for objects?'),
+                    _tr('Builder', 'Building "Undo" is disabled for the following objects:\n\n') +
+                    '\n'.join(on_per_object) + _tr('Builder', '\n\n'
+                    'Enable "Undo" for these objects?'), QMB.Yes | QMB.No)
             if check == QMB.Yes:
                 for oname in on_per_object:
                     self.cmd.unset('suspend_undo', oname)
@@ -1407,7 +1408,7 @@ class _BuilderPanel(QtWidgets.QWidget):
             self.cmd.select(newest_sele,"byres(pk1)")
             self.cmd.remove(newest_sele)
         else:
-            print("Select a single atom on the residue and press remove again")
+            print(_tr('Builder', "Select a single atom on the residue and press remove again"))
 
     def doAutoPick(self, old_atoms=None):
         self.cmd.unpick()
@@ -1526,8 +1527,8 @@ class _BuilderPanel(QtWidgets.QWidget):
 
     def clear(self):
         QMB = QtWidgets.QMessageBox
-        check = QMB.question(None, "Confirm",
-            "Really delete everything?", QMB.Yes | QMB.No)
+        check = QMB.question(None, _tr('Builder', "Confirm"),
+            _tr('Builder', "Really delete everything?"), QMB.Yes | QMB.No)
         if check == QMB.Yes:
             self.cmd.delete("all")
             self.cmd.refresh_wizard()
@@ -1573,7 +1574,6 @@ class _BuilderPanel(QtWidgets.QWidget):
 def BuilderPanelDocked(parent, *args, **kwargs):
     widget = _BuilderPanel(parent, *args, **kwargs)
     window = QtWidgets.QDockWidget(parent)
-    window.setWindowTitle("Builder")
+    window.setWindowTitle(_tr('Builder', "Builder"))
     window.setWidget(widget)
     window.setFloating(True)
-    return window
