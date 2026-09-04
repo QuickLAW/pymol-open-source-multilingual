@@ -232,9 +232,7 @@ struct WrapperObject : PyObject {
   PyMOLGlobals * G;
   PyObject *dict;
   SettingPropertyWrapperObject* settingWrapperObject;
-#ifdef _PYMOL_IP_PROPERTIES
   SettingPropertyWrapperObject* propertyWrapperObject;
-#endif
 };
 
 struct SettingPropertyWrapperObject : PyObject {

@@ -77,6 +77,7 @@
 #include "SceneRay.h"
 #include "ScrollBar.h"
 #include "SculptCache.h"
+#include "Seeker.h"
 #include "Selector.h"
 #include "Seq.h"
 #include "Setting.h"
@@ -104,6 +105,8 @@
 #include "MovieScene.h"
 #include "Texture.h"
 
+#include "Property.h"
+
 #ifdef _PYMOL_OPENVR
 #include "OpenVRMode.h"
 #endif
@@ -112,6 +115,7 @@
 #include "ce_types.h"
 #endif
 
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/vec3.hpp>
 
@@ -2588,9 +2592,9 @@ int ExecutiveMatrixCopy(PyMOLGlobals* G, const char* source_name,
   switch (source_mode) {
   case 0: /* txf history is the source matrix */
   {
-    double* history = nullptr;
+    double* src_history = nullptr;
     int found =
-        ExecutiveGetObjectMatrix(G, source_name, source_state, &history, false);
+        ExecutiveGetObjectMatrix(G, source_name, source_state, &src_history, false);
     if (found) {
 
       int iter_id = TrackerNewIter(I_Tracker, 0, list_id);
@@ -2605,6 +2609,15 @@ int ExecutiveMatrixCopy(PyMOLGlobals* G, const char* source_name,
             switch (target_mode) {
             case 0: /* apply changes to coordinates in the target object */
             {
+              /* Use a per-target copy of the source history so that
+                 modifications for one target don't corrupt the matrix
+                 for subsequent targets (avoids pointer aliasing bug) */
+              double history_buf[16];
+              double* history = nullptr;
+              if (src_history) {
+                copy44d(src_history, history_buf);
+                history = history_buf;
+              }
               double temp_inverse[16];
               if (target_undo) {
                 double* target_history = nullptr;
@@ -2640,9 +2653,9 @@ int ExecutiveMatrixCopy(PyMOLGlobals* G, const char* source_name,
               }
             } break;
             case 1: /* applying changes to the object's TTT matrix */
-              if (history) {
+              if (src_history) {
                 float tttf[16];
-                convertR44dTTTf(history, tttf);
+                convertR44dTTTf(src_history, tttf);
                 ExecutiveSetObjectTTT(G, rec->name, tttf, -1, quiet, -1);
               } else {
                 ExecutiveSetObjectTTT(G, rec->name, nullptr, -1, quiet, -1);
@@ -2651,7 +2664,7 @@ int ExecutiveMatrixCopy(PyMOLGlobals* G, const char* source_name,
               break;
             case 2: /* applying changes to the state matrix */
               ok =
-                  ExecutiveSetObjectMatrix(G, rec->name, target_state, history);
+                  ExecutiveSetObjectMatrix(G, rec->name, target_state, src_history);
               break;
             }
             break;
@@ -3870,10 +3883,8 @@ pymol::Result<> ExecutiveLoad(PyMOLGlobals* G, ExecutiveLoadArgs const& args)
   const char* content = args.content.data();
   int size = args.content.size();
   const char* object_name = args.object_name.c_str();
-#ifdef _PYMOL_IP_PROPERTIES
   const char* object_props = args.object_props.c_str();
   const char* atom_props = args.atom_props.c_str();
-#endif
   const char* plugin = args.plugin.c_str();
   auto content_format = args.content_format;
   auto state = args.state;
@@ -4050,6 +4061,18 @@ pymol::Result<> ExecutiveLoad(PyMOLGlobals* G, ExecutiveLoadArgs const& args)
 
     OVLexicon* loadproplex = nullptr;
     bool loadpropertiesall = false;
+
+    if (object_props[0]) {
+      if (strcmp(object_props, "*") == 0) {
+        loadpropertiesall = true;
+      } else {
+        auto keys = strsplit(object_props);
+        loadproplex = OVLexicon_New(G->Context->heap);
+        for (auto& key : keys) {
+          OVLexicon_GetFromCString(loadproplex, key.c_str());
+        }
+      }
+    }
 
     // (some of) these file types support multiple molecules per file,
     // and we support to load them into separate objects (multiplex).
@@ -9908,8 +9931,21 @@ pymol::Result<> ExecutiveSeleToObject(PyMOLGlobals* G, const char* name,
               2, /* Object state mode */
               source, target, false, 0, quiet);
 
-#ifdef _PYMOL_IP_PROPERTIES
-#endif
+          if (copy_properties) {
+            // old_obj to new_obj
+            if (old_obj->NCSet == new_obj->NCSet) {
+              // only if the objects have the same number of CoordSets (for now)
+              int state;
+              for (state = 0; state < new_obj->NCSet; state++) {
+                CoordSet *new_cs = new_obj->CSet[state],
+                         *old_cs = old_obj->CSet[state];
+                if (old_cs->prop_id) {
+                  PropertyCheckUniqueID(G, new_cs);
+                  PropertyCopyProperties(G, old_cs->prop_id, new_cs->prop_id);
+                }
+              }
+            }
+          }
 
           ExecutiveDoZoom(G, new_obj, !exists, zoom, true);
         }
@@ -16892,8 +16928,93 @@ ok_except1:
   return cs;
 }
 
-#ifdef _PYMOL_IP_PROPERTIES
-#endif // _PYMOL_IP_PROPERTIES
+/**
+ * Like ExecutiveGetProperty() but also return the type code.
+ *
+ * @return A [type, value] pair, or nullptr if there is no such property
+ */
+CPythonVal* ExecutiveGetPropertyForObject(PyMOLGlobals* G, const char* propname,
+    const char* objname, int state, int quiet)
+{
+  CPythonVal* result = nullptr;
+  ObjectMolecule* obj = nullptr;
+  obj = ExecutiveFindObjectMoleculeByName(G, objname);
+  if (obj) {
+    result = ObjectMoleculeGetProperty(obj, propname, state, quiet);
+  } else {
+    PRINTFB(G, FB_Executive, FB_Errors)
+    "ExecutiveGetProperty: objname='%s' not found\n", objname ENDFB(G);
+  }
+  return (result);
+}
+
+/**
+ * @return The property value, or nullptr if there is no such property
+ */
+CPythonVal* ExecutiveGetProperty(PyMOLGlobals* G, const char* propname,
+    const char* objname, int state, int quiet)
+{
+  CPythonVal* result = nullptr;
+  auto* withtype =
+      ExecutiveGetPropertyForObject(G, propname, objname, state, quiet);
+  if (withtype) {
+    result = PyList_GetItem(withtype, 1);
+    CPythonVal_Free(withtype);
+  }
+  return result;
+}
+
+pymol::Result<> ExecutiveSetPropertyForObject(PyMOLGlobals* G,
+    const char* propname, CPythonVal* value, const char* objname, int state,
+    int proptype, int quiet)
+{
+  ObjectMolecule* obj = nullptr;
+  int ok = true;
+
+  auto vla = ExecutiveGetObjectMoleculeVLA(G, objname);
+  if (!vla)
+    return pymol::make_error("No object(s) found");
+  if (ok) {
+    int nObj = VLAGetSize(vla);
+    for (int a = 0; a < nObj; a++) {
+      obj = vla[a];
+      ok &= ObjectMoleculeSetProperty((ObjectMolecule*) obj, propname, value,
+          static_cast<PropertyType>(proptype), state, quiet);
+    }
+  }
+  if (!ok) {
+    return pymol::make_error("Error while setting properties...");
+  }
+  return {};
+}
+
+int ExecutiveSetAtomPropertyForSelection(PyMOLGlobals* G, const char* propname,
+    CPythonVal* value, const char* s1, int state, int proptype, int quiet)
+{
+  int sele1, result, ok = true;
+  sele1 = SelectorIndexByName(G, s1);
+
+  if (state < 0)
+    state = 0;
+
+  {
+    int unblock = PAutoBlock(G); /*   PBlock(G);    PBlockAndUnlockAPI(); */
+    if (sele1 >= 0) {
+      result = SelectorSetAtomPropertyForSelection(G, sele1, propname, value,
+          static_cast<PropertyType>(proptype), state, quiet);
+      if (!quiet && !result) {
+        PRINTFB(G, FB_Executive, FB_Warnings)
+        "ExecutiveSetAtomPropertyForSelection: no atoms set\n" ENDFB(G);
+      }
+    }
+    if (PyErr_Occurred()) {
+      PyErr_Print();
+      ok = false;
+    }
+    PAutoUnblock(G, unblock); /*    PUnblock(G);  PLockAPIAndUnblock(); */
+  }
+  return (ok);
+}
 
 void ExecutiveUniqueIDAtomDictInvalidate(PyMOLGlobals* G)
 {
@@ -17440,4 +17561,198 @@ pymol::Result<std::unordered_set<const pymol::CObject*>> ExecutiveGetObjectDeps(
   // Self doesn't count as dependency
   obj_set.erase(&obj);
   return obj_set;
+}
+
+/**
+ * Run TM-align on two selections and return results.
+ *
+ * @param mobile_sele mobile selection (will be transformed)
+ * @param target_sele target selection (stays fixed)
+ * @param mobile_state state of mobile selection (0-based)
+ * @param target_state state of target selection (0-based)
+ * @param quiet suppress output
+ * @param transform apply superposition transform
+ * @param oname name for alignment object (empty = don't create)
+ * @param fast use fast mode (fewer iterations)
+ */
+pymol::Result<pymol::usalign::TMAlignResult> ExecutiveUSalign(PyMOLGlobals* G,
+    const char* mobile_sele, const char* target_sele, int mobile_state,
+    int target_state, int quiet, int transform, const char* oname, int fast)
+{
+  // Resolve selections
+  auto sele_mobile = SelectorIndexByName(G, mobile_sele);
+  if (sele_mobile < 0)
+    return pymol::make_error("Invalid mobile selection: ", mobile_sele);
+
+  auto sele_target = SelectorIndexByName(G, target_sele);
+  if (sele_target < 0)
+    return pymol::make_error("Invalid target selection: ", target_sele);
+
+  // Extract CA coordinates and sequences
+  struct ResidueInfo {
+    glm::dvec3 coord;
+    char seq_char;
+    AtomInfoType* ai;
+  };
+
+  auto extract_ca = [&](SelectorID_t sele,
+                        int state) -> std::vector<ResidueInfo> {
+    std::vector<ResidueInfo> residues;
+    SeleCoordIterator iter(G, sele, state);
+    while (iter.next()) {
+      auto* ai = iter.getAtomInfo();
+      if (ai->flags & cAtomFlag_guide) {
+        float* c = iter.getCoord();
+        ResidueInfo ri;
+        ri.coord = glm::dvec3(c[0], c[1], c[2]);
+        ri.seq_char = SeekerGetAbbr(G, LexStr(G, ai->resn), 'O', 'X');
+        ri.ai = ai;
+        residues.push_back(ri);
+      }
+    }
+    return residues;
+  };
+
+  auto mobile_res = extract_ca(sele_mobile, mobile_state);
+  auto target_res = extract_ca(sele_target, target_state);
+
+  if (mobile_res.size() < 3) {
+    return pymol::make_error("Mobile selection has fewer than 3 guide atoms (",
+        mobile_res.size(), ")");
+  }
+  if (target_res.size() < 3) {
+    return pymol::make_error("Target selection has fewer than 3 guide atoms (",
+        target_res.size(), ")");
+  }
+
+  // Build coordinate vectors and sequences
+  std::vector<glm::dvec3> mobile_ca, target_ca;
+  std::string mobile_seq, target_seq;
+  mobile_ca.reserve(mobile_res.size());
+  target_ca.reserve(target_res.size());
+
+  for (const auto& r : mobile_res) {
+    mobile_ca.push_back(r.coord);
+    mobile_seq.push_back(r.seq_char);
+  }
+  for (const auto& r : target_res) {
+    target_ca.push_back(r.coord);
+    target_seq.push_back(r.seq_char);
+  }
+
+  // Run TM-align
+  auto result = pymol::usalign::TMalign(
+      target_ca, mobile_ca, target_seq, mobile_seq, fast != 0);
+
+  if (result.aligned_length < 1) {
+    return pymol::make_error("TM-align failed to find any alignment");
+  }
+
+  // Print results
+  if (!quiet) {
+    PRINTFB(G, FB_Executive, FB_Results)
+    " USalign: TM-score= %6.4f (normalized by target, N=%d, d0=%.2f)\n",
+        result.tm_score_target, static_cast<int>(target_ca.size()),
+        result.d0_target ENDFB(G);
+    PRINTFB(G, FB_Executive, FB_Results)
+    " USalign: TM-score= %6.4f (normalized by mobile, N=%d, d0=%.2f)\n",
+        result.tm_score_mobile, static_cast<int>(mobile_ca.size()),
+        result.d0_mobile ENDFB(G);
+    PRINTFB(G, FB_Executive, FB_Results)
+    " USalign: Aligned length= %d, RMSD= %5.2f, Seq_ID=n_identical/n_aligned= "
+    "%4.3f\n",
+        result.aligned_length, result.rmsd, result.seq_identity ENDFB(G);
+  }
+
+  // Apply transform to mobile object
+  if (transform) {
+    // Convert double-precision Superposition to float TTT
+    // USalign convention: y_aligned = R * x + t
+    // where x = mobile coords, y = target coords
+    // The rotation R and translation t transform mobile -> target space
+
+    const auto& sup = result.transform;
+
+    // Build a legacy-style 16-float TTT matrix
+    // TTT format: [R00 R01 R02 pre_x] [R10 R11 R12 pre_y]
+    //             [R20 R21 R22 pre_z] [tx  ty  tz  1]
+    // where pre is the pre-translation (origin), and t is post-translation
+    // For a simple rotation+translation (no origin): pre=0, R=rotation,
+    // t=translation
+
+    glm::mat3 rot_f(sup.rotation);
+    glm::quat q = glm::quat_cast(rot_f);
+    glm::vec3 t(sup.translation);
+
+    // Create TTT: pretranslate=0, rotate=q, posttranslate=t
+    pymol::TTT ttt(glm::vec3(0.0f), q, t);
+
+    // Convert to legacy float[16] format for ExecuteCombineObjectTTT
+    auto legacy = pymol::TTT::as_pymol_2_legacy(ttt);
+    float tttf[16];
+    std::memcpy(tttf, glm::value_ptr(legacy), 16 * sizeof(float));
+
+    // Follow the same pattern as ExecutiveAlign:
+    // 1. Copy target's TTT and state matrix to mobile (reset to same frame)
+    // 2. Combine the alignment transform (reverse_order=true)
+    // Note: Only the first object in the mobile selection is transformed,
+    // matching ExecutiveAlign behavior for multi-object selections.
+    ObjectMolecule* mobile_obj = SelectorGetFirstObjectMolecule(G, sele_mobile);
+    ObjectMolecule* target_obj =
+        SelectorGetSingleObjectMolecule(G, sele_target);
+    if (mobile_obj && target_obj) {
+      ExecutiveMatrixCopy(G, target_obj->Name, mobile_obj->Name, 1, 1,
+          target_state, mobile_state, false, 0, quiet);
+      ExecutiveMatrixCopy(G, target_obj->Name, mobile_obj->Name, 2, 2,
+          target_state, mobile_state, false, 0, quiet);
+      ExecutiveCombineObjectTTT(G, mobile_obj->Name, tttf, true, -1);
+    }
+  }
+
+  // Create alignment object
+  if (oname && oname[0]) {
+    int align_state = target_state;
+    if (align_state < 0) {
+      align_state = SceneGetState(G);
+    }
+
+    ObjectMolecule* trg_obj = SelectorGetSingleObjectMolecule(G, sele_target);
+    ObjectMolecule* mob_obj = SelectorGetFirstObjectMolecule(G, sele_mobile);
+
+    if (trg_obj && mob_obj) {
+      int n_pair = result.aligned_length;
+      pymol::vla<int> align_vla(n_pair * 3);
+      int* id_p = align_vla.data();
+
+      for (int k = 0; k < n_pair; k++) {
+        int mi = result.mobile_indices[k];
+        int ti = result.target_indices[k];
+        if (mi < static_cast<int>(mobile_res.size()) &&
+            ti < static_cast<int>(target_res.size())) {
+          id_p[0] = AtomInfoCheckUniqueID(G, target_res[ti].ai);
+          id_p[1] = AtomInfoCheckUniqueID(G, mobile_res[mi].ai);
+          id_p[2] = 0;
+          id_p += 3;
+        }
+      }
+
+      ObjectAlignment* obj = nullptr;
+      {
+        pymol::CObject* execObj = ExecutiveFindObjectByName(G, oname);
+        if (execObj && execObj->type != cObjectAlignment) {
+          ExecutiveDelete(G, oname);
+        } else {
+          obj = dynamic_cast<ObjectAlignment*>(execObj);
+        }
+      }
+      obj = ObjectAlignmentDefine(
+          G, obj, align_vla, align_state, true, trg_obj, mob_obj);
+      obj->Color = ColorGetIndex(G, "yellow");
+      ObjectSetName(obj, oname);
+      ExecutiveManageObject(G, obj, 0, quiet);
+      SceneInvalidate(G);
+    }
+  }
+
+  return result;
 }

@@ -278,7 +278,7 @@ def load_aln_dialog(parent, filename, format):
                 parent,
                 _tr('FileDialogs', "Load as structures?"),
                 _tr('FileDialogs', "Load sequences as extended structures instead?")
-        ) == QtWidgets.QMessageBox.Yes:
+        ) == QtWidgets.QMessageBox.StandardButton.Yes:
             _self.load(filename)
 
     # hook up events

@@ -88,6 +88,7 @@ typedef struct _CType CType;
 typedef struct _CMain CMain;
 struct CPlugIOManager;
 struct COpenVR;
+struct CPropertyUnique;
 struct ObjectMolecule;
 
 class CShaderMgr;
@@ -136,6 +137,7 @@ struct PyMOLGlobals {
   CSeq *Seq;
   CSetting *Setting, *Default;
   CSettingUnique *SettingUnique;
+  CPropertyUnique *PropertyUnique;
   CText *Text;
   CWizard *Wizard;
   CAtomInfo *AtomInfo;

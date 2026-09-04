@@ -38,6 +38,7 @@ Z* -------------------------------------------------------------------
 #include "SpecRecSpecial.h"
 #include "Tracker.h"
 #include "TrackerList.h"
+#include "USalign.h"
 #include "Word.h"
 #include "vla.h"
 
@@ -254,6 +255,11 @@ int ExecutiveAlign(PyMOLGlobals* G, const char* s1, const char* s2,
     int state2, ExecutiveRMSInfo* rms_info, int transform, int reset,
     float seq_wt, float radius, float scale, float base, float coord_wt,
     float expect, int window, float ante);
+
+pymol::Result<pymol::usalign::TMAlignResult> ExecutiveUSalign(
+    PyMOLGlobals* G, const char* mobile_sele, const char* target_sele,
+    int mobile_state, int target_state, int quiet, int transform,
+    const char* oname, int fast);
 
 void ExecutiveUpdateColorDepends(PyMOLGlobals* G, ObjectMolecule* mol);
 void ExecutiveUpdateCoordDepends(PyMOLGlobals* G, ObjectMolecule* mol);
@@ -864,6 +870,23 @@ CoordSet* ExecutiveGetCoordSet(PyMOLGlobals* G, const char* name, int state,
     ObjectMolecule** omp = nullptr);
 pymol::Result<> ExecutiveLoadCoordset(PyMOLGlobals* G,
     pymol::zstring_view oname, PyObject* model, int frame, bool quiet);
+
+pymol::Result<> ExecutiveSetPropertyForObject(PyMOLGlobals* G,
+    const char* propname, PyObject* value, const char* objname = "*",
+    int state = cStateAll, int proptype = -1, int quiet = true);
+int ExecutiveSetAtomPropertyForSelection(PyMOLGlobals* G, const char* propname,
+    PyObject* value, const char* s1 = "all", int state = cStateAll,
+    int proptype = -1, int quiet = true);
+PyObject* ExecutiveGetPropertyForObject(PyMOLGlobals* G, const char* propname,
+    const char* objname, int state = cStateAll, int quiet = true);
+PyObject* ExecutiveGetProperty(PyMOLGlobals* G, const char* propname,
+    const char* objname, int state = cStateAll, int quiet = true);
+// Used by WebPyMOL
+inline PyObject* ExecutiveGetPropertyList(PyMOLGlobals* G,
+    const char* objname, int state = cStateAll, int quiet = true)
+{
+  return ExecutiveGetPropertyForObject(G, nullptr, objname, state, quiet);
+}
 
 void ExecutiveUndo(PyMOLGlobals* G, int dir);
 int ExecutiveSaveUndo(PyMOLGlobals* G, const char* s1, int state);

@@ -5,10 +5,13 @@
  */
 
 #include <algorithm>
+#include <cassert>
 #include <complex>
+#include <cstdint>
 #include <string>
 #include <map>
 #include <set>
+#include <unordered_map>
 #include <vector>
 #include <memory>
 #include <array>
@@ -50,8 +53,7 @@
 
 #include "pocketfft_hdronly.h"
 
-#ifdef _PYMOL_IP_PROPERTIES
-#endif
+#include "Property.h"
 
 using pymol::cif_array;
 
@@ -132,6 +134,13 @@ struct CifContentInfo {
   std::set<lexidx_t> chains_filter;
   std::set<std::string> polypeptide_entities; // entity ids
   std::map<std::string, seqvec_t> sequences;  // entity_id -> [resn1, resn2, ...]
+
+  // _pdbx_poly_seq_scheme: label_asym_id -> (label_seq_id -> auth numbering)
+  struct SeqSchemeEntry {
+    int auth_seq_id;
+    char ins_code;
+  };
+  std::unordered_map<std::string, std::unordered_map<int, SeqSchemeEntry>> seq_scheme;
 
   bool is_excluded_chain(const char * chain) const {
     if (chains_filter.empty())
@@ -253,9 +262,7 @@ inline bool find2(Map& dict,
 static void AtomInfoSetEntityId(PyMOLGlobals * G, AtomInfoType * ai, const char * entity_id) {
   ai->custom = LexIdx(G, entity_id);
 
-#ifdef _PYMOL_IP_PROPERTIES
   PropertySet(G, ai, "entity_id", entity_id);
-#endif
 }
 
 /**
@@ -1333,6 +1340,44 @@ static bool read_entity_poly(PyMOLGlobals * G, const pymol::cif_data * data, Cif
 }
 
 /**
+ * Read _pdbx_poly_seq_scheme to get the mapping from label_seq_id to
+ * auth_seq_id + insertion code. This is needed to correctly number
+ * missing residues when cif_use_auth is on and insertion codes are involved.
+ */
+static bool read_pdbx_poly_seq_scheme(PyMOLGlobals * G,
+    const pymol::cif_data * data, CifContentInfo &info) {
+  if (!info.use_auth)
+    return false;
+
+  const cif_array *arr_asym_id, *arr_seq_id, *arr_pdb_seq_num;
+
+  if (!(arr_asym_id     = data->get_arr("_pdbx_poly_seq_scheme.asym_id")) ||
+      !(arr_seq_id      = data->get_arr("_pdbx_poly_seq_scheme.seq_id")) ||
+      !(arr_pdb_seq_num = data->get_arr("_pdbx_poly_seq_scheme.pdb_seq_num")))
+    return false;
+
+  const cif_array *arr_pdb_ins_code =
+      data->get_arr("_pdbx_poly_seq_scheme.pdb_ins_code");
+
+  for (unsigned i = 0, n = arr_asym_id->size(); i < n; i++) {
+    if (arr_pdb_seq_num->is_missing(i))
+      continue;
+
+    CifContentInfo::SeqSchemeEntry entry;
+    entry.auth_seq_id = arr_pdb_seq_num->as_i(i);
+    entry.ins_code = '\0';
+
+    if (arr_pdb_ins_code && !arr_pdb_ins_code->is_missing(i)) {
+      entry.ins_code = makeInscode(arr_pdb_ins_code->as_s(i)[0]);
+    }
+
+    info.seq_scheme[arr_asym_id->as_s(i)][arr_seq_id->as_i(i)] = entry;
+  }
+
+  return true;
+}
+
+/**
  * Sub-routine for `add_missing_ca`
  *
  * @param i_ref Atom index of the next observed residue if `!at_terminus`,
@@ -1347,6 +1392,7 @@ static void add_missing_ca_sub(PyMOLGlobals * G,
     const int i_ref, int resv,
     const seqvec_t * current_seq,
     const char * entity_id,
+    const std::unordered_map<int, CifContentInfo::SeqSchemeEntry> * scheme = nullptr,
     bool at_terminus = true)
 {
   if (!atInfo[i_ref].temp1)
@@ -1361,12 +1407,28 @@ static void add_missing_ca_sub(PyMOLGlobals * G,
     if (!resn)
       continue;
 
-    int added_resv = current_resv + (atInfo[i_ref].resv - atInfo[i_ref].temp1);
+    int added_resv;
+    char added_inscode = '\0';
+    bool from_scheme = false;
 
-    if (!at_terminus && ((i_ref > 0 && added_resv <= atInfo[i_ref - 1].resv) ||
-                            added_resv >= atInfo[i_ref].resv)) {
-      // don't use insertion codes
-      continue;
+    // look up auth numbering from _pdbx_poly_seq_scheme
+    if (scheme) {
+      auto entry_it = scheme->find(current_resv);
+      if (entry_it != scheme->end()) {
+        added_resv = entry_it->second.auth_seq_id;
+        added_inscode = entry_it->second.ins_code;
+        from_scheme = true;
+      }
+    }
+
+    if (!from_scheme) {
+      added_resv = current_resv + (atInfo[i_ref].resv - atInfo[i_ref].temp1);
+
+      if (!at_terminus && ((i_ref > 0 && added_resv <= atInfo[i_ref - 1].resv) ||
+                              added_resv >= atInfo[i_ref].resv)) {
+        // don't use insertion codes
+        continue;
+      }
     }
 
     AtomInfoType *ai = atInfo.check(atomCount);
@@ -1382,6 +1444,7 @@ static void add_missing_ca_sub(PyMOLGlobals * G,
 
     ai->temp1 = current_resv;
     ai->resv = added_resv;
+    ai->setInscode(added_inscode);
 
     AtomInfoAssignParameters(G, ai);
     AtomInfoAssignColors(G, ai);
@@ -1409,6 +1472,7 @@ static bool add_missing_ca(PyMOLGlobals * G,
   int current_resv = 0;
   const seqvec_t * current_seq = nullptr;
   const char * current_entity_id = "";
+  const std::unordered_map<int, CifContentInfo::SeqSchemeEntry> * current_scheme = nullptr;
 
   for (int i = 0; i < oldAtomCount; ++i) {
     const char * entity_id = LexStr(G, atInfo[i].custom);
@@ -1421,11 +1485,12 @@ static bool add_missing_ca(PyMOLGlobals * G,
          add_missing_ca_sub(G,
              atInfo, current_resv, atomCount,
              i - 1, current_seq->size() + 1,
-             current_seq, current_entity_id);
+             current_seq, current_entity_id, current_scheme);
       }
 
       current_resv = 0;
       current_seq = nullptr;
+      current_scheme = nullptr;
       current_entity_id = entity_id;
 
       if (info.is_polypeptide(entity_id) && !info.is_excluded_chain(atInfo[i].segi)) {
@@ -1433,6 +1498,14 @@ static bool add_missing_ca(PyMOLGlobals * G,
         auto it = info.sequences.find(entity_id);
         if (it != info.sequences.end()) {
           current_seq = &it->second;
+        }
+
+        // get auth numbering scheme for this chain
+        if (!info.seq_scheme.empty()) {
+          auto scheme_it = info.seq_scheme.find(LexStr(G, atInfo[i].segi));
+          if (scheme_it != info.seq_scheme.end()) {
+            current_scheme = &scheme_it->second;
+          }
         }
       }
 
@@ -1444,7 +1517,7 @@ static bool add_missing_ca(PyMOLGlobals * G,
       add_missing_ca_sub(G,
           atInfo, current_resv, atomCount,
           i, atInfo[i].temp1,
-          current_seq, entity_id, false);
+          current_seq, entity_id, current_scheme, false);
     }
   }
 
@@ -1453,7 +1526,7 @@ static bool add_missing_ca(PyMOLGlobals * G,
     add_missing_ca_sub(G,
         atInfo, current_resv, atomCount,
         oldAtomCount - 1, current_seq->size() + 1,
-        current_seq, current_entity_id);
+        current_seq, current_entity_id, current_scheme);
   }
 
   atInfo.resize(atomCount);
@@ -2099,6 +2172,7 @@ ObjectMolecule *ObjectMoleculeReadCifData(PyMOLGlobals * G,
 
     // polymer information
     read_entity_poly(G, datablock, info);
+    read_pdbx_poly_seq_scheme(G, datablock, info);
 
     // missing residues
     if (!I->DiscreteFlag && !SettingGetGlobal_i(G, cSetting_retain_order)) {
@@ -2339,12 +2413,22 @@ public:
   /**
    * @brief Constructor
    * @param datablock The CIF data block containing reflection data
-   * @pre the CIF data block must contain the required reflection arrays
+   * @throws if any of the six required arrays are missing
    */
   ReflnBlock(const pymol::cif_data& datablock)
-      : m_datablock(&datablock)
-      , m_size(datablock.get_arr("_refln.index_h")->size())
+      : m_millerH(datablock.get_arr("_refln.index_h"))
+      , m_millerK(datablock.get_arr("_refln.index_k"))
+      , m_millerL(datablock.get_arr("_refln.index_l"))
+      , m_fwt(datablock.get_arr("_refln.pdbx_fwt"))
+      , m_phwt(datablock.get_arr("_refln.pdbx_phwt"))
+      , m_fom(datablock.get_arr("_refln.fom"))
   {
+    if (!m_millerH || !m_millerK || !m_millerL ||
+        !m_fwt || !m_phwt || !m_fom) {
+      m_size = 0;
+      return;
+    }
+    m_size = m_millerH->size();
   }
 
   /**
@@ -2357,16 +2441,11 @@ public:
     if (index < 0 || index >= m_size) {
       return pymol::make_error("Index out of bounds");
     }
-    auto* millerH = m_datablock->get_arr("_refln.index_h");
-    auto* millerK = m_datablock->get_arr("_refln.index_k");
-    auto* millerL = m_datablock->get_arr("_refln.index_l");
-    auto* fwt = m_datablock->get_arr("_refln.pdbx_fwt");
-    auto* phwt = m_datablock->get_arr("_refln.pdbx_phwt");
-    auto* fom = m_datablock->get_arr("_refln.fom");
 
-    return ReflectionInfo{glm::ivec3(millerH->as_i(index), millerK->as_i(index),
-                              millerL->as_i(index)),
-        fwt->as_f(index), phwt->as_f(index), fom->as_f(index)};
+    return ReflectionInfo{glm::ivec3(m_millerH->as_i(index),
+                              m_millerK->as_i(index),
+                              m_millerL->as_i(index)),
+        m_fwt->as_f(index), m_phwt->as_f(index), m_fom->as_f(index)};
   }
 
   /**
@@ -2375,8 +2454,13 @@ public:
   auto size() const { return m_size; }
 
 private:
-  const pymol::cif_data* m_datablock{};
-  const std::size_t m_size{};
+  const cif_array* m_millerH{};
+  const cif_array* m_millerK{};
+  const cif_array* m_millerL{};
+  const cif_array* m_fwt{};
+  const cif_array* m_phwt{};
+  const cif_array* m_fom{};
+  std::size_t m_size{};
 };
 
 
@@ -2693,7 +2777,7 @@ void ValidateMapVoxelGeometry(const ObjectMapState& ms)
   }
 
   // Manual FracToReal Check vs. GetPointComponent
-  std::cout << "\n--- Manual FracToReal Check vs. GetPointComponent ---\n"
+  std::cout << "\n--- Manual FracToReal Check vs. GetPointComponent ---\n";
   const float* f2r_matrix = ms.Symmetry->Crystal.fracToReal();
   float frac_v_manual[3];
   float manual_cart_vr[3];
@@ -2794,6 +2878,7 @@ ObjectMapState ObjectMapStateFromField(PyMOLGlobals* G,
   transform33f3f(ms.Symmetry->Crystal.fracToReal(), v, ms.ExtentMax);
 
   auto& field = *ms.Field;
+  assert(map.data.size() == field.data->data.size());
   std::copy(map.data.begin(), map.data.end(), field.data->data.begin());
 
   ms.Field->save_points = false;
@@ -3015,7 +3100,7 @@ void ApplySymMatricesToReflections(
     const glm::ivec3& shape,
     float f_amp_weighted, float phase_rad_orig, int recip_1D_total_elements,
     std::complex<float>* flat_recip_data,
-    std::vector<bool>& is_grid_point_set)
+    std::vector<std::uint8_t>& is_grid_point_set)
 {
   for (auto& sym_mat : sym_matrices) {
     glm::ivec3 hkl_symm = glm::round(sym_mat.rot * hkl_orig);
@@ -3082,9 +3167,14 @@ glm::ivec3 CalculateFriedelMateIndex(
  */
 void AddFriedelMate(const glm::ivec3& hkl_orig,
     std::size_t recip_1D_total_elements, const glm::ivec3& shape,
-    std::complex<float>* flat_recip_data, std::vector<bool>& is_grid_point_set)
+    std::complex<float>* flat_recip_data, std::vector<std::uint8_t>& is_grid_point_set)
 {
+  if (!IsHKLWithinShape(hkl_orig, shape))
+    return;
+
   auto flat_idx_hkl = HKLToFlatIndex(hkl_orig, shape);
+  if (flat_idx_hkl >= recip_1D_total_elements)
+    return;
 
   auto idx_bar = CalculateFriedelMateIndex(hkl_orig, shape);
 
@@ -3098,14 +3188,13 @@ void AddFriedelMate(const glm::ivec3& hkl_orig,
       is_grid_point_set[flat_idx_bar] = true;
     }
     // If flat_idx_hkl == flat_idx_bar (centrosymmetric FFT point),
-    // ensure it's real
-    bool centrosymmetric = flat_idx_hkl == flat_idx_bar;
-    if (centrosymmetric) {
+    // ensure it's real by zeroing negligible imaginary parts
+    if (flat_idx_hkl == flat_idx_bar) {
       auto& recip_data = flat_recip_data[flat_idx_hkl];
-      bool around_zero_and_much_less_than_real =
-          std::abs(recip_data.imag()) > 1e-5f * std::abs(recip_data.real()) &&
-          std::abs(recip_data.imag()) > 1e-5f;
-      if (around_zero_and_much_less_than_real) {
+      bool imag_is_negligible =
+          std::abs(recip_data.imag()) < 1e-5f * std::abs(recip_data.real()) ||
+          std::abs(recip_data.imag()) < 1e-5f;
+      if (imag_is_negligible) {
         recip_data.imag(0.0f);
       }
     }
@@ -3136,7 +3225,7 @@ static void PerformFastFourierTransformInPlace(
   }
   auto stride_out = stride_in;
   pocketfft::shape_t axes{2, 1, 0}; // ZYX
-  bool direction = pocketfft::BACKWARD;
+  bool direction = pocketfft::FORWARD;
   float norm = 1.0f;
 
   pocketfft::c2c<float>(pocket_shape, stride_in, stride_out, axes, direction,
@@ -3159,7 +3248,7 @@ CFieldTyped<float> FourierTransformStructureFactorsToMap(PyMOLGlobals* G,
   CFieldTyped<std::complex<float>> recip_grid(glm::value_ptr(shape), 3);
 
   auto recip_1D_total_elements = shape[0] * shape[1] * shape[2];
-  std::vector<bool> is_grid_point_set(recip_1D_total_elements, false);
+  std::vector<std::uint8_t> is_grid_point_set(recip_1D_total_elements, 0);
 
   auto* flat_recip_data = recip_grid.ptr(0, 0, 0);
 
@@ -3184,7 +3273,6 @@ CFieldTyped<float> FourierTransformStructureFactorsToMap(PyMOLGlobals* G,
     }
 
     auto phase_rad_orig = glm::radians(ph_deg_orig);
-    auto F_orig_complex = std::polar(f_amp_weighted, phase_rad_orig);
 
     ApplySymMatricesToReflections(
         sym_matrices, hkl_orig, shape, f_amp_weighted, phase_rad_orig,
@@ -3216,21 +3304,32 @@ CFieldTyped<float> FourierTransformStructureFactorsToMap(PyMOLGlobals* G,
 pymol::Result<ObjectMap*> ObjectMapReadCifStr(
     PyMOLGlobals* G, const pymol::cif_data& datablock)
 {
-  auto I = new ObjectMap(G);
+  // Validate required arrays before proceeding
+  if (!datablock.get_arr("_refln.pdbx_fwt") ||
+      !datablock.get_arr("_refln.pdbx_phwt")) {
+    return pymol::make_error(
+        "CIF reflection data missing required map coefficients "
+        "(_refln.pdbx_FWT / _refln.pdbx_PHWT)");
+  }
+
+  auto I = std::make_unique<ObjectMap>(G);
   initializeTTT44f(I->TTT);
   I->TTTFlag = false;
 
   ReflnBlock refln_block(datablock);
   std::unique_ptr<CSymmetry> sym(read_symmetry(G, &datablock));
+  if (!sym) {
+    return pymol::make_error("CIF reflection data missing symmetry/cell parameters");
+  }
 
   auto reciprocal_space_params = CalculateReciprocalSpaceParam(sym->Crystal);
   auto map = FourierTransformStructureFactorsToMap(
       G, *sym, refln_block, reciprocal_space_params);
 
   I->State.push_back(ObjectMapStateFromField(G, map, std::move(sym)));
-  ObjectMapUpdateExtents(I);
+  ObjectMapUpdateExtents(I.get());
 
-  return I;
+  return I.release();
 }
 
 /**
@@ -3392,6 +3491,11 @@ pymol::Result<ObjectMolecule*> ObjectMoleculeReadBCif(PyMOLGlobals* G,
 
     if (cif->datablocks().size() == 1 || multiplex == 0)
       return obj;
+
+    // multiplexing
+    ObjectSetName(obj, datablock.code());
+    ExecutiveDelete(G, obj->Name);
+    ExecutiveManageObject(G, obj, zoom, true);
   }
   return nullptr;
 }

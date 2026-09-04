@@ -235,6 +235,9 @@ const char* cif_data::code() const
   if (auto data = std::get_if<pymol::cif_detail::cif_str_data>(&m_data)) {
     return data->m_code ? data->m_code : "";
   }
+  if (auto data = std::get_if<pymol::cif_detail::bcif_data>(&m_data)) {
+    return data->m_code.c_str();
+  }
   return "";
 }
 
@@ -738,6 +741,7 @@ bool cif_file::parse_bcif(const char* bytes, std::size_t size)
     auto header = blockMap["header"].as<std::string>();
     auto categoriesRaw = blockMap["categories"].as<std::vector<msgpack::object>>();
     auto& categoriesData = m_datablocks[header].m_data.emplace<pymol::cif_detail::bcif_data>();
+    categoriesData.m_code = header;  // Needed for multiplexing
     for (const auto& category : categoriesRaw) {
       auto categoryMap = category.as<std::map<std::string, msgpack::object>>();
       auto categoryName = categoryMap["name"].as<std::string>();

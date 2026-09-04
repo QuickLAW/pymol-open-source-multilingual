@@ -2927,8 +2927,6 @@ void SettingGenerateSideEffects(PyMOLGlobals * G, int index, const char *sele, i
   case cSetting_antialias_shader:
   case cSetting_atom_type_format:
   case cSetting_colored_feedback:
-  case cSetting_load_atom_props_default:
-  case cSetting_load_object_props_default:
   case cSetting_suspend_undo:
   case cSetting_volume_mode:
     PRINTFB(G, FB_Setting, FB_Warnings)

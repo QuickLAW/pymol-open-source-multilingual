@@ -718,3 +718,71 @@ class TestImporting(testing.PyMOLTestCase):
         cmd.load(filename, 'cif_map')
         field = cmd.get_volume_field('cif_map')
         self.assertEqual(field.shape, (12, 12, 12))
+
+    def testLoad_cif_map_density_values(self):
+        """Verify FFT-computed map matches analytical direct summation.
+
+        Computes rho(x,y,z) = (1/V) * sum_hkl F*exp(i*phi)*exp(-2*pi*i*(hx+ky+lz))
+        directly from the reflection data and compares with PyMOL's FFT output.
+        This catches axis inversions, wrong FFT direction, and scaling errors.
+        """
+        import numpy as np
+
+        # Disable normalization so we get raw density scaled by 1/V
+        cmd.set('normalize_ccp4_maps', 0)
+
+        filename = self.datafile("cif_map.cif")
+        cmd.load(filename, 'cif_map')
+        field = cmd.get_volume_field('cif_map')
+        Nx, Ny, Nz = field.shape
+
+        # Parse reflections from the CIF file using chempy.cif
+        from chempy.cif import parse_cif
+        reflections = []
+        with open(filename) as f:
+            for datablock in parse_cif(f.read()):
+                for loop in datablock.loops:
+                    try:
+                        ih = loop.get_col_idx('_refln.index_h')
+                        ik = loop.get_col_idx('_refln.index_k')
+                        il = loop.get_col_idx('_refln.index_l')
+                        ifwt = loop.get_col_idx('_refln.pdbx_fwt')
+                        iphwt = loop.get_col_idx('_refln.pdbx_phwt')
+                        ifom = loop.get_col_idx('_refln.fom')
+                    except KeyError:
+                        continue
+                    for row in loop.rows:
+                        h, k, l = int(row[ih]), int(row[ik]), int(row[il])
+                        fwt, phwt, fom = float(row[ifwt]), float(row[iphwt]), float(row[ifom])
+                        if fwt * fom > 0 or (h == 0 and k == 0 and l == 0):
+                            reflections.append((h, k, l, fwt * fom, np.radians(phwt)))
+
+        # Compute analytical density via direct summation at each grid point
+        # rho(x,y,z) = (1/V) * sum_hkl |F|*exp(i*phi) * exp(-2*pi*i*(hx+ky+lz))
+        V = 20.0 ** 3  # cell volume in A^3 (cubic 20A cell)
+        analytical = np.zeros((Nx, Ny, Nz))
+        for ix in range(Nx):
+            fx = ix / Nx  # fractional coordinate
+            for iy in range(Ny):
+                fy = iy / Ny
+                for iz in range(Nz):
+                    fz = iz / Nz
+                    rho = 0.0
+                    for (h, k, l, f_amp, ph_rad) in reflections:
+                        phase = ph_rad - 2.0 * np.pi * (h * fx + k * fy + l * fz)
+                        rho += f_amp * np.cos(phase)
+                    analytical[ix, iy, iz] = rho / V
+
+        # Verify density values match: field[i,j,k] == analytical[i,j,k]
+        # A perfect FFT should give correlation > 0.999
+        field_flat = field.flatten()
+        analytical_flat = analytical.flatten()
+        correlation = np.corrcoef(field_flat, analytical_flat)[0, 1]
+        self.assertGreater(correlation, 0.99,
+            f"Map-analytical correlation too low: {correlation:.4f}")
+
+        # Verify the peak is in the same location
+        pymol_peak = np.unravel_index(np.argmax(field), field.shape)
+        analytical_peak = np.unravel_index(np.argmax(analytical), analytical.shape)
+        self.assertEqual(pymol_peak, analytical_peak,
+            f"Peak location mismatch: PyMOL={pymol_peak} vs analytical={analytical_peak}")

@@ -58,8 +58,7 @@ Z* -------------------------------------------------------------------
 #include"ListMacros.h"
 #include "Util2.h"
 
-#ifdef _PYMOL_IP_PROPERTIES
-#endif
+#include "Property.h"
 
 #include "pymol/zstring_view.h"
 
@@ -1129,7 +1128,8 @@ int SelectorClassifyAtoms(PyMOLGlobals * G, int sele, int preserve,
       mask = 0;
       if(!ai->hetatm && AtomInfoKnownProteinResName(LexStr(G, ai->resn)))
         mask = cAtomFlag_polymer | cAtomFlag_protein;
-      else if(!ai->hetatm && AtomInfoKnownNucleicResName(LexStr(G, ai->resn)))
+      else if((!ai->hetatm || AtomInfoKnownPNAResName(LexStr(G, ai->resn)))
+              && AtomInfoKnownNucleicResName(LexStr(G, ai->resn)))
         mask = cAtomFlag_polymer | cAtomFlag_nucleic;
       else if(AtomInfoKnownWaterResName(G, LexStr(G, ai->resn)))
         mask = cAtomFlag_solvent;
@@ -1322,6 +1322,7 @@ int SelectorClassifyAtoms(PyMOLGlobals * G, int sele, int preserve,
       }
 
       if((mask & cAtomFlag_polymer)) {
+        AtomInfoType *guide_atom_c3 = nullptr;
         ai0 = obj->AtomInfo + I->Table[a0].atom;
         for(aa = a0; !guide_atom && aa <= a1; aa++) {
           if(ai0->protons == cAN_C) {
@@ -1344,10 +1345,23 @@ int SelectorClassifyAtoms(PyMOLGlobals * G, int sele, int preserve,
                   break;
                 }
                 break;
+              case '3':
+                if((mask & cAtomFlag_nucleic) && !guide_atom_c3) {
+                  switch (name[2]) {      /* C3' as fallback guide for nucleic acids without C4' (PNA) */
+                  case '*':
+                  case '\'':
+                    guide_atom_c3 = ai0;
+                    break;
+                  }
+                }
+                break;
               }
             }
           }
           ai0++;
+        }
+        if (!guide_atom && guide_atom_c3) {
+          guide_atom = guide_atom_c3;
         }
       }
 
@@ -8572,14 +8586,58 @@ static int SelectorSelect2(PyMOLGlobals * G, EvalElem * base, int state)
 static pymol::Result<> SelectorSelect3(
     PyMOLGlobals* G, EvalElem* base, int state)
 {
+  int a;
+  int oper;
+  float comp1, fval;
+  int exact;
+  AtomInfoType *at1;
+  CSelector *I = G->Selector;
+
+  base->type = STYP_LIST;
+  base->sele_calloc(I->Table.size());
+  base->sele_err_chk_ptr(G);
   switch (base->code) {
   case SELE_PROP:
-#ifndef _PYMOL_IP_PROPERTIES
-    return pymol::Error::make<pymol::Error::INCENTIVE_ONLY>(
-        "properties (p.) not supported in Open-Source PyMOL");
-#else
-    static_assert(false, "");
-#endif
+    oper = WordKey(G, AtOper, base[2].text(), 4, 0, &exact);
+    switch (oper) {
+    case SCMP_GTHN:
+    case SCMP_LTHN:
+    case SCMP_EQAL:
+      if(sscanf(base[3].text(), "%f", &comp1) != 1) {
+        return pymol::make_error("Invalid Number: ", base[3].text());
+      }
+      for(a = cNDummyAtoms; a < I->Table.size(); a++) {
+        at1 = I->Obj[I->Table[a].model]->AtomInfo + I->Table[a].atom;
+        if(at1->prop_id) {
+          fval = PropertyGetAsFloat(G, at1->prop_id, base[1].text());
+          base[0].sele[a] = fcmp(fval, comp1, oper);
+        }
+      }
+      break;
+    case SCMP_RANG:
+      {
+        char buffer[64];
+        CWordMatchOptions options;
+        CWordMatcher *matcher;
+        WordMatchOptionsConfigAlphaList(&options, '*', 0);
+        if(!(matcher = WordMatcherNew(G, base[3].text(), &options, true))) {
+          assert(false); // should never fail
+          return pymol::Error();
+        }
+        for(a = cNDummyAtoms; a < I->Table.size(); a++) {
+          at1 = I->Obj[I->Table[a].model]->AtomInfo + I->Table[a].atom;
+          if(at1->prop_id) {
+            auto sval = PropertyGetAsString(G, at1->prop_id, base[1].text(), buffer);
+            base[0].sele[a] = sval && WordMatcherMatchAlpha(matcher, sval);
+          }
+        }
+        WordMatcherFree(matcher);
+      }
+      break;
+    default:
+      return pymol::make_error("Invalid Operator: ", base[2].text());
+    }
+    break;
   default:
     assert(false);
   }
@@ -11001,6 +11059,37 @@ force compute
 attrib b < 0 
 
 */
+
+int SelectorSetAtomPropertyForSelection(PyMOLGlobals* G, int sele,
+    const char* propname, CPythonVal* value, const PropertyType& proptype,
+    int state, int quiet)
+{
+#ifdef _PYMOL_NOPY
+  return 0;
+#else
+
+  CSelector *I = G->Selector;
+  int nAtom = 0;
+  int ok = true;
+
+  SelectorUpdateTable(G, state, -1);
+
+  if(ok) {
+    int a;
+    for(a = cNDummyAtoms; a < I->Table.size(); a++) {
+      int at = I->Table[a].atom;
+      ObjectMolecule *obj = I->Obj[I->Table[a].model];
+      int s = obj->AtomInfo[at].selEntry;
+      I->Table[a].index = 0;
+      if(SelectorIsMember(G, s, sele)) {
+	nAtom++;
+	PropertySet(G, &obj->AtomInfo[at], propname, value, proptype);
+      }
+    }
+  }
+  return nAtom;
+#endif
+}
 
 bool SelectorSelectionExists(PyMOLGlobals* G, pymol::zstring_view sname)
 {

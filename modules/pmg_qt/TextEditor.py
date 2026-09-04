@@ -100,11 +100,11 @@ class TextEditor(QtWidgets.QMainWindow):
                 None,
                 _tr('TextEditor', "Save?"),
                 _tr('TextEditor', "Save changes?"),
-                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
-                QMessageBox.Yes)
-            if ok == QMessageBox.Yes:
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No |
+                QMessageBox.StandardButton.Cancel, QMessageBox.StandardButton.Yes)
+            if ok == QMessageBox.StandardButton.Yes:
                 self.doSave()
-            elif ok == QMessageBox.Cancel:
+            elif ok == QMessageBox.StandardButton.Cancel:
                 return False
         return True
 
@@ -125,12 +125,12 @@ class TextEditor(QtWidgets.QMainWindow):
 
         menubar = self.root.menuBar()
         filemenu = menubar.addMenu(_tr('TextEditor', "File"))
-        filemenu.addAction(_tr('TextEditor', "Open"), self.doOpen,
-                           QtGui.QKeySequence("Ctrl+O"))
-        filemenu.addAction(_tr('TextEditor', "Save"), self.doSave,
-                           QtGui.QKeySequence("Ctrl+S"))
-        filemenu.addAction(_tr('TextEditor', "Save as ..."), self.doSaveAs,
-                           QtGui.QKeySequence("Ctrl+Shift+S"))
+        filemenu.addAction(_tr('TextEditor', "Open"),
+                           QtGui.QKeySequence("Ctrl+O"), self.doOpen)
+        filemenu.addAction(_tr('TextEditor', "Save"),
+                           QtGui.QKeySequence("Ctrl+S"), self.doSave)
+        filemenu.addAction(_tr('TextEditor', "Save as ..."),
+                           QtGui.QKeySequence("Ctrl+Shift+S"), self.doSaveAs)
 
         syntaxmenu = menubar.addMenu(_tr('TextEditor', "Syntax"))
         syntaxgroup = QtWidgets.QActionGroup(self)
@@ -194,7 +194,7 @@ def _edit_pymolrc(app, _list=()):
             None,
             _tr('TextEditor', 'Create new pymolrc?'),
             _tr('TextEditor', 'Filename of new pymolrc'),
-            QtWidgets.QLineEdit.Normal, pymolrc)
+            QtWidgets.QLineEdit.EchoMode.Normal, pymolrc)
 
         if not ok:
             return

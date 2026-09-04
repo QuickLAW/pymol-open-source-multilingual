@@ -80,7 +80,7 @@ class ScenePanel(QtWidgets.QWidget):
         self.sceneTableWidget.selectionModel().selectionChanged.connect(
             self._selection_changed)
         self.sceneTableWidget.setSelectionBehavior(
-            QtWidgets.QAbstractItemView.SelectRows)
+            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
         self.sceneTableWidget.verticalHeader().setSectionsMovable(True)
 
         # Lower Buttom Elements
