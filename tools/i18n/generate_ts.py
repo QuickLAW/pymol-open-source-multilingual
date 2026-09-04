@@ -94,6 +94,10 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "2-Btn. Selecting": "双键选择模式",
         "3-Button Maestro": "三键 Maestro 模式",
 
+        # ---- Qt utils (modules/pymol/Qt/utils.py font context menu) ----
+        "Select Font...": "选择字体...",
+        "Select Font": "选择字体",
+
         # ---- PluginInstallation ----
         " Warning: Version parsing failed for": " 警告：版本解析失败：",
         "and/or": "和/或",
@@ -346,6 +350,7 @@ CONTEXT_FILES = {
     "Volume": "volume",
     "APBS": "apbs",
     "LightingSettings": "lighting_settings",
+    "QtUtils": "qt_utils",
     # UI form classes (used as Qt translation contexts for .ui files)
     "Form": "forms",
     "Dialog": "dialogs",

@@ -3,6 +3,8 @@ from pymol.Qt import *
 import shutil
 import subprocess
 
+_tr = QtCore.QCoreApplication.translate
+
 class UpdateLock:
     """
     Locking mechanism to prevent circular signal/slot updates.
@@ -214,12 +216,12 @@ def connectFontContextMenu(widget):
     def _(pt):
         menu = widget.createStandardContextMenu()
         menu.addSeparator()
-        action = menu.addAction("Select Font...")
+        action = menu.addAction(_tr('QtUtils', "Select Font..."))
 
         @action.triggered.connect
         def _():
             font, ok = QtWidgets.QFontDialog.getFont(widget.font(), widget,
-                    "Select Font", QtWidgets.QFontDialog.FontDialogOption.DontUseNativeDialog)
+                    _tr('QtUtils', "Select Font"), QtWidgets.QFontDialog.FontDialogOption.DontUseNativeDialog)
             if ok:
                 widget.setFont(font)
 
