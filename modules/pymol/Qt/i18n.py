@@ -156,7 +156,12 @@ _VIEWPORT_TEXT_SETTINGS = {
 
 
 def apply_viewport_texts(cmd):
+    # Settings 798-810 only exist in builds of this fork; a stock PyMOL
+    # binary raises on unknown settings, so skip silently there.
     for setting, source in _VIEWPORT_TEXT_SETTINGS.items():
         translated = tr('Menu', source)
         if translated and translated != source:
-            cmd.set(setting, translated, quiet=1)
+            try:
+                cmd.set(setting, translated, quiet=1)
+            except Exception:
+                break
