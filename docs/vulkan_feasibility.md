@@ -40,7 +40,42 @@
 | **C. 原生 Vulkan 后端** | 抽象渲染接口；CGO→Vulkan pipeline 重写（约 40 个着色器、OIT、volume、曲面细分）；重写视口内 2D GUI/文字；立体渲染；多平台 WSI | **数人年** | 脱离 Compatibility Profile；macOS 可用；现代化（mesh shader、GPU RT） | 巨大回归面（立体重建、标签、GUI、ray 预览…）；上游（Schrödinger）不背书则长期维护负担自担 |
 | **D. 仅 Vulkan compute** | 不动渲染，用 Vulkan compute 做 GPU 光线追踪/MD 后处理 | 人月级 | 新功能 | 与"渲染后端"诉求是两回事 |
 
-## 4. 建议
+## 4. 现代特性落地路径：超分 / 补帧 / 光追
+
+先澄清一个常见误解：**Vulkan 本身不"带来"DLSS/FSR/光追**——DLSS 是 NVIDIA NGX SDK 的功能、FSR 是 AMD GPUOpen 的开源 SDK、光追是 `VK_KHR_ray_tracing_*` 扩展族。Vulkan 只是提供承载它们的原语（compute 管线、光追管线、swapchain 控制、运动矢量纹理）。各特性对 API 的真实依赖差别很大：
+
+### 4.1 超分（DLSS / FSR / XeSS）
+
+| 技术 | API 要求 | 引擎侧要求 | 对 PyMOL 的适配度 |
+|---|---|---|---|
+| FSR 1（EASU+RCAS） | **任意**（纯后处理着色器，OpenGL 也能跑） | 无 | ★★★ 现有 GL 管线即可加，性价比最高 |
+| FSR 3.1 SR | DX12/Vulkan（开源，[GPUOpen](https://gpuopen.com/fidelityfx-super-resolution-3/)） | 渲染分辨率运动矢量 + 深度 | ★★ 需 Vulkan 后端 |
+| XeSS | DX11/12/Vulkan（DP4a 路径兼容非 Intel 卡） | 同上 | ★★ 同上 |
+| DLSS SR / Ray Reconstruction | DX11/12/Vulkan，经 [NVIDIA NGX SDK](https://docs.nvidia.com/ngx/latest/programming-guide/index.html)（[DLSS SDK](https://github.com/NVIDIA/DLSS)），无公开注册的 `VK_NV_DLSS` 通用扩展 | 运动矢量 + 深度 + 相机抖动（jitter），仅 NVIDIA RTX | ★★ 仅惠及 N 卡用户 |
+
+时域类超分（FSR2+/XeSS/DLSS）要求**连续帧流**，而 PyMOL 是"按需重绘"（不转就不画）。好消息是分子场景的运动矢量可以**解析生成**（相机矩阵已知；静态画面运动矢量为零，属最简单情形），且真正需要超分的时机恰是拖拽/旋转/播放动画时。适配点：在交互态以半分辨率连续渲染 + 超分，静止态恢复全分辨率按需渲染。
+
+### 4.2 补帧（Frame Generation）
+
+- DLSS FG：仅 DX12（经 [Streamline SDK](https://developer.nvidia.com/rtx/streamline/get-started)）；RTX 50 系刚开放 Vulkan 支持。
+- FSR 3 FG：DX12 + Vulkan，开源，可与第三方超分组合。
+- **对 PyMOL 价值有限**：补帧解决的是"游戏 60fps→120fps"的流畅度，而 PyMOL 视口含 2D overlay（内嵌 GUI、标签、鼠标状态文字），补帧会让 UI 残影，必须把 overlay 标记为 UI 层才能规避——集成成本高；且分子场景本身渲染很轻，动画（movie/turntable）直接多画几帧即可。**建议不作为目标**。
+
+### 4.3 光线追踪——真正有价值的现代化方向
+
+PyMOL 已有 CPU 光线追踪器（`ray` 命令，质量基准但慢）。GPU RT 的合理切入点**不是**重写整个视口，而是**离屏 Vulkan-RT 照片级渲染器**：
+
+- 以 CGO 网格/实例构建 BLAS，环境光遮蔽、软阴影、玻璃/半透明表面（分子可视化里最高价值的视觉特性）走 `VK_KHR_ray_tracing_pipeline`；
+- 输出 PNG（替代/加速 `ray`），后续再考虑作为视口预览；
+- 不动现有 GL 视口，回归面小，**人月级**而非人年级，是路线 C 的"前哨战"。
+
+### 4.4 分阶段建议
+
+1. **零门槛（现在）**：实测 Zink；在现有 GL 管线加 FSR 1/NIS 后处理（提升低端机视口与 4K 导出）。
+2. **中期**：离屏 Vulkan-RT 照片级渲染模式（GPU 版 `ray`）。
+3. **长期**：若 RT 模式验证成功且诉求成立，再做完整 Vulkan 视口后端；届时 FSR 3.1 SR / DLSS（NGX Vulkan）可自然接入。
+
+## 5. 建议
 
 1. **现在就可以做**：用 mesa-dist-win 对 conda 环境里的 pymol.exe 做 Zink 实测（本机为 AMD 8050S，Windows AMD GL 驱动口碑差，Zink 可能不降反升），跑 `testing/testing.py` + 大体系（如 PDB 巨型复合物）对比帧率。
 2. **若动因是 macOS/WebGPU**：与其改造 C++ 管线，不如评估以 **CGO/wgpu** 为目标做"新渲染器并行"（参考 molar_vis），旧管线继续服务桌面端——这也与 PyMOL-wasm 的方向一致。
