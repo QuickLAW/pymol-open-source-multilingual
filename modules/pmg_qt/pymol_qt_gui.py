@@ -1225,13 +1225,15 @@ def execapp():
 
     # Install .qm translators before any window/widget is created so that
     # every _tr() call picks up the UI language (PYMOL_LANG / QSettings /
-    # locale). Also push translated viewport texts into settings 798-810,
-    # which layer1/ButMode.cpp reads for the on-screen mouse/movie labels.
+    # locale). Viewport texts (settings 798-810, read by layer1/ButMode.cpp)
+    # are pushed after window creation below: the PyMOL engine is only
+    # started by the widget, and any cmd.* call before that would
+    # auto-start it and break SingletonPyMOL.start().
     from pymol.Qt import i18n
     i18n.install(app)
-    i18n.apply_viewport_texts(pymol.cmd)
 
     window = PyMOLQtGUI()
+    i18n.apply_viewport_texts(pymol.cmd)
     window.setWindowTitle(_tr('PyMOLQtGUI', "PyMOL"))
 
     # fix gnome/wayland dash icon/missing wmclass
