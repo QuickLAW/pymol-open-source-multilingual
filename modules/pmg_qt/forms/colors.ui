@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Colors</string>
+   <string>Colors</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -80,7 +80,7 @@
      <item row="3" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string notr="true">Name</string>
+        <string>Name</string>
        </property>
       </widget>
      </item>
@@ -107,14 +107,14 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string notr="true">Green</string>
+        <string>Green</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string notr="true">Blue</string>
+        <string>Blue</string>
        </property>
       </widget>
      </item>
@@ -137,14 +137,14 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string notr="true">Red</string>
+        <string>Red</string>
        </property>
       </widget>
      </item>
      <item row="3" column="3">
       <widget class="QPushButton" name="button_apply">
        <property name="text">
-        <string notr="true">Apply</string>
+        <string>Apply</string>
        </property>
       </widget>
      </item>

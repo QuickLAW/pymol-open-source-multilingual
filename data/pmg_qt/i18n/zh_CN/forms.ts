@@ -817,7 +817,7 @@ Alpha 通道背景。</translation>
     </message>
     <message>
       <source>at</source>
-      <translation>在</translation>
+      <translation>设为</translation>
     </message>
     <message>
       <source>automatic handling</source>

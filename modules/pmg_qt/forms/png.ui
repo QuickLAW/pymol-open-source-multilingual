@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Save PNG image</string>
+   <string>Save PNG image</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -34,7 +34,7 @@
         <string notr="true">background-color: #0c0; padding: 20px</string>
        </property>
        <property name="text">
-        <string notr="true">New in PyMOL 2.0: To render a sized antialiased image, use the Draw/Ray panel in the upper right.</string>
+        <string>New in PyMOL 2.0: To render a sized antialiased image, use the Draw/Ray panel in the upper right.</string>
        </property>
        <property name="textFormat">
         <enum>Qt::PlainText</enum>
@@ -51,22 +51,22 @@
       <widget class="QComboBox" name="input_rendering">
        <item>
         <property name="text">
-         <string notr="true">capture current display</string>
+         <string>capture current display</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">draw antialiased OpenGL image</string>
+         <string>draw antialiased OpenGL image</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">ray trace with opaque background</string>
+         <string>ray trace with opaque background</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">ray trace with transparent background</string>
+         <string>ray trace with transparent background</string>
         </property>
        </item>
       </widget>
@@ -74,7 +74,7 @@
      <item>
       <widget class="QCommandLinkButton" name="button_ok">
        <property name="text">
-        <string notr="true">Save PNG image as ...</string>
+        <string>Save PNG image as ...</string>
        </property>
       </widget>
      </item>

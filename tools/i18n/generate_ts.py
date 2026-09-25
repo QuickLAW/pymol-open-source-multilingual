@@ -52,6 +52,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         'This plugin requires citation. Show information now?\n\n(You can always get this information from the Plugin Manager, click the "Info" button there)': '此插件需要引用文献。是否现在显示相关信息？\n\n（您也可以在插件管理器中点击 "信息" 按钮获取该信息）',
         'Unable to write to the plugin directory.\nShould a user plugin directory be created at\n': '无法写入插件目录。\n是否在以下位置创建用户插件目录\n',
         'Copyright (C) Schrödinger, LLC.': '版权所有 (C) Schrödinger, LLC.',
+        'Language': '语言',
+        'The language has been saved and the viewport text updated. Restart PyMOL for menus and dialogs to follow.':
+            '语言设置已保存，视口文字已更新。重启 PyMOL 后菜单和对话框才会切换语言。',
         "Chemical": "化学",
         "Confirm": "确认",
         "DNA": "DNA",
@@ -556,7 +559,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
             "URL:": "URL：",
             "Value": "值",
             "Width": "宽度",
-            "at": "在",
+            "at": "设为",
             "center": "居中",
             "convert": "转换",
             "level": "等级",
@@ -1021,7 +1024,7 @@ def _parse_ui(path: Path) -> tuple[str, list[str]]:
             s = prop.find('string')
             if s is None:
                 continue
-            if s.get('translatable', 'true') == 'false':
+            if s.get('translatable', 'true') == 'false' or s.get('notr') == 'true':
                 continue
             text = s.text or ''
             if text and text.strip():
@@ -1114,11 +1117,16 @@ def merge_and_write(
     context: str,
     source_strings: set[str],
     translations: dict[str, str],
+    force: bool = False,
 ) -> tuple[int, int]:
     """Merge source_strings into ts_path for the given context.
 
     Returns (num_total, num_new) where num_new is the count of newly
     added strings (previously missing or unfinished).
+
+    An existing .ts value normally wins so hand edits in Linguist survive a
+    rebuild; force=True makes the glossary authoritative instead, which is
+    how a corrected translation gets applied instead of silently ignored.
     """
     existing = parse_ts(ts_path)
     existing_translations = existing.get(context, {})
@@ -1126,14 +1134,16 @@ def merge_and_write(
     merged: dict[str, str] = {}
     new_count = 0
     for source in source_strings:
+        glossary = translations.get(source, '') or translations.get(
+            source.strip(), '')
+        if force and glossary:
+            merged[source] = glossary
+            continue
         if source in existing_translations and existing_translations[source]:
             merged[source] = existing_translations[source]
         else:
             # Use translation table if available, else empty (unfinished)
-            trans = translations.get(source, '')
-            if not trans:
-                # try fuzzy match: source with normalized whitespace
-                trans = translations.get(source.strip(), '')
+            trans = glossary
             if trans:
                 new_count += 1
             merged[source] = trans
@@ -1157,6 +1167,8 @@ def main(argv: list[str]) -> int:
     global _LANG
     parser = argparse.ArgumentParser(description="Generate/update .ts files")
     parser.add_argument("--lang", default="zh_CN", help="target language code")
+    parser.add_argument("--force-glossary", action="store_true",
+                        help="let the glossary override translations already in the .ts")
     args = parser.parse_args(argv)
     _LANG = args.lang
     translations = TRANSLATIONS.get(_LANG, {})
@@ -1200,7 +1212,7 @@ def main(argv: list[str]) -> int:
             for fname, s_set in menu_by_file.items():
                 ts_path = out_dir / f"{fname}.ts"
                 total, new = merge_and_write(
-                    ts_path, "Menu", s_set, trans_table)
+                    ts_path, "Menu", s_set, trans_table, args.force_glossary)
                 print(f"  {fname}.ts ({context}): {total} strings ({new} new)")
                 total_new += new
         else:
@@ -1210,7 +1222,7 @@ def main(argv: list[str]) -> int:
                 fname = context.lower()
             ts_path = out_dir / f"{fname}.ts"
             total, new = merge_and_write(
-                ts_path, context, strings, trans_table)
+                ts_path, context, strings, trans_table, args.force_glossary)
             print(f"  {fname}.ts ({context}): {total} strings ({new} new)")
             total_new += new
 

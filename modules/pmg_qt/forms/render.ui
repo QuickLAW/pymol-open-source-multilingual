@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Form</string>
+   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -38,7 +38,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string notr="true">Width</string>
+            <string>Width</string>
            </property>
            <property name="buddy">
             <cstring>input_width</cstring>
@@ -48,7 +48,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string notr="true">Height</string>
+            <string>Height</string>
            </property>
            <property name="buddy">
             <cstring>input_height</cstring>
@@ -129,7 +129,7 @@
             <string>Use current viewport size</string>
            </property>
            <property name="text">
-            <string notr="true">Reset</string>
+            <string>Reset</string>
            </property>
           </widget>
          </item>
@@ -149,7 +149,7 @@
          <item>
           <widget class="QCheckBox" name="button_lock">
            <property name="text">
-            <string notr="true">Lock aspect ratio</string>
+            <string>Lock aspect ratio</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -163,7 +163,7 @@
          <item>
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string notr="true">Units</string>
+            <string>Units</string>
            </property>
            <property name="buddy">
             <cstring>input_units</cstring>
@@ -174,12 +174,12 @@
           <widget class="QComboBox" name="input_units">
            <item>
             <property name="text">
-             <string notr="true">cm</string>
+             <string>cm</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string notr="true">inch</string>
+             <string>inch</string>
             </property>
            </item>
           </widget>
@@ -187,7 +187,7 @@
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string notr="true">at</string>
+            <string>at</string>
            </property>
           </widget>
          </item>
@@ -213,17 +213,17 @@
            </property>
            <item>
             <property name="text">
-             <string notr="true">300</string>
+             <string>300</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string notr="true">150</string>
+             <string>150</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string notr="true">90</string>
+             <string>90</string>
             </property>
            </item>
           </widget>
@@ -231,10 +231,10 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="toolTip">
-            <string notr="true">Dots per Inch</string>
+            <string>Dots per Inch</string>
            </property>
            <property name="text">
-            <string notr="true">DPI</string>
+            <string>DPI</string>
            </property>
           </widget>
          </item>
@@ -256,7 +256,7 @@
        <item>
         <widget class="QCheckBox" name="input_transparent">
          <property name="text">
-          <string notr="true">transparent background (&quot;Ray&quot; only)</string>
+          <string>transparent background (&quot;Ray&quot; only)</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -281,10 +281,10 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string notr="true">Use fast on-screen rendering</string>
+            <string>Use fast on-screen rendering</string>
            </property>
            <property name="text">
-            <string notr="true">Draw (fast)</string>
+            <string>Draw (fast)</string>
            </property>
            <property name="default">
             <bool>true</bool>
@@ -294,7 +294,7 @@
          <item>
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string notr="true">- or -</string>
+            <string>- or -</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -310,13 +310,13 @@
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string notr="true">Use high-quality ray-tracing.
+            <string>Use high-quality ray-tracing.
 Supports optimal multi-layer
 transparency, shadows, and
 alpha-channel background.</string>
            </property>
            <property name="text">
-            <string notr="true">Ray (slow)</string>
+            <string>Ray (slow)</string>
            </property>
            <property name="default">
             <bool>false</bool>

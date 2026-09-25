@@ -16,7 +16,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string notr="true">Object</string>
+        <string>Object</string>
        </property>
       </widget>
      </item>
@@ -41,7 +41,7 @@
    <item>
     <widget class="QPushButton" name="button_ok">
      <property name="text">
-      <string notr="true">Save...</string>
+      <string>Save...</string>
      </property>
     </widget>
    </item>

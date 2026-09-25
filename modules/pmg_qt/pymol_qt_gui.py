@@ -359,6 +359,8 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
             self.menudict[label] = menu
             _addmenu(data, menu)
 
+        self.build_language_menu()
+
         # hack for macOS to hide "Edit > Start Dictation"
         # https://bugreports.qt.io/browse/QTBUG-43217
         if pymol.IS_MACOS:
@@ -898,6 +900,47 @@ PyMOL> color ye<TAB>    (will autocomplete "yellow")
             self.scene_panel_dialog = ScenePanel(self)
 
         self.scene_panel_dialog.show()
+
+    def build_language_menu(self):
+        '''Offer every locale that ships a catalogue.
+
+        i18n.set_language() existed but nothing called it, so the UI language
+        could only be chosen through PYMOL_LANG or QSettings before launch.
+        '''
+        from pymol.Qt import i18n
+        langs = i18n.available_languages()
+        if len(langs) < 2:
+            return
+        parent = self.menudict.get('Setting') or self.menubar
+        parent.addSeparator()
+        menu = parent.addMenu(_tr('PyMOLQtGUI', 'Language'))
+        group = QtWidgets.QActionGroup(self)
+        app = QtWidgets.QApplication.instance()
+        current = (i18n.get_preferred_language()
+                or getattr(app, '_pymol_lang', '') or 'en')
+        for code in langs:
+            action = QtWidgets.QAction(i18n.language_label(code), self)
+            action.setCheckable(True)
+            action.setChecked(code == current)
+            action.triggered.connect(lambda _=0, c=code: self.set_language(c))
+            group.addAction(action)
+            menu.addAction(action)
+        self.language_menu = menu
+
+    def set_language(self, code):
+        from pymol.Qt import i18n
+        app = QtWidgets.QApplication.instance()
+        lang = i18n.set_language(app, code)
+        # Only the viewport follows immediately: menus and dialogs were
+        # already constructed from English source text, and Qt does not
+        # retranslate existing widgets when the translator chain changes.
+        i18n.apply_viewport_texts(self.cmd)
+        QtWidgets.QMessageBox.information(self,
+                _tr('PyMOLQtGUI', 'Language'),
+                _tr('PyMOLQtGUI',
+                    'The language has been saved and the viewport text '
+                    'updated. Restart PyMOL for menus and dialogs to '
+                    'follow.'))
 
     def show_about(self):
         msg = [

@@ -11,19 +11,19 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Trajectory Import</string>
+   <string>Trajectory Import</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string notr="true">Target Object</string>
+      <string>Target Object</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string notr="true">Molecular Object:</string>
+         <string>Molecular Object:</string>
         </property>
        </widget>
       </item>
@@ -40,14 +40,14 @@
       <item row="0" column="2">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string notr="true">State</string>
+         <string>State</string>
         </property>
        </widget>
       </item>
       <item row="0" column="3">
        <widget class="QSpinBox" name="input_state">
         <property name="toolTip">
-         <string notr="true">Append if state=0</string>
+         <string>Append if state=0</string>
         </property>
         <property name="maximum">
          <number>999</number>
@@ -63,13 +63,13 @@
    <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string notr="true">Frames</string>
+      <string>Frames</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string notr="true">Start</string>
+         <string>Start</string>
         </property>
        </widget>
       </item>
@@ -102,14 +102,14 @@
       <item row="0" column="3">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string notr="true">Stop</string>
+         <string>Stop</string>
         </property>
        </widget>
       </item>
       <item row="0" column="4">
        <widget class="QSpinBox" name="input_stop">
         <property name="toolTip">
-         <string notr="true">Load entire trajectory if stop &amp;lt; 1</string>
+         <string>Load entire trajectory if stop &amp;lt; 1</string>
         </property>
         <property name="minimum">
          <number>-1</number>
@@ -138,7 +138,7 @@
       <item row="0" column="6">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string notr="true">Interval</string>
+         <string>Interval</string>
         </property>
        </widget>
       </item>
@@ -164,7 +164,7 @@
       <item>
        <widget class="QCheckBox" name="input_dbm3">
         <property name="text">
-         <string notr="true">defer_builds_mode=3 (don't keep geometry for other states in memory)</string>
+         <string>defer_builds_mode=3 (don't keep geometry for other states in memory)</string>
         </property>
        </widget>
       </item>
@@ -180,7 +180,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string notr="true">This will run the following command</string>
+      <string>This will run the following command</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -192,7 +192,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string notr="true">load_traj ...</string>
+         <string>load_traj ...</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -211,7 +211,7 @@
    <item>
     <widget class="QPushButton" name="button_ok">
      <property name="text">
-      <string notr="true">Load</string>
+      <string>Load</string>
      </property>
     </widget>
    </item>

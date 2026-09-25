@@ -53,7 +53,7 @@
          <item>
           <widget class="QLineEdit" name="e_filter">
            <property name="placeholderText">
-            <string notr="true">Filter</string>
+            <string>Filter</string>
            </property>
           </widget>
          </item>
@@ -192,7 +192,7 @@
              <bool>true</bool>
             </property>
             <property name="text">
-             <string notr="true">Paste a link to a script or plugin, or a PyMOLWiki url which then will be downloaded and scanned for scripts that extend the PyMOL API</string>
+             <string>Paste a link to a script or plugin, or a PyMOLWiki url which then will be downloaded and scanned for scripts that extend the PyMOL API</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -358,7 +358,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
-          <string notr="true">Preferences</string>
+          <string>Preferences</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_7">
           <item>

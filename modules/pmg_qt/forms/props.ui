@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Properties Inspector</string>
+   <string>Properties Inspector</string>
   </property>
   <layout class="QVBoxLayout">
    <item>
@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string notr="true">Object:</string>
+        <string>Object:</string>
        </property>
       </widget>
      </item>
@@ -36,7 +36,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string notr="true">State:</string>
+        <string>State:</string>
        </property>
       </widget>
      </item>
@@ -50,7 +50,7 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string notr="true">Atom:</string>
+        <string>Atom:</string>
        </property>
       </widget>
      </item>
@@ -67,7 +67,7 @@
      <item>
       <widget class="QToolButton" name="button_refresh">
        <property name="toolTip">
-        <string notr="true">Refresh</string>
+        <string>Refresh</string>
        </property>
        <property name="text">
         <string/>
@@ -83,12 +83,12 @@
      </property>
      <column>
       <property name="text">
-       <string notr="true">Key</string>
+       <string>Key</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string notr="true">Value</string>
+       <string>Value</string>
       </property>
      </column>
     </widget>

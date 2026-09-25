@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Maestro File Import</string>
+   <string>Maestro File Import</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QCheckBox" name="input_mimic">
      <property name="text">
-      <string notr="true">Use settings to match cartoon/ribbon color and ballstick style</string>
+      <string>Use settings to match cartoon/ribbon color and ballstick style</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -29,7 +29,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string notr="true">Atom properties</string>
+        <string>Atom properties</string>
        </property>
        <property name="buddy">
         <cstring>input_atom_props</cstring>
@@ -39,7 +39,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string notr="true">Object/group name</string>
+        <string>Object/group name</string>
        </property>
        <property name="buddy">
         <cstring>input_object_name</cstring>
@@ -49,17 +49,17 @@
      <item row="1" column="1">
       <widget class="QLineEdit" name="input_object_props">
        <property name="toolTip">
-        <string notr="true">space delimited list of property names, or * for all</string>
+        <string>space delimited list of property names, or * for all</string>
        </property>
        <property name="text">
-        <string notr="true">*</string>
+        <string>*</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string notr="true">Object properties</string>
+        <string>Object properties</string>
        </property>
        <property name="buddy">
         <cstring>input_object_props</cstring>
@@ -69,10 +69,10 @@
      <item row="2" column="1">
       <widget class="QLineEdit" name="input_atom_props">
        <property name="toolTip">
-        <string notr="true">space delimited list of property names, or * for all</string>
+        <string>space delimited list of property names, or * for all</string>
        </property>
        <property name="text">
-        <string notr="true">*</string>
+        <string>*</string>
        </property>
       </widget>
      </item>
@@ -82,7 +82,7 @@
      <item row="3" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string notr="true">Multiple entries</string>
+        <string>Multiple entries</string>
        </property>
        <property name="buddy">
         <cstring>input_multiplex</cstring>
@@ -96,22 +96,22 @@
        </property>
        <item>
         <property name="text">
-         <string notr="true">automatic handling</string>
+         <string>automatic handling</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">as one multi-state object (trajectory)</string>
+         <string>as one multi-state object (trajectory)</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">as one multi-state object (discrete states)</string>
+         <string>as one multi-state object (discrete states)</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">as separate objects</string>
+         <string>as separate objects</string>
         </property>
        </item>
       </widget>
@@ -127,7 +127,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string notr="true">This will run the following command</string>
+      <string>This will run the following command</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="topMargin">
@@ -142,7 +142,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string notr="true">load ...</string>
+         <string>load ...</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -161,7 +161,7 @@
    <item>
     <widget class="QPushButton" name="button_ok">
      <property name="text">
-      <string notr="true">Load</string>
+      <string>Load</string>
      </property>
     </widget>
    </item>

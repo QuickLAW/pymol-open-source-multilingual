@@ -6,4 +6,4 @@ build
 .trae
 *.egg-info/
 __pycache__/
-.venv*/
+.venv*/.scratch/

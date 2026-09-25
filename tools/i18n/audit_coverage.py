@@ -117,6 +117,24 @@ def _benign(text: str) -> bool:
     return any(r.match(text) for r in BENIGN_RE)
 
 
+def _ui_reportable(text: str) -> bool:
+    """Widget text is user-visible whatever its length, so the prose test used
+    for console output must not apply: 'Width', 'Reset' and 'Save...' are real
+    labels and were silently hidden by it once before.
+    """
+    t = text.strip()
+    if not t:
+        return False
+    if t in {'...', '…', '|', '-', ':', 'x', 'X', 'A', 'B'}:
+        return False
+    if BENIGN_RE[0].match(t):          # bare format spec: %s / {}
+        return False
+    if re.fullmatch(r'\{[a-z_]+\}', t):  # template placeholder
+        return False
+    return any(c.isalpha() for c in t)
+
+
+
 _PROSE_RE = re.compile(r'\b([A-Za-z]{2,}\s+){2,}[A-Za-z]{2,}')
 
 
@@ -301,10 +319,14 @@ def scan_ui():
             if prop.get('name') not in _UI_PROPS:
                 continue
             s = prop.find('string')
-            if s is None or s.get('translatable', 'true') == 'false':
+            if s is None:
+                continue
+            # notr="true" is Designer's flag; uic/QUiLoader then emit the text
+            # with no translate() call, so a catalogue entry can never reach it.
+            if s.get('translatable', 'true') == 'false' or s.get('notr') == 'true':
                 continue
             text = s.text or ''
-            if text.strip() and not _benign(text):
+            if _ui_reportable(text):
                 out.append((cls, text, path.relative_to(ROOT).as_posix()))
     return out
 

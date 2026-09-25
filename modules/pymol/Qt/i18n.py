@@ -62,6 +62,36 @@ def set_preferred_language(lang):
     _settings().setValue('i18n/lang', _norm_lang(lang))
 
 
+# Shown in the language menu in the language itself, so a user who cannot
+# read the current UI language can still find their own.
+LANGUAGE_LABELS = {
+    'en': 'English (source)',
+    'zh_CN': '简体中文 (zh_CN)',
+}
+
+
+def available_languages():
+    """Language codes that have compiled catalogues, plus the source locale.
+
+    'en' is always offered: it is the untranslated source text, and without
+    it a user who switches away cannot switch back.
+    """
+    codes = ['en']
+    tdir = _translations_dir()
+    if tdir and os.path.isdir(tdir):
+        for entry in sorted(os.listdir(tdir)):
+            full = os.path.join(tdir, entry)
+            if not os.path.isdir(full) or entry in codes:
+                continue
+            if any(f.endswith('.qm') for f in os.listdir(full)):
+                codes.append(entry)
+    return codes
+
+
+def language_label(code):
+    return LANGUAGE_LABELS.get(code, code)
+
+
 def install(app, lang=None, domain='pymol'):
     lang = _norm_lang(lang)
     if not lang:

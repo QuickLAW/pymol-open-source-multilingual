@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Save Molecule</string>
+   <string>Save Molecule</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -29,12 +29,12 @@
        </property>
        <item>
         <property name="text">
-         <string notr="true">enabled</string>
+         <string>enabled</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">all</string>
+         <string>all</string>
         </property>
        </item>
       </widget>
@@ -55,12 +55,12 @@
        </property>
        <item>
         <property name="text">
-         <string notr="true">-1 (current)</string>
+         <string>-1 (current)</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string notr="true">0 (all states)</string>
+         <string>0 (all states)</string>
         </property>
        </item>
       </widget>
@@ -68,7 +68,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string notr="true">Se&amp;lection</string>
+        <string>Se&amp;lection</string>
        </property>
        <property name="buddy">
         <cstring>input_selection</cstring>
@@ -78,7 +78,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string notr="true">S&amp;tate</string>
+        <string>S&amp;tate</string>
        </property>
        <property name="buddy">
         <cstring>input_state</cstring>
@@ -112,10 +112,10 @@
        <item>
         <widget class="QCheckBox" name="input_retain_order">
          <property name="toolTip">
-          <string notr="true">retain_order</string>
+          <string>retain_order</string>
          </property>
          <property name="text">
-          <string notr="true">Original atom order (according to &quot;rank&quot;)</string>
+          <string>Original atom order (according to &quot;rank&quot;)</string>
          </property>
         </widget>
        </item>
@@ -154,50 +154,50 @@
        <item>
         <widget class="QCheckBox" name="input_no_pdb_conect_nodup">
          <property name="toolTip">
-          <string notr="true">pdb_conect_nodup</string>
+          <string>pdb_conect_nodup</string>
          </property>
          <property name="text">
-          <string notr="true">Write multiple bonds as duplicate CONECT records</string>
+          <string>Write multiple bonds as duplicate CONECT records</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="input_pdb_conect_all">
          <property name="toolTip">
-          <string notr="true">pdb_conect_all</string>
+          <string>pdb_conect_all</string>
          </property>
          <property name="text">
-          <string notr="true">Write CONECT records for all bonds</string>
+          <string>Write CONECT records for all bonds</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="input_no_ignore_pdb_segi">
          <property name="toolTip">
-          <string notr="true">ignore_pdb_segi</string>
+          <string>ignore_pdb_segi</string>
          </property>
          <property name="text">
-          <string notr="true">Write segment identifier (segi) column</string>
+          <string>Write segment identifier (segi) column</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="input_pdb_retain_ids">
          <property name="toolTip">
-          <string notr="true">pdb_retain_ids</string>
+          <string>pdb_retain_ids</string>
          </property>
          <property name="text">
-          <string notr="true">Retain atom ids</string>
+          <string>Retain atom ids</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="input_multisave">
          <property name="toolTip">
-          <string notr="true">use &quot;multisave&quot; command</string>
+          <string>use &quot;multisave&quot; command</string>
          </property>
          <property name="text">
-          <string notr="true">Write HEADER for every object</string>
+          <string>Write HEADER for every object</string>
          </property>
         </widget>
        </item>
@@ -236,14 +236,14 @@
        <item row="0" column="0" colspan="2">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string notr="true">Write objects or states to ...</string>
+          <string>Write objects or states to ...</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QRadioButton" name="input_multi_off">
          <property name="text">
-          <string notr="true">one single f&amp;ile</string>
+          <string>one single f&amp;ile</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -253,7 +253,7 @@
        <item row="2" column="0">
         <widget class="QRadioButton" name="input_multi_object">
          <property name="text">
-          <string notr="true">one file per ob&amp;ject</string>
+          <string>one file per ob&amp;ject</string>
          </property>
         </widget>
        </item>
@@ -263,21 +263,21 @@
           <bool>false</bool>
          </property>
          <property name="toolTip">
-          <string notr="true">Placeholders:
+          <string>Placeholders:
 {name} - object name
 {state} - state number
 {title} - state title
 {num} - running number</string>
          </property>
          <property name="text">
-          <string notr="true">{name}</string>
+          <string>{name}</string>
          </property>
         </widget>
        </item>
        <item row="3" column="0">
         <widget class="QRadioButton" name="input_multi_state">
          <property name="text">
-          <string notr="true">o&amp;ne file per object-state</string>
+          <string>o&amp;ne file per object-state</string>
          </property>
         </widget>
        </item>
@@ -287,7 +287,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string notr="true">{name}_{state}</string>
+          <string>{name}_{state}</string>
          </property>
         </widget>
        </item>
@@ -310,7 +310,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string notr="true">Prompt for every file</string>
+          <string>Prompt for every file</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -324,7 +324,7 @@
    <item>
     <widget class="QPushButton" name="button_ok">
      <property name="text">
-      <string notr="true">Save...</string>
+      <string>Save...</string>
      </property>
     </widget>
    </item>

@@ -87,7 +87,7 @@
     </message>
     <message>
       <source>Network download has been disabled, sorry!</source>
-      <translation>网络下载已被禁用。</translation>
+      <translation>抱歉，网络下载已被禁用！</translation>
     </message>
     <message>
       <source>No documentation available.</source>
@@ -115,7 +115,7 @@
     </message>
     <message>
       <source>PyMOL will now download executable code from the internet! Proceed?</source>
-      <translation>PyMOL 将从互联网下载可执行代码。继续吗？</translation>
+      <translation>PyMOL 即将从互联网下载可执行代码！是否继续？</translation>
     </message>
     <message>
       <source>Python Module Name</source>

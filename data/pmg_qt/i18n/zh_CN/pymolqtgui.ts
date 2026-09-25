@@ -212,6 +212,10 @@ PyMOL&gt; color ye&lt;Tab&gt;    （将自动补全为 "yellow"）
 </translation>
     </message>
     <message>
+      <source>The language has been saved and the viewport text updated. Restart PyMOL for menus and dialogs to follow.</source>
+      <translation>语言设置已保存，视口文字已更新。重启 PyMOL 后菜单和对话框才会切换语言。</translation>
+    </message>
+    <message>
       <source>Toggle dockable</source>
       <translation>切换可停靠</translation>
     </message>
