@@ -53,7 +53,7 @@
 #include "Executive.h"
 #include "Feedback.h"
 
-int _gScaleFactor = 1;
+float _gScaleFactor = 1.0F;
 
 #ifdef _PYMOL_NO_MAIN
 

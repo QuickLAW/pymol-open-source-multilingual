@@ -24,15 +24,16 @@ class cif_file;
 class cif_data;
 }; // namespace pymol
 
-/* retina scale factor for ortho gui. Must stay integral. Fractional values were
- * tried so that a 125% display gets 1.25 rather than 1: the source-tree build
- * tolerates them, but the PyInstaller-frozen app died with 0xC0000409 on 3/3
- * launches at both 1.25 and 1.5, against 3/3 clean at 1 and 2 from the same
- * packaging run. The cause was never isolated, so the Qt frontend rounds the
- * device ratio up instead of passing it through -- see updateFbScale, whose
- * earlier int() truncated 1.25 to 1 and left the overlay unreadably small. */
-extern int _gScaleFactor;
-inline int DIP2PIXEL(int v) { return v * _gScaleFactor; }
+/* retina scale factor for ortho gui. Fractional values are allowed -- a 125%
+ * display gets 1.25 rather than being truncated to 1 -- but code that resamples
+ * between logical and device pixels may still assume a whole-number ratio.
+ * SceneOverlayOversizeBorder did exactly that: it derived its step from
+ * DIP2PIXEL(1), which rounds to 1 at 1.25 while the destination stayed 1.25x
+ * wider, so it walked the source pointer off the end of the image and crashed
+ * on the first paint. Guarded there now, but treat any new
+ * "upscale = DIP2PIXEL(1)" as the same bug. */
+extern float _gScaleFactor;
+inline int DIP2PIXEL(int v) { const float t = v * _gScaleFactor; return (int)(t >= 0 ? t + 0.5F : t - 0.5F); }
 inline float DIP2PIXEL(float v) { return v * _gScaleFactor; }
 
 /* all of the private singleton classes associated with a PyMOL instance */

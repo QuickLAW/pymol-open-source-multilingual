@@ -1,4 +1,3 @@
-import math
 import os
 import sys
 from pymol2 import SingletonPyMOL as PyMOL
@@ -220,11 +219,10 @@ class PyMOLGLWidget(BaseGLWidget):
         '''
         self.fb_scale = context.devicePixelRatio()
         try:
-            # Round up rather than truncate: int() turned a 125% display into
-            # scale 1 and left the in-viewport text at its unscaled size. Do not
-            # pass the fraction through -- the frozen app crashes on 1.25/1.5,
-            # see the note on _gScaleFactor in PyMOLGlobals.h.
-            self.cmd.set('display_scale_factor', int(math.ceil(self.fb_scale)))
+            # Pass the ratio through unchanged. The int() that used to sit here
+            # truncated a 125% display to scale 1, so the in-viewport text was
+            # drawn at its unscaled size and was hard to read.
+            self.cmd.set('display_scale_factor', float(self.fb_scale))
         except BaseException as e:
             # fails with modal draw (mpng ..., modal=1)
             print(e)

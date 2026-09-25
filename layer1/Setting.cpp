@@ -2945,13 +2945,13 @@ void SettingGenerateSideEffects(PyMOLGlobals * G, int index, const char *sele, i
     break;
   case cSetting_display_scale_factor:
   {
-    int scaleFactor = SettingGetGlobal_i(G, cSetting_display_scale_factor);
-    if (scaleFactor > 0) {
+    float scaleFactor = SettingGetGlobal_f(G, cSetting_display_scale_factor);
+    if (scaleFactor > 0.0F) {
       _gScaleFactor = scaleFactor;
       ExecutiveInvalidateRep(G, nullptr, cRepLabel, cRepInvRep);
       OrthoCommandIn(G, "viewport");
     } else {
-      SettingSetGlobal_i(G, cSetting_display_scale_factor, 1);
+      SettingSetGlobal_f(G, cSetting_display_scale_factor, 1.0F);
       PRINTFB(G, FB_Setting, FB_Warnings)
         "Setting-Error: Cannot set a display scale factor of 0\n"
         ENDFB(G);

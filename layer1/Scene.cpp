@@ -3227,9 +3227,15 @@ static bool SceneOverlayOversizeBorder(
   unsigned int border = 1;
   unsigned int upscale = 1;
 
-  // Upscale for Retina/4K
-  if (DIP2PIXEL(height) == I->Height && DIP2PIXEL(width) == I->Width) {
-    upscale = DIP2PIXEL(1);
+  /* Upscale for Retina/4K. Only valid for a whole-number device ratio: the
+   * loops below advance the source pointer once every `upscale` destination
+   * pixels, so if the ratio rounds down to 1 while the destination is still
+   * wider than the source, the walk runs off the end of `data`. DIP2PIXEL(1)
+   * is exactly that for a 125% display, which crashed the frozen build on the
+   * first paint. Fall through to the unscaled path instead. */
+  const unsigned int up = DIP2PIXEL(1);
+  if (up > 1 && DIP2PIXEL(height) == I->Height && DIP2PIXEL(width) == I->Width) {
+    upscale = up;
     tmp_height = DIP2PIXEL(height);
     tmp_width = DIP2PIXEL(width);
     border = 0;
