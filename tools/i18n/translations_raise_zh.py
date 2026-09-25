@@ -42,8 +42,8 @@ RAISE_ZH = {
     'File format not supported for export': '不支持导出为该文件格式',
     'Improper selection of nucleic acid.': '核酸选择无效。',
     'Improperly formatted weights name': '权重名称格式不正确',
-    'Movie commands disallowed in this file': '此文件不允许电影相关命令',
-    'Mutagenesis Wizard cannot be used with Movie': '突变向导不能与电影模式同时使用',
+    'Movie commands disallowed in this file': '此文件不允许动画相关命令',
+    'Mutagenesis Wizard cannot be used with Movie': '突变向导不能与动画模式同时使用',
     'No <source> or <syntaxhighlight> block with cmd.extend found':
         '未找到包含 cmd.extend 的 <source> 或 <syntaxhighlight> 代码块',
     'No helix state selected': '未选择螺旋状态',

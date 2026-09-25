@@ -185,7 +185,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Will not restore &amp;global settings, selections, scenes or movies from the session file</source>
-      <translation>將不會從會話檔案中恢復全域性設定、選擇、場景或影片(&amp;G)。</translation>
+      <translation>將不會從會話檔案中恢復全域性設定、選擇、場景或動畫(&amp;G)。</translation>
     </message>
     <message>
       <source>auto_rename_duplicate_objects (global setting)</source>

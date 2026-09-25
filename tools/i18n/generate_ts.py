@@ -474,7 +474,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
             "Type Command": "输入命令",
             "Weights": "权重",
             "Will not restore &global settings, selections, scenes or movies from the session.":
-                "将不从会话中恢复全局设置、选择、场景或影片(&G)。",
+                "将不从会话中恢复全局设置、选择、场景或动画(&G)。",
             "auto_rename_duplicate_objects (global setting)":
                 "auto_rename_duplicate_objects（全局设置）",
             "partial=1": "partial=1",
@@ -489,7 +489,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
             "Load Alignment": "加载比对",
             "Maestro File Import": "Maestro 文件导入",
             "Map Import": "电子密度图导入",
-            "Movie Export": "影片导出",
+            "Movie Export": "动画导出",
             "Plugin Manager": "插件管理器",
             "Properties Inspector": "属性检查器",
             "Save Molecule": "保存分子",
@@ -505,7 +505,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
             "Install from local file": "从本地文件安装",
             "Map Object": "电子密度图对象",
             "Memory Optimization": "内存优化",
-            "Movie Format": "影片格式",
+            "Movie Format": "动画格式",
             "Objects and Files": "对象和文件",
             "PDB Structure Options": "PDB 结构选项",
             "Plugin override search path": "插件覆盖搜索路径",
@@ -561,7 +561,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
             "Run": "运行",
             "S&tate": "状态(&T)",
             "Save Image to File": "保存图像到文件",
-            "Save Movie as ...": "保存影片为...",
+            "Save Movie as ...": "保存动画为...",
             "Save PNG image as ...": "保存 PNG 图像为...",
             "Save...": "保存...",
             "Se&lection": "选择(&L)",
@@ -733,7 +733,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
             "Load entire trajectory if stop &lt; 1":
                 "若 stop &lt; 1 则加载整个轨迹",
             "Render each movie frame with ray tracing.\nMay take a long time, but produces higher quality results.":
-                "使用光线追踪渲染每个影片帧。\n可能耗时较长，但能产生更高质量的结果。",
+                "使用光线追踪渲染每个动画帧。\n可能耗时较长，但能产生更高质量的结果。",
             "Use current viewport size": "使用当前视口尺寸",
             "Use fast on-screen rendering": "使用快速屏幕渲染",
             "Use high-quality ray-tracing.\nSupports optimal multi-layer\ntransparency, shadows, etc.":
@@ -848,7 +848,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
                 "占位符：\n{name} - 对象名\n{state} - 状态编号\n{title} - 状态标题\n{num} - 运行编号",
             "Prompt for every file": "为每个文件提示",
             "Render each movie frame with ray tracing.\nMay take a long time, but produces the\nbest quality.":
-                "使用光线追踪渲染每个影片帧。\n可能耗时较长，但能产生\n最佳质量。",
+                "使用光线追踪渲染每个动画帧。\n可能耗时较长，但能产生\n最佳质量。",
             "Use high-quality ray-tracing.\nSupports optimal multi-layer\ntransparency, shadows, and\nalpha-channel background.":
                 "使用高质量光线追踪。\n支持最佳的多层\n透明度、阴影和\nAlpha 通道背景。",
             "for periodic systems (x-ray) display the data acound the given atom selection (box shaped, unless \"carve\" is checked)":
@@ -874,7 +874,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
 # We use a separate dict and merge to avoid duplicating keys in source code.
 _DIALOG_EXTRAS = {
     "Will not restore &global settings, selections, scenes or movies from the session file":
-        "将不会从会话文件中恢复全局设置、选择、场景或影片(&G)。",
+        "将不会从会话文件中恢复全局设置、选择、场景或动画(&G)。",
     '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n<html><head><meta name="qrichtext" content="1" /><style type="text/css">\np, li { white-space: pre-wrap; }\n</style></head><body style=" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;">\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">General Tips:</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">   - Check the menu first before assigning.</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">   - CTRL-S, CTRL-E, CTRL-O, and CTRL-M are reserved and cannot be bound</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">   - Not all commands shown on the table are available to be assigned to other keys at this time. </p>\n<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><br /></p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Available Keys for Assignment:</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - F1 to F12</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - left, right, pgup, pgdn, home, insert</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - CTRL-A to CTRL-Z</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - ALT-0 to ALT-9, ALT-A to ALT-Z</p>\n<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><br /></p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Available Commands for Assignment:</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - Type help into command bar</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - Assign new commands with extend</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - Multiple python commands can be run together by seperating with \';\'</p></body></html>':
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n<html><head><meta name="qrichtext" content="1" /><style type="text/css">\np, li { white-space: pre-wrap; }\n</style></head><body style=" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;">\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">通用提示：</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">   - 在分配之前请先检查菜单。</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">   - CTRL-S、CTRL-E、CTRL-O 和 CTRL-M 已保留，无法绑定</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">   - 并非所有显示在表中的命令此时都可分配给其他键。 </p>\n<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><br /></p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">可分配的键：</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - F1 到 F12</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - left、right、pgup、pgdn、home、insert</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - CTRL-A 到 CTRL-Z</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - ALT-0 到 ALT-9，ALT-A 到 ALT-Z</p>\n<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><br /></p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">可分配的命令：</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - 在命令栏中输入 help</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - 使用 extend 分配新命令</p>\n<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">    - 多个 Python 命令可以通过 \';\' 分隔一起运行</p></body></html>',
 }

@@ -127,7 +127,7 @@ Enable "Undo" for these objects?</source>
     </message>
     <message>
       <source>Cycle bond valence</source>
-      <translation>循环切换键价</translation>
+      <translation>循环切换键级</translation>
     </message>
     <message>
       <source>Cyclobutane</source>

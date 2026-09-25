@@ -413,7 +413,7 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
     </message>
     <message>
       <source>Click or enter "mdump" to print out the commands in the movie.</source>
-      <translation>点击或输入 "mdump" 以打印电影中包含的命令。</translation>
+      <translation>点击或输入 "mdump" 以打印动画中包含的命令。</translation>
     </message>
     <message>
       <source>Command disallowed in this file</source>
@@ -538,7 +538,7 @@ Active "pymolrc" Files
   -E N      多重采样 (GL_MULTISAMPLE_ARB)
   -f N      internal_feedback=N
   -F        internal_feedback=0
-  -g file   保存图像 (png) 或电影 (mpg)
+  -g file   保存图像 (png) 或动画 (mpg)
   -G        游戏模式（已弃用）
   -h        通用辅助进程（无控件、无反馈）
   -H N      窗口高度（像素）
@@ -776,7 +776,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>It contains GENERAL PURPOSE movie commands which could be used</source>
-      <translation>其中包含通用电影命令，可能被恶意利用，</translation>
+      <translation>其中包含通用动画命令，可能被恶意利用，</translation>
     </message>
     <message>
       <source>Load-Error: Unable to load file '%s'.</source>
@@ -796,7 +796,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>Movie commands disallowed in this file</source>
-      <translation>此文件不允许电影相关命令</translation>
+      <translation>此文件不允许动画相关命令</translation>
     </message>
     <message>
       <source>Multiple residues meet base pairing requirements. Building as if no opposing strand detected.</source>
@@ -804,7 +804,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>Mutagenesis Wizard cannot be used with Movie</source>
-      <translation>突变向导不能与电影模式同时使用</translation>
+      <translation>突变向导不能与动画模式同时使用</translation>
     </message>
     <message>
       <source>No &lt;source&gt; or &lt;syntaxhighlight&gt; block with cmd.extend found</source>

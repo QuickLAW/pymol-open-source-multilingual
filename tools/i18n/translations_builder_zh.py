@@ -66,7 +66,7 @@ BUILDER_ZH = {
     'Create double bond': '创建双键',
     'Create single bond': '创建单键',
     'Create triple bond': '创建三键',
-    'Cycle bond valence': '循环切换键价',
+    'Cycle bond valence': '循环切换键级',
     'Delete bond between pk1 and pk2': '删除 pk1 与 pk2 之间的化学键',
     'Delete everything': '删除所有内容',
     "Electrostatics term for 'Clean' action": '执行"清理"时使用的静电项',
@@ -94,7 +94,7 @@ SECURITY_ZH = {
     'CAUTION! Do you know and trust the person who created this session file? ':
         '注意！您是否了解并信任创建此会话文件的人？ ',
     'It contains GENERAL PURPOSE movie commands which could be used':
-        '其中包含通用电影命令，可能被恶意利用，',
+        '其中包含通用动画命令，可能被恶意利用，',
     'maliciously to take control your of computer or damage your files.':
         '从而控制您的计算机或破坏您的文件。',
     'Click or enter "accept" to assume the risks of running the commands.':
@@ -102,7 +102,7 @@ SECURITY_ZH = {
     'Click or enter "decline" to decline the risks and delete the commands.':
         '点击或输入 "decline" 以拒绝承担风险并删除这些命令。',
     'Click or enter "mdump" to print out the commands in the movie.':
-        '点击或输入 "mdump" 以打印电影中包含的命令。',
+        '点击或输入 "mdump" 以打印动画中包含的命令。',
     'To avoid this message in the future, "set security,off" before loading':
         '若希望今后不再出现此提示，请在加载会话文件前执行 "set security,off"，',
     'the session file, or just launch pymol with the "-o" option.':

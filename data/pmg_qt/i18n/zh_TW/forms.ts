@@ -455,11 +455,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Movie Export</source>
-      <translation>影片匯出</translation>
+      <translation>動畫匯出</translation>
     </message>
     <message>
       <source>Movie Format</source>
-      <translation>影片格式</translation>
+      <translation>動畫格式</translation>
     </message>
     <message>
       <source>Multi-File</source>
@@ -637,7 +637,7 @@ p, li { white-space: pre-wrap; }
       <source>Render each movie frame with ray tracing.
 May take a long time, but produces the
 best quality.</source>
-      <translation>使用光線追蹤渲染每個影片幀。
+      <translation>使用光線追蹤渲染每個動畫幀。
 可能耗時較長，但能產生
 最佳質量。</translation>
     </message>
@@ -675,7 +675,7 @@ best quality.</source>
     </message>
     <message>
       <source>Save Movie as ...</source>
-      <translation>儲存影片為...</translation>
+      <translation>儲存動畫為...</translation>
     </message>
     <message>
       <source>Save PNG image</source>

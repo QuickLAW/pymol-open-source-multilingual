@@ -257,7 +257,7 @@
     </message>
     <message>
       <source>next movie frame</source>
-      <translation>下一电影帧</translation>
+      <translation>下一动画帧</translation>
     </message>
     <message>
       <source>next scene</source>
@@ -269,11 +269,11 @@
     </message>
     <message>
       <source>play/pause movie</source>
-      <translation>播放/暂停电影</translation>
+      <translation>播放/暂停动画</translation>
     </message>
     <message>
       <source>previous movie frame</source>
-      <translation>上一电影帧</translation>
+      <translation>上一动画帧</translation>
     </message>
     <message>
       <source>previous scene</source>

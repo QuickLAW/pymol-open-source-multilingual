@@ -45,7 +45,7 @@ BLOCK_ZH_BY_SOURCE = {
   -E N      多重采样 (GL_MULTISAMPLE_ARB)
   -f N      internal_feedback=N
   -F        internal_feedback=0
-  -g file   保存图像 (png) 或电影 (mpg)
+  -g file   保存图像 (png) 或动画 (mpg)
   -G        游戏模式（已弃用）
   -h        通用辅助进程（无控件、无反馈）
   -H N      窗口高度（像素）
