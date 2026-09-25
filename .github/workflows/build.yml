@@ -183,10 +183,16 @@ jobs:
         python-version: "3.12"
 
     - name: Install PySide6
-      run: pip install "PySide6==6.8.1"
+      run: pip install "PySide6==6.8.1" opencc-python-reimplemented
 
-    - name: Check for leaked or unreachable translations
-      run: python tools/i18n/run_gates.py
+    - name: Check for leaked or unreachable translations (zh_CN)
+      run: python tools/i18n/run_gates.py --lang zh_CN
+
+    - name: Check zh_TW still derives from zh_CN
+      run: python tools/i18n/make_locale.py --check
+
+    - name: Check for leaked or unreachable translations (zh_TW)
+      run: python tools/i18n/run_gates.py --lang zh_TW
 
     - name: Check the compiled .qm match the .ts
       run: |
