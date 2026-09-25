@@ -191,6 +191,30 @@ class Walk(ast.NodeVisitor):
         self.unwrapped = []   # (line, sink, text)
         self.wrapped = []     # (line, context_or_None, text)
         self.console = []     # (line, func, text)
+        self.consts = {}      # module-level str constants, by name
+
+    def collect_consts(self, tree: ast.Module):
+        """Map module-level NAME -> its string value.
+
+        pymol --help prints a module constant, so ctr(helptext1) carries no
+        literal at the call site and a literal-only scan cannot see the
+        largest block of user-facing text in the program.
+        """
+        for st in tree.body:
+            if isinstance(st, ast.Assign):
+                if not isinstance(st.value, ast.Constant) or not isinstance(
+                        st.value.value, str):
+                    continue
+                for tgt in st.targets:
+                    if isinstance(tgt, ast.Name):
+                        self.consts[tgt.id] = st.value.value
+
+    def _text_of(self, node):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            return node.value
+        if isinstance(node, ast.Name) and node.id in self.consts:
+            return self.consts[node.id]
+        return None
 
     def visit_ClassDef(self, node):
         outer, self.class_name = self.class_name, node.name
@@ -209,13 +233,15 @@ class Walk(ast.NodeVisitor):
             if name in ('_mtr', 'ctr'):
                 ctx = MENU_CONTEXT if name == '_mtr' else CONSOLE_CONTEXT
                 for a in args:
-                    if isinstance(a, ast.Constant) and isinstance(a.value, str):
-                        self.wrapped.append((node.lineno, ctx, a.value))
+                    t = self._text_of(a)
+                    if t is not None:
+                        self.wrapped.append((node.lineno, ctx, t))
             elif len(args) >= 2:
                 a0, a1 = args[0], args[1]
-                if (isinstance(a0, ast.Constant) and isinstance(a0.value, str)
-                        and isinstance(a1, ast.Constant) and isinstance(a1.value, str)):
-                    self.wrapped.append((node.lineno, a0.value, a1.value))
+                if (isinstance(a0, ast.Constant) and isinstance(a0.value, str)):
+                    t = self._text_of(a1)
+                    if t is not None:
+                        self.wrapped.append((node.lineno, a0.value, t))
             self.in_tr += 1
             for child in ast.iter_child_nodes(node):
                 self.visit(child)
@@ -273,6 +299,7 @@ def scan_sources():
             print(f'  !! cannot parse {path}: {e}', file=sys.stderr)
             continue
         w = Walk(path)
+        w.collect_consts(tree)
         w.visit(tree)
         rel = path.relative_to(ROOT).as_posix()
         for line, sink, text in w.unwrapped:

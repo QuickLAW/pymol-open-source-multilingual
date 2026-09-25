@@ -18,6 +18,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import ast
 import re
 import sys
 from pathlib import Path
@@ -352,6 +353,31 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
 from translations_console_zh import CONSOLE_ZH
 
 TRANSLATIONS["zh_CN"].update(CONSOLE_ZH)
+
+
+def _merge_cli_glossary():
+    """Resolve long text blocks from their variable names.
+
+    The Chinese text is keyed by variable name because the English blocks are
+    ~90 lines long; a hand-copied key that drifted by one character would
+    never match at runtime and nothing literal-based would complain.
+    """
+    from translations_blocks_zh import BLOCK_ZH_BY_SOURCE
+    for rel, mapping in BLOCK_ZH_BY_SOURCE.items():
+        path = _root() / rel
+        consts = {}
+        for st in ast.parse(path.read_text(encoding='utf-8')).body:
+            if (isinstance(st, ast.Assign)
+                    and isinstance(st.value, ast.Constant)
+                    and isinstance(st.value.value, str)):
+                for tgt in st.targets:
+                    if isinstance(tgt, ast.Name):
+                        consts[tgt.id] = st.value.value
+        for var, zh in mapping.items():
+            src = consts.get(var)
+            if src is None:
+                raise SystemExit(f'{rel}: no module-level string constant {var!r}')
+            TRANSLATIONS["zh_CN"][src] = zh
 
 
 # Context -> file basename (without language suffix)
@@ -1171,6 +1197,8 @@ def main(argv: list[str]) -> int:
                         help="let the glossary override translations already in the .ts")
     args = parser.parse_args(argv)
     _LANG = args.lang
+    if _LANG == 'zh_CN':
+        _merge_cli_glossary()
     translations = TRANSLATIONS.get(_LANG, {})
     # Merge in UI translations (per-context dict)
     ui_translations = UI_TRANSLATIONS.get(_LANG, {})

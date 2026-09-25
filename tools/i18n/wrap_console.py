@@ -91,6 +91,11 @@ def _insert_import(lines, tree, nl='\n'):
         elif seen:
             break
     at = last or start
+    # Never land inside a leading copyright banner: those files have no
+    # top-level imports before it, so `at` would otherwise be 0.
+    while at < len(lines) and (
+            lines[at].lstrip().startswith('#') or not lines[at].strip()):
+        at += 1
     # The newline matters: an element without one joins the following line
     # when the list is re-joined, gluing the import onto the next statement.
     lines.insert(at, IMPORT_LINE + nl)

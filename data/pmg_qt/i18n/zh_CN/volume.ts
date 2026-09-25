@@ -4,6 +4,82 @@
   <context>
     <name>Volume</name>
     <message>
+      <source>
+VOLUME PANEL HELP
+
+--------------------------------------------------
+Canvas Mouse Actions (no Point under Cursor)
+
+  L-Click            Add point
+  CTRL+L-Click       Add 3 points (isosurface)
+
+  CTRL+R-Drag        Zoom in
+
+--------------------------------------------------
+Mouse Actions with Point under Cursor
+
+  L-Click            Edit point color
+  R-Click            Edit point value
+  SHIFT+R-Click      Edit point opacity
+  CTRL+L-Click       Edit color of 3 points
+
+  M-Click            Remove Point
+  SHIFT+L-Click      Remove Point
+  CTRL+M-Click       Remove 3 points
+  CTRL+SHIFT+L-Click Remove 3 points
+
+  L-Drag             Move point
+  CTRL+L-Drag        Move 3 points (horizontal only)
+  R-Drag             Move point along one axis only
+
+--------------------------------------------------
+L = Left mouse button
+M = Middle mouse button
+R = Right mouse button
+
+--------------------------------------------------
+See also the "volume_color" command for getting and
+setting volume colors on the command line.
+</source>
+      <translation>
+体积面板帮助
+
+--------------------------------------------------
+画布鼠标操作（光标下没有控制点时）
+
+  左键点击            添加控制点
+  CTRL+左键点击       添加 3 个控制点（等值面）
+
+  CTRL+右键拖动       放大
+
+--------------------------------------------------
+光标下有控制点时的鼠标操作
+
+  左键点击            编辑该点颜色
+  右键点击            编辑该点数值
+  SHIFT+右键点击      编辑该点透明度
+  CTRL+左键点击       编辑 3 个点的颜色
+
+  中键点击            删除控制点
+  SHIFT+左键点击      删除控制点
+  CTRL+中键点击       删除 3 个点
+  CTRL+SHIFT+左键点击 删除 3 个点
+
+  左键拖动            移动控制点
+  CTRL+左键拖动       移动 3 个点（仅水平方向）
+  右键拖动            仅沿单一轴移动控制点
+
+--------------------------------------------------
+L = 鼠标左键
+M = 鼠标中键
+R = 鼠标右键
+
+--------------------------------------------------
+另请参阅 "volume_color" 命令，用于在命令行上获取
+和设置体积颜色。
+</translation>
+    </message>
+    <message>
       <source>Get colors as script</source>
       <translation>获取颜色为脚本</translation>
     </message>

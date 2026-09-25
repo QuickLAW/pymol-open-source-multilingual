@@ -13,6 +13,7 @@ Checks every string the AST says is wrapped in ctr():
 """
 from __future__ import annotations
 
+import ast
 import re
 import sys
 from pathlib import Path
@@ -22,6 +23,7 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 import audit_coverage as ac
 from translations_console_zh import CONSOLE_ZH
+from translations_blocks_zh import BLOCK_ZH_BY_SOURCE
 
 SPEC = re.compile(r'%(?:\d+\$)?[-+ #0]*[\d.]*[sdifgeExXcr%]')
 
@@ -30,22 +32,48 @@ def specs(text: str) -> list[str]:
     return [s for s in SPEC.findall(text) if s != '%%']
 
 
+def block_entries() -> dict[str, str]:
+    """Resolve the by-variable-name glossary into source -> Chinese.
+
+    Only blocks that the AST says are actually used as Console text are
+    folded in, so a stale entry still shows up as an unused key.
+    """
+    out = {}
+    for rel, mapping in BLOCK_ZH_BY_SOURCE.items():
+        tree = ast.parse((ac.ROOT / rel).read_text(encoding='utf-8'))
+        consts = {}
+        for st in tree.body:
+            if (isinstance(st, ast.Assign)
+                    and isinstance(st.value, ast.Constant)
+                    and isinstance(st.value.value, str)):
+                for tgt in st.targets:
+                    if isinstance(tgt, ast.Name):
+                        consts[tgt.id] = st.value.value
+        for var, zh in mapping.items():
+            if var in consts:
+                out[consts[var]] = zh
+    return out
+
+
 def main() -> int:
     _, wrapped, _ = ac.scan_sources()
     runtime = {t for (c, t) in wrapped if c == 'Console'}
 
+    entries = dict(CONSOLE_ZH)
+    entries.update({k: v for k, v in block_entries().items() if k in runtime})
+
     errors = []
 
-    missing = sorted(runtime - set(CONSOLE_ZH))
+    missing = sorted(runtime - set(entries))
     for t in missing:
-        errors.append(f'NO TRANSLATION: {t!r}')
+        errors.append(f'NO TRANSLATION: {t[:120]!r}')
 
-    orphan = sorted(set(CONSOLE_ZH) - runtime)
+    orphan = sorted(set(entries) - runtime)
     for t in orphan:
-        errors.append(f'UNUSED KEY (typo?): {t!r}')
+        errors.append(f'UNUSED KEY (typo?): {t[:120]!r}')
 
-    for t in sorted(runtime & set(CONSOLE_ZH)):
-        z = CONSOLE_ZH[t]
+    for t in sorted(runtime & set(entries)):
+        z = entries[t]
         if specs(t) != specs(z):
             errors.append(
                 f'SPECIFIER MISMATCH {specs(t)} -> {specs(z)} for {t!r}')
@@ -57,7 +85,7 @@ def main() -> int:
             errors.append(f'EMPTY TRANSLATION for {t!r}')
 
     print(f'{len(runtime)} console strings at runtime, '
-          f'{len(CONSOLE_ZH)} glossary entries')
+          f'{len(entries)} glossary entries')
     for e in errors:
         print('  ' + e)
     print(f'{"FAIL" if errors else "OK"}: {len(errors)} problem(s)')

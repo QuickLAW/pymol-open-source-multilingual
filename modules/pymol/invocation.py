@@ -1,4 +1,3 @@
-from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -12,6 +11,8 @@ from pymol.console_i18n import ctr
 #-*
 #-*
 #Z* -------------------------------------------------------------------
+
+from pymol.console_i18n import ctr
 
 # invocation.py
 #
@@ -265,13 +266,13 @@ if True:
                         import pymol
                         print(pymol.get_version_message())
                         if a == '--help':
-                            print(helptext1)
+                            print(ctr(helptext1))
                             if pymolrc:
                                 for filename in pymolrc:
                                     print('  ' + filename)
                             else:
                                 print('  (no pymolrc file found)')
-                            print(helptext2)
+                            print(ctr(helptext2))
                         sys.exit()
                     elif a == "--retina":
                         print(ctr("Warning: --retina option has been removed"))

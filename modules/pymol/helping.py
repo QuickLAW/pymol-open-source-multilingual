@@ -1,4 +1,3 @@
-from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -13,6 +12,7 @@ from pymol.console_i18n import ctr
 #-*
 #Z* -------------------------------------------------------------------
 
+from pymol.console_i18n import ctr
 if True:
 
     cmd = __import__("sys").modules["pymol.cmd"]
