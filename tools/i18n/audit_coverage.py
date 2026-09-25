@@ -342,19 +342,26 @@ def scan_ui():
         except ET.ParseError:
             continue
         cls = (root.findtext('class') or '').strip() or path.stem
-        for prop in root.iter('property'):
-            if prop.get('name') not in _UI_PROPS:
-                continue
-            s = prop.find('string')
-            if s is None:
-                continue
-            # notr="true" is Designer's flag; uic/QUiLoader then emit the text
-            # with no translate() call, so a catalogue entry can never reach it.
-            if s.get('translatable', 'true') == 'false' or s.get('notr') == 'true':
-                continue
-            text = s.text or ''
-            if _ui_reportable(text):
-                out.append((cls, text, path.relative_to(ROOT).as_posix()))
+        # QTabWidget page titles live under <attribute name="title">, not
+        # <property>, so scanning only <property> skipped every tab label in
+        # the app -- pluginmanager's four tabs painted English while the audit
+        # reported full coverage.
+        for cont in ('property', 'attribute'):
+            for prop in root.iter(cont):
+                if prop.get('name') not in _UI_PROPS:
+                    continue
+                s = prop.find('string')
+                if s is None:
+                    continue
+                # notr="true" is Designer's flag; uic/QUiLoader then emit the
+                # text with no translate() call, so a catalogue entry can never
+                # reach it.
+                if s.get('translatable', 'true') == 'false' or s.get('notr') == 'true':
+                    continue
+                text = s.text or ''
+                if _ui_reportable(text):
+                    out.append((cls, text,
+                                path.relative_to(ROOT).as_posix()))
     return out
 
 

@@ -48,7 +48,7 @@
        <bool>true</bool>
       </property>
       <attribute name="title">
-       <string notr="true">Main</string>
+       <string>Main</string>
       </attribute>
       <widget class="QWidget" name="scrollAreaWidgetContents">
        <property name="geometry">
@@ -974,7 +974,7 @@
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string notr="true">APBS Template</string>
+       <string>APBS Template</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_15">
        <property name="leftMargin">
@@ -1056,7 +1056,7 @@
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string notr="true">Advanced Configuration</string>
+       <string>Advanced Configuration</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_18">
        <property name="leftMargin">

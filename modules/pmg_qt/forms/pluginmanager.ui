@@ -301,7 +301,7 @@
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string notr="true">Settings</string>
+       <string>Settings</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
@@ -398,7 +398,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string notr="true">About</string>
+       <string>About</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>

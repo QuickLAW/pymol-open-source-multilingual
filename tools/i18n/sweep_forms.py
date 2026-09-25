@@ -50,15 +50,21 @@ def han(s: str) -> bool:
 
 
 def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--lang', default=os.environ.get('PYMOL_LANG', 'zh_CN'))
+    args = ap.parse_args()
+    lang = args.lang
+
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
     refs = []
     root = ac.ROOT
-    for qm in sorted((root / 'data/pmg_qt/i18n/zh_CN').glob('*.qm')):
+    for qm in sorted((root / 'data' / 'pmg_qt' / 'i18n' / lang).glob('*.qm')):
         t = QtCore.QTranslator()
         if t.load(str(qm)):
             app.installTranslator(t)
             refs.append(t)
-    print(f'{len(refs)} translators installed')
+    print(f'{len(refs)} translators installed for {lang}')
 
     # Qt's own catalogue supplies standard button text (OK/Cancel/Apply),
     # exactly as pymol.Qt.i18n.install() arranges at startup. Without it the
@@ -66,12 +72,13 @@ def main() -> int:
     li = QtCore.QLibraryInfo
     qtp = li.path(li.LibraryPath.TranslationsPath)
     qt = QtCore.QTranslator()
-    if qt.load(f'qtbase_zh_CN.qm', qtp):
+    if qt.load(f'qtbase_{lang}.qm', qtp):
         app.installTranslator(qt)
         refs.append(qt)
-        print('qtbase_zh_CN.qm installed (standard buttons)')
+        print('qtbase_%s.qm installed (standard buttons)' % lang)
     else:
-        print('WARNING: qtbase_zh_CN.qm not found -- standard buttons stay English')
+        print('WARNING: qtbase_%s.qm not found -- standard buttons stay English'
+              % lang)
 
     loader = QUiLoader()
     forms = sorted(glob.glob(str(root / 'modules/pmg_qt/forms/*.ui')))
@@ -105,6 +112,15 @@ def main() -> int:
         for x in w.findChildren(QtWidgets.QLineEdit):
             if x.placeholderText():
                 texts.append(x.placeholderText())
+        for x in w.findChildren(QtWidgets.QTabWidget):
+            for i in range(x.count()):
+                if x.tabText(i):
+                    texts.append(x.tabText(i))
+        for x in w.findChildren(QtWidgets.QTableWidget):
+            for i in range(x.columnCount()):
+                h = x.horizontalHeaderItem(i)
+                if h and h.text():
+                    texts.append(h.text())
         if w.windowTitle():
             texts.append(w.windowTitle())
         eng = [t for t in texts

@@ -25,6 +25,9 @@ GATES = [
     ('runtime lookups through QTranslator', 'test_translations.py'),
 ]
 
+# Gates that only make sense for the locale the glossaries are authored in.
+ZH_CN_ONLY = {'check_console_glossary.py'}
+
 
 def main(argv) -> int:
     ap = argparse.ArgumentParser()
@@ -33,13 +36,17 @@ def main(argv) -> int:
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
     failed = []
+    run = 0
     for title, script in GATES:
+        if args.lang != 'zh_CN' and script in ZH_CN_ONLY:
+            continue
+        run += 1
         cmd = [sys.executable, str(HERE / script)]
         # status.py and test_translations.py take the language as argv[1];
         # the others default to zh_CN and take --lang.
         if script in ('status.py', 'test_translations.py'):
             cmd.append(args.lang)
-        elif script == 'audit_coverage.py':
+        elif script in ('audit_coverage.py', 'sweep_forms.py'):
             cmd.append(f'--lang={args.lang}')
         p = subprocess.run(cmd, cwd=str(ROOT), capture_output=True, text=True,
                            encoding='utf-8', errors='replace')
@@ -55,7 +62,7 @@ def main(argv) -> int:
                     print(f'       {line}')
             if p.stderr.strip():
                 print(f'       stderr: {p.stderr.strip()[:400]}')
-    print(f'\n{len(GATES) - len(failed)}/{len(GATES)} gates passed')
+    print(f'\n{run - len(failed)}/{run} gates passed for {args.lang}')
     for f in failed:
         print(f'  FAILED: {f}')
     return 1 if failed else 0

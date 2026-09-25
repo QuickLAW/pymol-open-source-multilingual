@@ -21,8 +21,10 @@ VISIBLE = ('text', 'toolTip', 'title', 'windowTitle', 'placeholderText',
            'statusTip', 'whatsThis', 'toolButtonText', 'label', 'caption',
            'plainText')
 
+# QTabWidget page titles are <attribute name="title">, not <property>, so
+# matching only <property> left every tab label marked notr and untranslated.
 PROP = re.compile(
-    r'<property name="(' + '|'.join(VISIBLE) + r')"[^>]*>(.*?)</property>',
+    r'<(property|attribute) name="(' + '|'.join(VISIBLE) + r')"[^>]*>(.*?)</\1>',
     re.DOTALL)
 NOTR = re.compile(r'(<string)\s+notr="true"(\s*>)')
 # An empty or whitespace-only string has nothing to translate.
@@ -39,13 +41,13 @@ def main() -> int:
 
         def repl(m):
             nonlocal changed
+            tag, name, body = m.group(1), m.group(2), m.group(3)
             whole = m.group(0)
-            head = whole[:whole.index('>') + 1]
-            body = whole[len(head):-len('</property>')]
+            prefix = whole[:whole.index('>') + 1]
             new, n = NOTR.subn(r'\1\2', body)
             if n:
                 changed += n
-            return head + new + '</property>'
+            return prefix + new + f'</{tag}>'
 
         out = PROP.sub(repl, src)
         total_strings += changed

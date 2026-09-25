@@ -54,6 +54,17 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         'Unable to write to the plugin directory.\nShould a user plugin directory be created at\n': '无法写入插件目录。\n是否在以下位置创建用户插件目录\n',
         'Copyright (C) Schrödinger, LLC.': '版权所有 (C) Schrödinger, LLC.',
         'Language': '语言',
+        # QTabWidget page titles: Designer stores them under
+        # <attribute name="title">, which both extractors used to ignore.
+        'Installed Plugins': '已安装的插件',
+        'Install New Plugin': '安装新插件',
+        'Main': '主要',
+        'APBS Template': 'APBS 模板',
+        'Advanced Configuration': '高级配置',
+        'About': '关于',
+        'Generic Options': '通用选项',
+        'PDB Options': 'PDB 选项',
+        'Multi-File': '多文件',
         'The language has been saved and the viewport text updated. Restart PyMOL for menus and dialogs to follow.':
             '语言设置已保存，视口文字已更新。重启 PyMOL 后菜单和对话框才会切换语言。',
         "Chemical": "化学",
@@ -1043,18 +1054,21 @@ def _parse_ui(path: Path) -> tuple[str, list[str]]:
     strings: list[str] = []
 
     def _extract_from(container):
-        for prop in container.iter('property'):
-            pname = prop.get('name', '')
-            if pname not in _UI_TRANSLATABLE_PROPS:
-                continue
-            s = prop.find('string')
-            if s is None:
-                continue
-            if s.get('translatable', 'true') == 'false' or s.get('notr') == 'true':
-                continue
-            text = s.text or ''
-            if text and text.strip():
-                strings.append(text)
+        # <attribute name="title"> carries QTabWidget page titles; iterating
+        # only <property> skipped every tab label in the application.
+        for tag in ('property', 'attribute'):
+            for prop in container.iter(tag):
+                pname = prop.get('name', '')
+                if pname not in _UI_TRANSLATABLE_PROPS:
+                    continue
+                s = prop.find('string')
+                if s is None:
+                    continue
+                if s.get('translatable', 'true') == 'false' or s.get('notr') == 'true':
+                    continue
+                text = s.text or ''
+                if text and text.strip():
+                    strings.append(text)
 
     _extract_from(root)
     return class_name, strings
@@ -1226,6 +1240,12 @@ def main(argv: list[str]) -> int:
         trans_table = ui_translations.get(context) if context in ("Form", "Dialog") else None
         if trans_table is None:
             trans_table = translations
+        else:
+            # .ui strings are looked up under the form's own context, but the
+            # shared glossary has to serve as a fallback: without this a
+            # translation added to TRANSLATIONS for a form label was silently
+            # dropped and the entry stayed type="unfinished".
+            trans_table = {**translations, **trans_table}
 
         # Decide which file to write to
         if context == "Menu":

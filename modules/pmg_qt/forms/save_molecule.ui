@@ -94,7 +94,7 @@
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string notr="true">Generic Options</string>
+       <string>Generic Options</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="leftMargin">
@@ -136,7 +136,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string notr="true">PDB Options</string>
+       <string>PDB Options</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -218,7 +218,7 @@
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string notr="true">Multi-File</string>
+       <string>Multi-File</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <property name="leftMargin">

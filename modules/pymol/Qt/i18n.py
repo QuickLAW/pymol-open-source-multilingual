@@ -67,6 +67,7 @@ def set_preferred_language(lang):
 LANGUAGE_LABELS = {
     'en': 'English (source)',
     'zh_CN': '简体中文 (zh_CN)',
+    'zh_TW': '繁體中文 (zh_TW)',
 }
 
 

@@ -84,6 +84,33 @@ def main(argv: list[str]) -> int:
     print('\n=== Translation Tests ===')
     passed = 0
     failed = 0
+
+    if lang != 'zh_CN':
+        # The expected strings below are zh_CN wording. For any other locale
+        # the meaningful assertion is that the compiled .qm agrees with its own
+        # .ts, and that the result is localised rather than the English source.
+        import xml.etree.ElementTree as ET
+        cat = {}
+        for ts in tdir.glob('*.ts'):
+            for ctx in ET.parse(ts).getroot().findall('context'):
+                cname = ctx.findtext('name', '')
+                for msg in ctx.findall('message'):
+                    tel = msg.find('translation')
+                    cat[(cname, msg.findtext('source', ''))] = (
+                        (tel.text or '') if tel is not None else '')
+        for ctx, source, _expected in tests:
+            want = cat.get((ctx, source), '')
+            actual = QtCore.QCoreApplication.translate(ctx, source)
+            ok = bool(want.strip()) and actual == want and want != source
+            if ok:
+                passed += 1
+            else:
+                failed += 1
+                print(f'  [FAIL] {ctx}.{source!r}')
+                print(f'        catalogue: {want!r}')
+                print(f'        runtime:   {actual!r}')
+        print(f'\n{passed}/{passed+failed} translations OK for {lang}')
+        return 0 if failed == 0 else 3
     for ctx, source, expected in tests:
         actual = QtCore.QCoreApplication.translate(ctx, source)
         ok = (actual == expected)
