@@ -170,3 +170,29 @@ jobs:
         source activate $CONDA_ENV_NAME
         pymol -ckqy testing/testing.py --run all
 
+  i18n:
+    # No C++ toolchain needed: the gates read the Python sources, the .ts
+    # catalogues and the compiled .qm, and render the Qt forms offscreen.
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+
+    - name: Install PySide6
+      run: pip install "PySide6==6.8.1"
+
+    - name: Check for leaked or unreachable translations
+      run: python tools/i18n/run_gates.py
+
+    - name: Check the compiled .qm match the .ts
+      run: |
+        python tools/i18n/generate_ts.py
+        python tools/i18n/compile_qm.py
+        git diff --exit-code data/pmg_qt/i18n || {
+          echo "data/pmg_qt/i18n is stale: commit the regenerated .ts/.qm"; exit 1; }
+
+
