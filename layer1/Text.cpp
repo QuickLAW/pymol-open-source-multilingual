@@ -489,11 +489,19 @@ int TextInit(PyMOLGlobals * G)
     /* The in-viewport overlay (mouse mode, selection feedback, frame counter)
      * went through Default_ID, which was the GLUT 8x13 bitmap font. That font
      * covers codepoints 0-255 and substitutes '?' for anything above, so every
-     * translated string rendered as "??????". Slot 19 is the CJK subset itself;
-     * the overlay has no RenderInfo and no world anchor, which the label faces
-     * above do expect, so it draws with the subset directly rather than with
-     * DejaVu-plus-fallback. */
-    I->Default_ID = 19;
+     * translated string rendered as "??????".
+     *
+     * Slot 11 (DejaVu Sans Mono) rather than a proportional face, because that
+     * bitmap font was also fixed-pitch and ButMode builds its button grid --
+     * "Buttons L M R Wheel" over "Rota Move MovZ Slab", "+Box -Box Clip MovS"
+     * and the rest -- by padding those untranslated English literals with
+     * spaces. Under a proportional face every column drifts. CJK still comes
+     * from the subset through the fallback above. */
+    if (I->getFont(11)) {
+      I->Default_ID = 11;
+    } else {
+      I->Default_ID = 19;
+    }
   }
 
   return true;
