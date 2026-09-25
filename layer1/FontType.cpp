@@ -93,7 +93,8 @@ static const char* FontTypeRenderOpenGLImpl(const RenderInfo* info, CFontType* I
     float descender = TypeFaceGetDescender(I->TypeFace) / 2.f;
     float v_scale = SceneGetScreenVertexScale(G, nullptr);
     copy2f(TextGetLabelBuffer(G), text_buffer);
-    sampling = info->sampling;
+    if(info)
+      sampling = info->sampling;
     if(st && (*st)) {
       float *line_widths = nullptr;
       float screenWorldOffset[3] = { 0.0F, 0.0F, 0.0F };
@@ -279,7 +280,11 @@ static const char* FontTypeRenderOpenGLImpl(const RenderInfo* info, CFontType* I
                 TextAdvance(G, TypeFaceGetKerning(I->TypeFace,
                                                   last_c, c, size) / sampling);
               }
-              cont &= CharacterRenderOpenGL(G, info, id, true, relativeMode, shaderCGO);       /* handles advance */
+              /* the label op carries world-target semantics; the ortho overlay
+               * reaches here with rpos == nullptr and wants a plain textured
+               * quad, which is what CFontGLUT emits for it */
+              cont &= CharacterRenderOpenGL(G, info, id, (rpos != nullptr),
+                                            relativeMode, shaderCGO);       /* handles advance */
             }
           }
           kern_flag = true;

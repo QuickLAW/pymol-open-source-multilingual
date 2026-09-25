@@ -15,8 +15,10 @@ ONEFILE = os.environ.get("PYMOL_ONEFILE") == "1"
 CONSOLE = os.environ.get("PYMOL_CONSOLE") == "1"
 
 # data/ subdirs that only add weight: bundled examples, the legacy Tk frontend
-# we do not ship, and OpenVR assets (built without --openvr).
-DATA_SKIP = {"demo", "tut", "pmg_tk", "openvr"}
+# we do not ship, OpenVR assets (built without --openvr), and the CJK font --
+# that one is compiled into _cmd as layer1/FontTTF3.h, so shipping the .otf too
+# would just double it.
+DATA_SKIP = {"demo", "tut", "pmg_tk", "openvr", "fonts"}
 
 
 def data_tree():
