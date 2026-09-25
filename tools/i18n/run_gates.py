@@ -25,6 +25,7 @@ GATES = [
     ('data-table text catalogued or classified', 'scan_data_tables.py'),
     ('one English term, one rendering', 'check_terminology.py'),
     ('CJK punctuation width', 'check_punctuation.py'),
+    ('translations accept their own arguments', 'check_placeholders.py'),
     ('every finished entry resolves via QTranslator', 'check_qm_resolution.py'),
     ('forms painted Chinese in real widgets', 'sweep_forms.py'),
     ('runtime lookups through QTranslator', 'test_translations.py'),

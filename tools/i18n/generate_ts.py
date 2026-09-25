@@ -210,7 +210,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Builder": "构建器",
         "Change Working Directory": "更改工作目录",
         "Command Input Area\n\nGet the list of commands by hitting <TAB>\n\nGet the list of arguments for one command with a question mark:\nPyMOL> color ?\n\nRead the online help for a command with \"help\":\nPyMOL> help color\n\nGet autocompletion for many arguments by hitting <TAB>\nPyMOL> color ye<TAB>    (will autocomplete \"yellow\")\n":
-            "命令输入区\n\n按 <Tab> 键获取命令列表\n\n使用问号获取某个命令的参数列表：\nPyMOL> color ?\n\n使用 \"help\" 阅读命令的在线帮助：\nPyMOL> help color\n\n按 <Tab> 键获取许多参数的自动补全：\nPyMOL> color ye<Tab>    （将自动补全为 \"yellow\"）\n",
+            "命令输入区\n\n按 <TAB> 键获取命令列表\n\n使用问号获取某个命令的参数列表：\nPyMOL> color ?\n\n使用 \"help\" 阅读命令的在线帮助：\nPyMOL> help color\n\n按 <TAB> 键获取许多参数的自动补全：\nPyMOL> color ye<TAB>    （将自动补全为 \"yellow\"）\n",
         "Could not read PyMOL stylesheet.": "无法读取 PyMOL 样式表。",
         "Deselect": "反选",
         "Draw/Ray": "渲染",

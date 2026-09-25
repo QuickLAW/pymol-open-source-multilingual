@@ -61,7 +61,7 @@ PyMOL&gt; color ye&lt;TAB&gt;    (will autocomplete "yellow")
 </source>
       <translation>命令输入区
 
-按 &lt;Tab&gt; 键获取命令列表
+按 &lt;TAB&gt; 键获取命令列表
 
 使用问号获取某个命令的参数列表：
 PyMOL&gt; color ?
@@ -69,8 +69,8 @@ PyMOL&gt; color ?
 使用 "help" 阅读命令的在线帮助：
 PyMOL&gt; help color
 
-按 &lt;Tab&gt; 键获取许多参数的自动补全：
-PyMOL&gt; color ye&lt;Tab&gt;    （将自动补全为 "yellow"）
+按 &lt;TAB&gt; 键获取许多参数的自动补全：
+PyMOL&gt; color ye&lt;TAB&gt;    （将自动补全为 "yellow"）
 </translation>
     </message>
     <message>
