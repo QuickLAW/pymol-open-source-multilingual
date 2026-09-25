@@ -472,18 +472,27 @@ int TextInit(PyMOLGlobals * G)
   I->addFont(16, FontTypeNew(G, TTF_GenI102_dat, TTF_GenI102_len));
   I->addFont(17, FontTypeNew(G, TTF_DejaVuSerif_Oblique_dat, TTF_DejaVuSerif_Oblique_len));
   I->addFont(18, FontTypeNew(G, TTF_DejaVuSerif_BoldOblique_dat, TTF_DejaVuSerif_BoldOblique_len));
-  // Subset of Noto Sans SC. The in-viewport overlay (mouse mode, selection
-  // feedback, frame counter) goes through Default_ID, which used to be the
-  // GLUT 8x13 bitmap font limited to codepoints 0-255; anything above that was
-  // drawn as '?', so translated UI text rendered as "??????" (see ButMode.cpp).
+  // Subset of Noto Sans SC covering GBK + Big5, registered as the last slot and
+  // then shared: the Latin-only faces above borrow the glyphs they lack.
   I->addFont(19, FontTypeNew(G, TTF_NotoSansSC_dat, TTF_NotoSansSC_len));
 #endif
 #endif
 
-  // addFont silently drops a null font, so only move the overlay onto a
-  // FreeType slot if it really loaded; otherwise keep the bitmap font and at
-  // least render Latin.
-  if (I->getFont(19)) {
+  // addFont silently drops a null font, so everything below is conditional on
+  // the subset actually having loaded.
+  CFont *cjk = I->getFont(19);
+  if (cjk) {
+    for (unsigned id = 5; id <= 18; ++id) {
+      FontTypeSetFallback(I->getFont(id), cjk);
+    }
+
+    /* The in-viewport overlay (mouse mode, selection feedback, frame counter)
+     * went through Default_ID, which was the GLUT 8x13 bitmap font. That font
+     * covers codepoints 0-255 and substitutes '?' for anything above, so every
+     * translated string rendered as "??????". Slot 19 is the CJK subset itself;
+     * the overlay has no RenderInfo and no world anchor, which the label faces
+     * above do expect, so it draws with the subset directly rather than with
+     * DejaVu-plus-fallback. */
     I->Default_ID = 19;
   }
 

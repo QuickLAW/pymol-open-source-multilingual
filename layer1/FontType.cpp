@@ -551,3 +551,12 @@ CFont* FontTypeNew(PyMOLGlobals* G, unsigned char* dat, unsigned int len)
   }
   return fontType;
 }
+
+void FontTypeSetFallback(CFont* font, CFont* fallback)
+{
+  auto* target = dynamic_cast<CFontType*>(font);
+  auto* source = dynamic_cast<CFontType*>(fallback);
+  if (target && source) {
+    TypeFaceSetFallback(target->TypeFace, source->TypeFace);
+  }
+}

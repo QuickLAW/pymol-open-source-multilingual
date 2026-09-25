@@ -28,6 +28,13 @@ typedef struct _CTypeFace CTypeFace;
 CTypeFace *TypeFaceLoad(PyMOLGlobals * G, unsigned char *dat, unsigned int len);
 void TypeFaceFree(CTypeFace * face);
 
+/**
+ * Let a face borrow glyphs it does not own. The embedded Latin fonts have no
+ * CJK coverage, so without this a Chinese residue name in a label silently
+ * renders as nothing. `fallback` is not owned by `face` and must outlive it.
+ */
+void TypeFaceSetFallback(CTypeFace * face, CTypeFace * fallback);
+
 int TypeFaceCharacterNew(CTypeFace * I, CharFngrprnt * fprnt, float size);
 
 float TypeFaceGetKerning(CTypeFace * I,

@@ -33,10 +33,26 @@ struct _CTypeFace {
   PyMOLGlobals *G;
   FT_Face Face;
   float LastSize;
+  CTypeFace *Fallback; /* not owned; see TypeFaceSetFallback */
 };
+
+void TypeFaceSetFallback(CTypeFace * I, CTypeFace * fallback)
+{
+  if (!I || (I == fallback))
+    return;
+  I->Fallback = fallback;
+}
 
 int TypeFaceCharacterNew(CTypeFace * I, CharFngrprnt * fprnt, float size)
 {
+  /* FT_Load_Char happily renders .notdef for a codepoint the charmap does not
+   * have and still reports success, which is how CJK text in labels vanished
+   * without an error. Ask the charmap before loading. */
+  if (!FT_Get_Char_Index(I->Face, fprnt->u.i.ch)) {
+    if (I->Fallback)
+      return TypeFaceCharacterNew(I->Fallback, fprnt, size);
+    return 0;
+  }
   FT_GlyphSlot slot = I->Face->glyph;   /* a small shortcut */
   if(I->LastSize != size) {
     I->LastSize = size;
@@ -166,6 +182,10 @@ CTypeFace *TypeFaceLoad(PyMOLGlobals * G, unsigned char *dat, unsigned int len)
 }
 
 void TypeFaceFree(CTypeFace * face)
+{
+}
+
+void TypeFaceSetFallback(CTypeFace * face, CTypeFace * fallback)
 {
 }
 

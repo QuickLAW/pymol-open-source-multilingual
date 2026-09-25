@@ -24,7 +24,10 @@ class cif_file;
 class cif_data;
 }; // namespace pymol
 
-/* retina scale factor for ortho gui */
+/* retina scale factor for ortho gui. Must stay integral: the ortho draw path
+ * segfaults on any fractional value (verified at 1.25 and 1.5, and it still
+ * crashes with internal_gui=0), so callers must round up rather than truncate.
+ * pymol_gl_widget.updateFbScale does exactly that. */
 extern int _gScaleFactor;
 inline int DIP2PIXEL(int v) { return v * _gScaleFactor; }
 inline float DIP2PIXEL(float v) { return v * _gScaleFactor; }

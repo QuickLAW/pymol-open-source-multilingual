@@ -39,4 +39,10 @@ struct CFontType : public CFont {
 
 CFont *FontTypeNew(PyMOLGlobals * G, unsigned char *dat, unsigned int len);
 
+/**
+ * Let `font` borrow glyphs from `fallback` for codepoints it does not cover.
+ * No-op unless both are FreeType-backed. `fallback` must outlive `font`.
+ */
+void FontTypeSetFallback(CFont * font, CFont * fallback);
+
 #endif

@@ -1,3 +1,4 @@
+import math
 import os
 import sys
 from pymol2 import SingletonPyMOL as PyMOL
@@ -219,7 +220,12 @@ class PyMOLGLWidget(BaseGLWidget):
         '''
         self.fb_scale = context.devicePixelRatio()
         try:
-            self.cmd.set('display_scale_factor', int(self.fb_scale))
+            # Round up, never truncate and never go fractional. int() turned a
+            # 125% display into scale 1, leaving the in-viewport text drawn at
+            # its unscaled size; a fractional value segfaults the ortho draw
+            # path outright (verified at 1.25 and 1.5, even with internal_gui
+            # off), so 125% and 150% both get 2.
+            self.cmd.set('display_scale_factor', int(math.ceil(self.fb_scale)))
         except BaseException as e:
             # fails with modal draw (mpng ..., modal=1)
             print(e)
