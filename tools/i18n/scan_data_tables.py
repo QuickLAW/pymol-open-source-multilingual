@@ -16,6 +16,8 @@ latter group: the user has to type them).
 from __future__ import annotations
 
 import argparse
+import re
+
 from collections import defaultdict
 import ast
 import sys
@@ -26,11 +28,33 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 import audit_coverage as ac
 
-# Tables whose contents are identifiers the user types, not prose to read.
+# Tables whose contents are not display text -- the user types them, or they
+# are notation, or they are deliberately written in their own language.
 IGNORED_TABLES = {
-    # setting names / keywords / file extensions
-    ('modules/pymol/setting.py', 'name_dict'),
-    ('modules/pymol/parsing/Lexer.py', 'c_tokens'),
+    ('modules/pymol/setting.py', 'name_dict'):
+        'setting names are typed by the user',
+    ('modules/pymol/parsing/Lexer.py', 'c_tokens'):
+        'language tokens',
+    ('modules/pymol/completing.py', 'aa_map_c'):
+        'command argument keyword, tab-completed and typed',
+    ('modules/pymol/completing.py', 'aa_v_r_c'):
+        'command argument keyword, tab-completed and typed',
+    ('modules/pymol/completing.py', 'aa_ali_e'):
+        'command argument keyword, tab-completed and typed',
+    ('modules/pymol/internal.py', 'modifier_keys'):
+        'modifier key codes (SHFT/CTRL/CTSH)',
+    ('modules/pymol/Qt/i18n.py', 'LANGUAGE_LABELS'):
+        'each language is named in its own script on purpose',
+    ('modules/pymol/wizard/box.py', 'pseudo_atoms'):
+        'pseudoatom resnames, typed in selections',
+    ('modules/pymol/wizard/mutagenesis.py', '_rot_type_xref'):
+        'residue 3-letter codes',
+    ('modules/pymol/xray.py', 'hex_to_rhom_xHM'):
+        'H-M space group symbols',
+    ('modules/pymol/xray.py', 'sym_base'):
+        'H-M space group symbols',
+    ('modules/pymol/xray.py', 'space_group_map'):
+        'H-M space group symbols',
 }
 
 # Tables that ARE user-visible text, mapped to the context they are translated
@@ -65,6 +89,22 @@ def _all_strings(node):
             and c.value.strip() and any(ch.isalpha() for ch in c.value)]
 
 
+def _dict_values(node):
+    """Label strings among a dict's values only.
+
+    Walking the whole literal also yields the keys, which for
+    _VIEWPORT_TEXT_SETTINGS are setting names the user types -- not text.
+    """
+    if not isinstance(node, ast.Dict):
+        return _all_strings(node)
+    out = []
+    for v in node.values:
+        if isinstance(v, ast.Constant) and isinstance(v.value, str) \
+                and v.value.strip() and any(c.isalpha() for c in v.value):
+            out.append(v.value)
+    return out
+
+
 TRANSLATABLE_TABLES = {
     # shortcut_dict_ref[key] = (command, description, user_command); the
     # description is the editor's third column
@@ -81,17 +121,42 @@ TRANSLATABLE_TABLES = {
     # the security wizard prints its prompt one line at a time
     ('modules/pymol/wizard/security.py', 'prompt'):
         ('Console', _all_strings),
+    # i18n.py feeds these English sources through tr('Menu', source) and pushes
+    # the result into settings 798-810; registering it proves the viewport text
+    # stays translated when either side changes.
+    ('modules/pymol/Qt/i18n.py', '_VIEWPORT_TEXT_SETTINGS'):
+        ('Menu', _dict_values),
 }
 
 CONTAINERS = (ast.List, ast.Tuple, ast.Set)
 
 
+_LABEL_RE = re.compile(r'^(?!.*_)[A-Z][A-Za-z]')
+
+
+def looks_like_label(text: str) -> bool:
+    """A string that reads as display text rather than as a key or code.
+
+    _prose() needs two or more words, which is right for call-site arguments
+    but wrong for tables: 'Hydrogen', 'Cyclohexane' and 'Methyl' are single
+    words that were exactly the leak this file was written to find. So the
+    table scan uses a looser test -- a space, or a Capitalised word -- and
+    skips snake_case keys, ALL_CAPS codes and dotted names.
+    """
+    t = text.strip()
+    if len(t) < 3 or not any(c.isalpha() for c in t):
+        return False
+    if ' ' in t:
+        return True
+    return bool(_LABEL_RE.match(t))
+
+
 def prose_strings(node):
-    """All prose string constants anywhere inside a literal container."""
+    """All label-like string constants anywhere inside a literal container."""
     out = []
     for c in ast.walk(node):
         if isinstance(c, ast.Constant) and isinstance(c.value, str):
-            if ac._prose(c.value):
+            if looks_like_label(c.value):
                 out.append(c.value)
     return out
 
