@@ -370,6 +370,13 @@ from translations_shortcut_zh import SHORTCUT_ZH
 
 TRANSLATIONS["zh_CN"].update(SHORTCUT_ZH)
 
+# Builder tooltips and the security wizard prompt, also translated at render
+# time because they live in data tables
+from translations_builder_zh import BUILDER_ZH, SECURITY_ZH
+
+TRANSLATIONS["zh_CN"].update(BUILDER_ZH)
+TRANSLATIONS["zh_CN"].update(SECURITY_ZH)
+
 
 def _merge_cli_glossary():
     """Resolve long text blocks from their variable names.

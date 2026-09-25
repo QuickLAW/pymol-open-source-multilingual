@@ -364,12 +364,20 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation>%s 不支持 multisave</translation>
     </message>
     <message>
+      <source>========================= PyMOL SECURITY WARNING =========================</source>
+      <translation>=========================== PyMOL 安全警告 ===========================</translation>
+    </message>
+    <message>
       <source>Archive must contain a single package.</source>
       <translation>压缩包中只能包含一个插件包。</translation>
     </message>
     <message>
       <source>Base pairing result is not returning 0 or 1</source>
       <translation>碱基配对结果未返回 0 或 1</translation>
+    </message>
+    <message>
+      <source>CAUTION! Do you know and trust the person who created this session file? </source>
+      <translation>注意！您是否了解并信任创建此会话文件的人？ </translation>
     </message>
     <message>
       <source>CEalign-Error: Your mobile selection is too short.</source>
@@ -394,6 +402,18 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
     <message>
       <source>Can't map regular letters.</source>
       <translation>无法映射普通字母。</translation>
+    </message>
+    <message>
+      <source>Click or enter "accept" to assume the risks of running the commands.</source>
+      <translation>点击或输入 "accept" 以自行承担运行这些命令的风险。</translation>
+    </message>
+    <message>
+      <source>Click or enter "decline" to decline the risks and delete the commands.</source>
+      <translation>点击或输入 "decline" 以拒绝承担风险并删除这些命令。</translation>
+    </message>
+    <message>
+      <source>Click or enter "mdump" to print out the commands in the movie.</source>
+      <translation>点击或输入 "mdump" 以打印电影中包含的命令。</translation>
     </message>
     <message>
       <source>Command disallowed in this file</source>
@@ -755,6 +775,10 @@ Active "pymolrc" Files
       <translation>重置默认值时发现类型不正确</translation>
     </message>
     <message>
+      <source>It contains GENERAL PURPOSE movie commands which could be used</source>
+      <translation>其中包含通用电影命令，可能被恶意利用，</translation>
+    </message>
+    <message>
       <source>Load-Error: Unable to load file '%s'.</source>
       <translation>加载错误：无法加载文件 '%s'。</translation>
     </message>
@@ -899,6 +923,10 @@ Active "pymolrc" Files
       <translation>该按键已被保留。</translation>
     </message>
     <message>
+      <source>To avoid this message in the future, "set security,off" before loading</source>
+      <translation>若希望今后不再出现此提示，请在加载会话文件前执行 "set security,off"，</translation>
+    </message>
+    <message>
       <source>Unable to save to file.</source>
       <translation>无法保存到文件。</translation>
     </message>
@@ -1027,6 +1055,10 @@ Active "pymolrc" Files
       <translation>连接点无效：必须是单个原子，且名称为 O3' 或 P</translation>
     </message>
     <message>
+      <source>maliciously to take control your of computer or damage your files.</source>
+      <translation>从而控制您的计算机或破坏您的文件。</translation>
+    </message>
+    <message>
       <source>mass is zero</source>
       <translation>质量为零</translation>
     </message>
@@ -1113,6 +1145,10 @@ Active "pymolrc" Files
     <message>
       <source>special '%s' key not found.</source>
       <translation>未找到特殊键 '%s'。</translation>
+    </message>
+    <message>
+      <source>the session file, or just launch pymol with the "-o" option.</source>
+      <translation>或者在启动 pymol 时使用 "-o" 选项。</translation>
     </message>
     <message>
       <source>trj magic test failed: </source>

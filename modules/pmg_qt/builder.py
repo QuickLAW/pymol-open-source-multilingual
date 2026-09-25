@@ -1126,7 +1126,8 @@ class _BuilderPanel(QtWidgets.QWidget):
                     self.btn_icons[btn] = icons
                 else:
                     btn.setText(btn_label)
-                btn.setToolTip(btn_tooltip)
+                btn.setToolTip(_tr('Builder', btn_tooltip) if btn_tooltip
+                               else btn_tooltip)
                 btn.clicked.connect(btn_command)
                 self.fragments_layout.addWidget(btn, row, col)
 
@@ -1214,7 +1215,8 @@ class _BuilderPanel(QtWidgets.QWidget):
             btn_label, btn_tooltip, btn_filename, btn_command = btn_pkg
             btn = makeFragmentButton()
             btn.setText(btn_label)
-            btn.setToolTip(btn_tooltip)
+            btn.setToolTip(_tr('Builder', btn_tooltip) if btn_tooltip
+                           else btn_tooltip)
             btn.clicked.connect(btn_command)
             self.nucleic_acid_rna_layout.addWidget(btn, 0, col_num)
 

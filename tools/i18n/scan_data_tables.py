@@ -16,6 +16,7 @@ latter group: the user has to type them).
 from __future__ import annotations
 
 import argparse
+from collections import defaultdict
 import ast
 import sys
 from pathlib import Path
@@ -37,11 +38,16 @@ IGNORED_TABLES = {
 # value they yield must be finished in the catalogue -- no call-site gate can
 # see this pairing, because the lookup happens later.
 def _tuple_field(i):
+    """Yield the i-th string of every tuple/list literal, at any nesting depth.
+
+    The Builder's tables are a list of rows of 3-tuples, so a flat scan of the
+    assignment sees only the rows and finds nothing.
+    """
     def get(node):
         out = []
-        for v in node.values if isinstance(node, ast.Dict) else []:
-            if isinstance(v, (ast.Tuple, ast.List)) and len(v.elts) > i:
-                e = v.elts[i]
+        for n in ast.walk(node):
+            if isinstance(n, (ast.Tuple, ast.List)) and len(n.elts) > i:
+                e = n.elts[i]
                 if isinstance(e, ast.Constant) and isinstance(e.value, str) \
                         and e.value.strip():
                     out.append(e.value)
@@ -49,11 +55,32 @@ def _tuple_field(i):
     return get
 
 
+def _all_strings(node):
+    """Every string literal with letters in it -- for line-by-line text.
+
+    Rules and separators ('=====', '') are layout, not text to translate.
+    """
+    return [c.value for c in ast.walk(node)
+            if isinstance(c, ast.Constant) and isinstance(c.value, str)
+            and c.value.strip() and any(ch.isalpha() for ch in c.value)]
+
+
 TRANSLATABLE_TABLES = {
     # shortcut_dict_ref[key] = (command, description, user_command); the
     # description is the editor's third column
     ('modules/pymol/shortcut_dict.py', 'shortcut_dict_ref'):
         ('ShortcutMenu', _tuple_field(1)),
+    # builder.py: (label, tooltip, command) rows shown as fragment buttons.
+    # The label is an element symbol or formula and stays as written.
+    ('modules/pmg_qt/builder.py', 'buttons'):
+        ('Builder', _tuple_field(1)),
+    ('modules/pmg_qt/builder.py', 'dna_buttons'):
+        ('Builder', _tuple_field(1)),
+    ('modules/pmg_qt/builder.py', 'rna_buttons'):
+        ('Builder', _tuple_field(1)),
+    # the security wizard prints its prompt one line at a time
+    ('modules/pymol/wizard/security.py', 'prompt'):
+        ('Console', _all_strings),
 }
 
 CONTAINERS = (ast.List, ast.Tuple, ast.Set)
@@ -70,7 +97,12 @@ def prose_strings(node):
 
 
 def registered_tables():
-    """[(relpath, varname, context, [display strings])] for TRANSLATABLE_TABLES."""
+    """[(relpath, varname, context, [display strings])] for TRANSLATABLE_TABLES.
+
+    Searches every scope: the Builder's tables are locals inside a method, and
+    several share one name across the file, so a module-level-only lookup would
+    miss them.
+    """
     out = []
     for rel, var in TRANSLATABLE_TABLES:
         path = ac.ROOT / rel
@@ -78,10 +110,14 @@ def registered_tables():
             continue
         tree = ast.parse(path.read_text(encoding='utf-8', errors='replace'))
         ctx, extract = TRANSLATABLE_TABLES[(rel, var)]
-        for st in tree.body:
-            if (isinstance(st, ast.Assign)
-                    and any(isinstance(t, ast.Name) and t.id == var
-                            for t in st.targets)):
+        for st in ast.walk(tree):
+            if not isinstance(st, ast.Assign):
+                continue
+            matched = any(
+                (isinstance(t, ast.Name) and t.id == var)
+                or (isinstance(t, ast.Attribute) and t.attr == var)
+                for t in st.targets)
+            if matched:
                 out.append((rel, var, ctx, extract(st.value)))
     return out
 
@@ -94,10 +130,14 @@ def main(argv):
 
     catalog = ac.load_catalog(args.lang)
 
-    registered = {(rel, var): (ctx, values)
-                  for rel, var, ctx, values in registered_tables()}
+    registered = defaultdict(lambda: [None, []])
+    for rel, var, ctx, values in registered_tables():
+        slot = registered[(rel, var)]
+        slot[0] = ctx
+        slot[1].extend(values)
     missing = []
     for (rel, var), (ctx, values) in sorted(registered.items()):
+        values = sorted(set(values))
         uncat = [v for v in values if (ctx, v) not in catalog]
         print(f'  {rel} {var} -> context {ctx!r}: '
               f'{len(values) - len(uncat)}/{len(values)} catalogued')
