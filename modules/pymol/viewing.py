@@ -1474,8 +1474,8 @@ PYMOL API
         if cmd.is_string(width) and height == -1:
             width = _self.safe_eval(width)
             if _self.is_sequence(width):
-                colorprinting.warning(" Warning: Tuple-syntax (parentheses) "
-                                      "for viewport is deprecated")
+                colorprinting.warning(ctr(" Warning: Tuple-syntax (parentheses) "
+                                      "for viewport is deprecated"))
                 width, height = width
 
         if not cmd.is_gui_thread():

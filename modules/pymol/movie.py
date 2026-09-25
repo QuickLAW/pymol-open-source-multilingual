@@ -738,7 +738,7 @@ def _encode(filename,first,last,preserve,
             fps_legal = min(FPS_LEGAL_VALUES, key=lambda v: abs(v - fps))
             if fps_legal != round(fps, 3):
                 colorprinting.warning(
-                    " Warning: Adjusting frame rate to {} fps (legal values are: {})"
+                    ctr(" Warning: Adjusting frame rate to {} fps (legal values are: {})")
                     .format(fps_legal, FPS_LEGAL_VALUES))
             input = input.replace('FRAME_RATE 30',
                                   'FRAME_RATE {:.3f}'.format(fps_legal))
@@ -788,8 +788,8 @@ def _encode(filename,first,last,preserve,
             stderr = process.communicate()[1]
             colorprinting.warning(stderr.strip().decode(errors='replace'))
             if process.returncode != 0:
-                colorprinting.error('ffmpeg failed with '
-                        'exit status {}'.format(process.returncode))
+                colorprinting.error(ctr('ffmpeg failed with '
+                        'exit status {}').format(process.returncode))
         finally:
             os.chdir(old_cwd)
     elif encoder == 'convert':

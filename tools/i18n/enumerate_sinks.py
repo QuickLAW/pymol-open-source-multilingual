@@ -94,6 +94,7 @@ def main(argv):
                             p in ac.SINK_CLASSES for p in name.split('.')):
                         known[short] += len(prose)
                     elif (short not in BENIGN_CALLS
+                          and short not in ac.USER_RAISES
                           and not name.startswith(IGNORE_PREFIXES)
                           and short not in ('ctr', 'print', 'print_msg')):
                         unknown[short] += len(prose)

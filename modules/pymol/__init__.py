@@ -264,7 +264,7 @@ def exec_deferred(self):
     except CmdException as e:
         colorprinting.error(str(e))
         colorprinting.error(
-            " Error: Argument processing aborted due to exception (above).")
+            ctr(" Error: Argument processing aborted due to exception (above)."))
     except socket_error:
         # this (should) only happen if we're opening a PWG file on startup
         # and the port is busy.  For now, simply bail...

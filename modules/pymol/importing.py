@@ -510,7 +510,7 @@ SEE ALSO
         for key in seq_order:
             raw_seq = seq_dict.get(key, '').replace('-','')
             if not raw_seq:
-                colorprinting.warning(f'Empty sequence for key "{key}"')
+                colorprinting.warning(ctr('Empty sequence for key "{}"').format(key))
                 continue
             _self.fab(raw_seq, key, quiet=quiet)
 
@@ -1233,14 +1233,14 @@ PYMOL API
 
             except pymol.CmdException:
                 if not quiet:
-                    colorprinting.warning(" Warning: failed to fetch from %s" % (url,))
+                    colorprinting.warning(ctr(" Warning: failed to fetch from %s") % (url,))
                 continue
 
             if file:
                 try:
                     fobj = open(file, 'wb')
                 except IOError:
-                    colorprinting.warning(' Warning: Cannot write to "%s"' % file)
+                    colorprinting.warning(ctr(' Warning: Cannot write to "%s"') % file)
 
             if fobj:
                 fobj.write(contents)
@@ -1269,7 +1269,7 @@ PYMOL API
         if not _self.is_error(r):
             return name
 
-        colorprinting.error(" Error-fetch: unable to load '%s'." % code)
+        colorprinting.error(ctr(" Error-fetch: unable to load '%s'.") % code)
         return DEFAULT_ERROR
 
     def _multifetch(code,name,state,finish,discrete,multiplex,zoom,type,path,file,quiet,_self):

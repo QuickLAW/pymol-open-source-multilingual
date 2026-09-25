@@ -437,7 +437,7 @@ if True:
                                             elif pp_result==0: # QuietException
                                                 if self.cmd.get_setting_boolean("stop_on_exceptions"):
                                                     p_result = 0 # signal an error occurred
-                                                    colorprinting.error("PyMOL: stopped on exception.")
+                                                    colorprinting.error(ctr("PyMOL: stopped on exception."))
                                                     break;
                                         self.nest=self.nest-1
                                         layer=self.layer[self.nest]

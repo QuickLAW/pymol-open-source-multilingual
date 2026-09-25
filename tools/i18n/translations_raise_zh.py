@@ -111,4 +111,17 @@ RAISE_ZH = {
     'unknown unit, supported units are: ': '未知单位，支持的单位有： ',
     'unsupported file type: ': '不支持的文件类型： ',
     'zipped (%s) trajectories not supported': '不支持压缩的 (%s) 轨迹文件',
+    # pymol.colorprinting writes these to the output window too
+    " Error-fetch: unable to load '%s'.": " 加载错误：无法加载 '%s'。",
+    ' Error: Argument processing aborted due to exception (above).':
+        ' 错误：由于上述异常，参数处理已中止。',
+    ' Warning: Adjusting frame rate to {} fps (legal values are: {})':
+        ' 警告：已将帧率调整为 {} fps（合法取值为：{}）',
+    ' Warning: Cannot write to "%s"': ' 警告：无法写入 "%s"',
+    ' Warning: Tuple-syntax (parentheses) for viewport is deprecated':
+        ' 警告：viewport 的元组语法（括号）已被弃用',
+    ' Warning: failed to fetch from %s': ' 警告：无法从 %s 获取',
+    'Empty sequence for key "{}"': '键 "{}" 的序列为空',
+    'PyMOL: stopped on exception.': 'PyMOL：因异常而停止。',
+    'ffmpeg failed with exit status {}': 'ffmpeg 运行失败，退出状态 {}',
 }

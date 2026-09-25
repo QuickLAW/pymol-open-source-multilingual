@@ -72,6 +72,14 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation> 已啟用多執行緒渲染。</translation>
     </message>
     <message>
+      <source> Error-fetch: unable to load '%s'.</source>
+      <translation> 載入錯誤：無法載入 '%s'。</translation>
+    </message>
+    <message>
+      <source> Error: Argument processing aborted due to exception (above).</source>
+      <translation> 錯誤：由於上述異常，引數處理已中止。</translation>
+    </message>
+    <message>
       <source> Error: Map generation failed</source>
       <translation> 錯誤：密度圖生成失敗</translation>
     </message>
@@ -222,6 +230,14 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation> 警告：開源版 PyMOL 不支援 --nospnav</translation>
     </message>
     <message>
+      <source> Warning: Adjusting frame rate to {} fps (legal values are: {})</source>
+      <translation> 警告：已將幀率調整為 {} fps（合法取值為：{}）</translation>
+    </message>
+    <message>
+      <source> Warning: Cannot write to "%s"</source>
+      <translation> 警告：無法寫入 "%s"</translation>
+    </message>
+    <message>
       <source> Warning: No atoms in state %d for object %s</source>
       <translation> 警告：狀態 %d 中的物件 %s 沒有原子</translation>
     </message>
@@ -230,12 +246,20 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation> 警告：未設定 SCHRODINGER 環境變數</translation>
     </message>
     <message>
+      <source> Warning: Tuple-syntax (parentheses) for viewport is deprecated</source>
+      <translation> 警告：viewport 的元組語法（括號）已被棄用</translation>
+    </message>
+    <message>
       <source> Warning: failed to backport session:</source>
       <translation> 警告：無法將會話降級儲存：</translation>
     </message>
     <message>
       <source> Warning: failed to connect to recent DB:</source>
       <translation> 警告：無法連線最近檔案資料庫：</translation>
+    </message>
+    <message>
+      <source> Warning: failed to fetch from %s</source>
+      <translation> 警告：無法從 %s 獲取</translation>
     </message>
     <message>
       <source> Warning: failed to query "My Documents" from registry</source>
@@ -561,6 +585,10 @@ Active "pymolrc" Files
       <translation>未向 move_new_res 提供雙鏈布林值</translation>
     </message>
     <message>
+      <source>Empty sequence for key "{}"</source>
+      <translation>鍵 "{}" 的序列為空</translation>
+    </message>
+    <message>
       <source>Error Parsing MTZ Header: bad column name: '%s'</source>
       <translation>解析 MTZ 頭資訊出錯：無效的列名：'%s'</translation>
     </message>
@@ -789,6 +817,10 @@ Active "pymolrc" Files
       <translation>PyMOL 命令參考已寫入 %s</translation>
     </message>
     <message>
+      <source>PyMOL: stopped on exception.</source>
+      <translation>PyMOL：因異常而停止。</translation>
+    </message>
+    <message>
       <source>Python expressions disallowed in this file</source>
       <translation>此檔案不允許 Python 表示式</translation>
     </message>
@@ -959,6 +991,10 @@ Active "pymolrc" Files
     <message>
       <source>failed to open file "%s"</source>
       <translation>開啟檔案失敗："%s"</translation>
+    </message>
+    <message>
+      <source>ffmpeg failed with exit status {}</source>
+      <translation>ffmpeg 執行失敗，退出狀態 {}</translation>
     </message>
     <message>
       <source>filename must have .txt extension</source>

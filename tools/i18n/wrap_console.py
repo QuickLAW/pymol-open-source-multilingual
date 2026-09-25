@@ -39,23 +39,17 @@ def _targets(tree: ast.Module, src: str):
             self.in_tr = 0
 
         def _lit_targets(self, call):
-            """Direct literals plus the prose head of "...%s" % x and "a" + x."""
-            out = []
-            for a in ast.iter_child_nodes(call):
-                nd = None
-                if isinstance(a, ast.Constant) and isinstance(a.value, str):
-                    nd = a
-                elif (isinstance(a, ast.BinOp)
-                      and isinstance(a.op, (ast.Mod, ast.Add))
-                      and isinstance(a.left, ast.Constant)
-                      and isinstance(a.left.value, str)):
-                    # wrapping the head keeps the substitution applied to the
-                    # translated text, exactly as Qt's own arg() workflow does
-                    nd = a.left
-                if nd is None or not ac._prose(nd.value):
-                    continue
-                out.append((nd, nd.value))
-            return out
+            """Every prose literal in the message that is not already wrapped.
+
+            Delegates to the audit's own detector so the two tools cannot
+            disagree about what counts as console text -- they had each grown
+            their own idea of which expression shapes to look inside, and the
+            audit kept finding ".format()" and "a + 'tail'" cases the wrapper
+            never rewrote.
+            """
+            return [(nd, nd.value)
+                    for nd, wrapped in ac._message_constants(call)
+                    if not wrapped]
 
         def visit_Raise(self, node):
             # raise CmdException("...") is rendered verbatim in the output

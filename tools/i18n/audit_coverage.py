@@ -63,6 +63,8 @@ CONSOLE_CONTEXT = 'Console'
 CONSOLE_FUNCS = {
     'print', 'print_msg', 'print_user', 'PRINTFB', 'sys.stdout.write',
     'stdout.write',
+    # pymol.colorprinting writes straight to the output window / terminal
+    'error', 'warning', 'notice', 'info', 'success', 'alert',
 }
 
 # Exceptions whose message PyMOL renders as "CmdException: <msg>" in the
