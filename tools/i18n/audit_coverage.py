@@ -365,9 +365,19 @@ def scan_sources():
     return unwrapped, wrapped, console, raises
 
 
+DUPLICATES: dict = {}
+
+
 def load_catalog(lang: str):
-    """{(context, source): (translation, type_attr)} from every .ts for lang."""
+    """{(context, source): (translation, type_attr)} from every .ts for lang.
+
+    Conflicting duplicates are recorded in DUPLICATES instead of being quietly
+    overwritten: one file can hold a string unfinished while another holds it
+    finished, and whichever is read last wins. That masked 26 junk entries until
+    status.py disagreed with this audit.
+    """
     cat = {}
+    DUPLICATES.clear()
     for f in sorted(glob.glob(str(ROOT / 'data' / 'pmg_qt' / 'i18n' / lang / '*.ts'))):
         try:
             root = ET.parse(f).getroot()
@@ -381,7 +391,11 @@ def load_catalog(lang: str):
                 tel = msg.find('translation')
                 tr = (tel.text or '') if tel is not None else ''
                 ttype = tel.get('type', '') if tel is not None else 'unfinished'
-                cat[(cname, src)] = (tr, ttype)
+                key = (cname, src)
+                if key in cat and cat[key] != (tr, ttype):
+                    DUPLICATES.setdefault(key, []).append(
+                        (os.path.basename(f), cat[key], (tr, ttype)))
+                cat[key] = (tr, ttype)
     return cat
 
 
@@ -483,6 +497,8 @@ def main(argv):
         seen.add(text)
         raise_leaks.append((rel, line, name, text))
 
+    dupes = [(f'{c}:{s[:40]}', str(v)) for (c, s), v in sorted(DUPLICATES.items())]
+
     groups = [
         ('UNWRAPPED (never translated)', unwrapped),
         ('WRAPPED BUT NOT IN CATALOG', uncataloged),
@@ -490,6 +506,7 @@ def main(argv):
         ('UI STRING NOT IN CATALOG', ui_missing),
         ('CONSOLE OUTPUT NOT IN CATALOG', [] if args.no_console else console_leaks),
         ('RAISED MESSAGE NOT TRANSLATED', [] if args.no_console else raise_leaks),
+        ('DUPLICATE KEY DISAGREEING ACROSS FILES', dupes),
     ]
     print(f'console prose candidates: {len(console_leaks)} '
           f'(suppressed by --no-console)' if args.no_console

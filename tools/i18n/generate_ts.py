@@ -1256,6 +1256,19 @@ def main(argv: list[str]) -> int:
           f"in {len(contexts)} contexts ({ui_total} from .ui files)")
 
     total_new = 0
+    # Which menu file already holds each Menu string. MENU_SPLIT does not name
+    # every label; without this the leftovers land in a fresh menu_misc.ts that
+    # duplicates entries already translated elsewhere, and two files then
+    # disagree about the same (context, source).
+    existing_home: dict[str, str] = {}
+    for ts in sorted(out_dir.glob('menu_*.ts')):
+        for cname, msgs in parse_ts(ts).items():
+            if cname != 'Menu':
+                continue
+            for src, tr in msgs.items():
+                if tr:
+                    existing_home.setdefault(src, ts.stem)
+
     for context, strings in sorted(contexts.items()):
         # Pick translation table: UI_TRANSLATIONS for Form/Dialog, else TRANSLATIONS
         trans_table = ui_translations.get(context) if context in ("Form", "Dialog") else None
@@ -1276,7 +1289,7 @@ def main(argv: list[str]) -> int:
             # based on MENU_SPLIT, with fallback to menu_misc.ts.
             menu_by_file: dict[str, set[str]] = {}
             for s in strings:
-                fname = MENU_SPLIT.get(s, 'menu_misc')
+                fname = MENU_SPLIT.get(s) or existing_home.get(s) or 'menu_misc'
                 menu_by_file.setdefault(fname, set()).add(s)
             for fname, s_set in menu_by_file.items():
                 ts_path = out_dir / f"{fname}.ts"
