@@ -41,7 +41,7 @@
     </message>
     <message>
       <source>Selection needs preparation (partial_charge: %s, elec_radius: %s)</source>
-      <translation>选择需要准备（partial_charge: %s, elec_radius: %s）</translation>
+      <translation>选择需要准备(partial_charge: %s, elec_radius: %s)</translation>
     </message>
     <message>
       <source>Warning</source>

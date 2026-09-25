@@ -24,6 +24,7 @@ GATES = [
     ('every string-taking call is classified', 'enumerate_sinks.py'),
     ('data-table text catalogued or classified', 'scan_data_tables.py'),
     ('one English term, one rendering', 'check_terminology.py'),
+    ('CJK punctuation width', 'check_punctuation.py'),
     ('every finished entry resolves via QTranslator', 'check_qm_resolution.py'),
     ('forms painted Chinese in real widgets', 'sweep_forms.py'),
     ('runtime lookups through QTranslator', 'test_translations.py'),
@@ -51,7 +52,8 @@ def main(argv) -> int:
         if script in ('status.py', 'test_translations.py'):
             cmd.append(args.lang)
         elif script in ('audit_coverage.py', 'sweep_forms.py',
-                        'check_qm_resolution.py', 'check_terminology.py'):
+                        'check_qm_resolution.py', 'check_terminology.py',
+                        'check_punctuation.py'):
             cmd.append(f'--lang={args.lang}')
         p = subprocess.run(cmd, cwd=str(ROOT), capture_output=True, text=True,
                            encoding='utf-8', errors='replace')

@@ -207,7 +207,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Coarse grained charge model: use formal charges (-1/0/1) and PyMOL's vdw radii. Note that missing sidechains of charged residues (e.g. GLU) will not contribute any charge!</source>
-      <translation>粗粒化电荷模型：使用形式电荷（-1/0/1）和 PyMOL 的 vdw 半径。注意：带电残基（如 GLU）缺失的侧链将不贡献任何电荷！</translation>
+      <translation>粗粒化电荷模型：使用形式电荷(-1/0/1)和 PyMOL 的 vdw 半径。注意：带电残基（如 GLU）缺失的侧链将不贡献任何电荷！</translation>
     </message>
     <message>
       <source>Colors</source>
@@ -399,7 +399,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>MOV (Quic&amp;kTime)</source>
-      <translation>MOV（QuickTime）(&amp;K)</translation>
+      <translation>MOV(QuickTime)(&amp;K)</translation>
     </message>
     <message>
       <source>MPEG &amp;1</source>
@@ -817,7 +817,7 @@ Alpha 通道背景。</translation>
     </message>
     <message>
       <source>Write segment identifier (segi) column</source>
-      <translation>写入分段标识符（segi）列</translation>
+      <translation>写入分段标识符(segi)列</translation>
     </message>
     <message>
       <source>all</source>

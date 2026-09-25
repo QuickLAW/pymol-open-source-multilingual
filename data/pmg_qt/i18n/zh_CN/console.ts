@@ -317,7 +317,7 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
     </message>
     <message>
       <source> feedback: Please specify masks:</source>
-      <translation> feedback：请指定掩码（mask）：</translation>
+      <translation> feedback：请指定掩码(mask)：</translation>
     </message>
     <message>
       <source> feedback: Please specify module names:</source>
@@ -381,11 +381,11 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
     </message>
     <message>
       <source>CEalign-Error: Your mobile selection is too short.</source>
-      <translation>CEalign 错误：您的动体（mobile）选择太短。</translation>
+      <translation>CEalign 错误：您的动体(mobile)选择太短。</translation>
     </message>
     <message>
       <source>CEalign-Error: Your target selection is too short.</source>
-      <translation>CEalign 错误：您的目标（target）选择太短。</translation>
+      <translation>CEalign 错误：您的目标(target)选择太短。</translation>
     </message>
     <message>
       <source>CEalign-Error: window size must be an integer greater than 2.</source>
@@ -552,7 +552,7 @@ Active "pymolrc" Files
   -L file   在所有内容之后再加载该文件（仅当此前已加载过内容）
   -m        内部使用 - 请勿使用（mac 外部 GUI）
   -M        强制单色显示
-  -n        内部使用 - 请勿使用（incentive_product=1）
+  -n        内部使用 - 请勿使用(incentive_product=1)
   -N name   不受支持 - 外部 GUI 类型 (pmg_qt 或 pmg_tk)（同 -w）
   -o        禁用安全保护
   -O N      sphere_mode=N
@@ -836,7 +836,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>Not a valid plugin filename (%s).</source>
-      <translation>不是有效的插件文件名（%s）。</translation>
+      <translation>不是有效的插件文件名(%s)。</translation>
     </message>
     <message>
       <source>Nothing on clipboard</source>
@@ -844,7 +844,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>PSE contains objects which cannot be unpickled (%s)</source>
-      <translation>PSE 含有无法反序列化的对象（%s）</translation>
+      <translation>PSE 含有无法反序列化的对象(%s)</translation>
     </message>
     <message>
       <source>Phosphate has been successfully added</source>
@@ -864,7 +864,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>Qt not available ({}), using GLUT/Tk interface</source>
-      <translation>Qt 不可用（{}），改用 GLUT/Tk 界面</translation>
+      <translation>Qt 不可用({})，改用 GLUT/Tk 界面</translation>
     </message>
     <message>
       <source>Restored default keybindings</source>
@@ -1064,7 +1064,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>name must not contain dots (%s).</source>
-      <translation>名称中不得包含圆点（%s）。</translation>
+      <translation>名称中不得包含圆点(%s)。</translation>
     </message>
     <message>
       <source>need at least 2 selection</source>
@@ -1116,7 +1116,7 @@ Active "pymolrc" Files
     </message>
     <message>
       <source>pH value %s out of range (0-14)</source>
-      <translation>pH 值 %s 超出范围（0-14）</translation>
+      <translation>pH 值 %s 超出范围(0-14)</translation>
     </message>
     <message>
       <source>phase name missing</source>

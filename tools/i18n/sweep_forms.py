@@ -40,6 +40,10 @@ NON_TRANSLATABLE = {
     'apbs', 'pdb2pqr', 'prepwizard (SCHRODINGER)', 'ffmpeg',
     'GIF(&I)', 'mpeg_encode', 'protein_assign_charges_and_radii',
     'apbs_map', 'apbs_ramp',
+    # container/codec name with Qt's mnemonic suffix; nothing to translate.
+    # It only became visible once the punctuation rule stopped letting a
+    # fullwidth bracket pass as "this label is localised".
+    'MOV(QuickTime)(&K)',
 }
 
 

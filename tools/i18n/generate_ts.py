@@ -365,6 +365,9 @@ from translations_console_zh import CONSOLE_ZH
 
 TRANSLATIONS["zh_CN"].update(CONSOLE_ZH)
 
+# Fullwidth brackets belong around Chinese, not around %s or 0-14
+from check_punctuation import normalize_parens
+
 # Descriptions from pymol/shortcut_dict.py, translated at render time
 from translations_shortcut_zh import SHORTCUT_ZH
 
@@ -1154,7 +1157,9 @@ def build_ts_xml(context: str, translations: dict[str, str]) -> str:
     lines.append('  <context>')
     lines.append(f'    <name>{_xml_escape(context)}</name>')
     for source in sorted(translations):
-        trans = translations[source]
+        # One place where every .ts is written, so the CJK punctuation rule
+        # applies to zh_CN and to every locale derived from it alike.
+        trans = normalize_parens(translations[source])
         lines.append('    <message>')
         lines.append(f'      <source>{_xml_escape(source)}</source>')
         if trans:
