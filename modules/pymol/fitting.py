@@ -1,3 +1,4 @@
+from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -79,13 +80,13 @@ SEE ALSO
                 ids2 = [a.id for a in mod2.atom]
 
                 if len(sel1) < 2 * window:
-                        print("CEalign-Error: Your target selection is too short.")
+                        print(ctr("CEalign-Error: Your target selection is too short."))
                         raise pymol.CmdException
                 if len(sel2) < 2 * window:
-                        print("CEalign-Error: Your mobile selection is too short.")
+                        print(ctr("CEalign-Error: Your mobile selection is too short."))
                         raise pymol.CmdException
                 if window < 3:
-                        print("CEalign-Error: window size must be an integer greater than 2.")
+                        print(ctr("CEalign-Error: window size must be an integer greater than 2."))
                         raise pymol.CmdException
                 if int(gap_max) < 0:
                         print("CEalign-Error: gap_max must be a positive integer.")
@@ -512,7 +513,7 @@ SEE ALSO
                         for a in r:
                                 if a>=0.0:
                                         if mix:
-                                                print(" cmd.intra_fit: %5.3f in state %d vs mixed target"%(a,st))
+                                                print(ctr(" cmd.intra_fit: %5.3f in state %d vs mixed target")%(a,st))
                                         else:
                                                 print(" cmd.intra_fit: %5.3f in state %d vs state %d"%(a,st,state))
                                 st = st + 1

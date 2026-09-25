@@ -19,6 +19,7 @@ import io as StringIO
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib import parse
 from urllib.request import urlopen
+from pymol.console_i18n import ctr
 
 
 # NOTE: Let's attempt to follow Python PEP 8 for coding style for this
@@ -491,7 +492,7 @@ class PymolHttpd:
             self.server.handle_request()
 
     def start(self):
-        print ( " PyMOL-HTTPd: serving requests on http://localhost:%d" %
+        print ( ctr(" PyMOL-HTTPd: serving requests on http://localhost:%d") %
                 self.port )
         t = threading.Thread(target=self._server_thread)
         t.setDaemon(1)

@@ -13,6 +13,7 @@
 #Z* -------------------------------------------------------------------
 
 import sys
+from pymol.console_i18n import ctr
 
 cmd = __import__("sys").modules["pymol.cmd"]
 import pymol
@@ -323,7 +324,7 @@ NOTES
             state = _self.get("state",obj)
         m = _self.get_model(selection + " and " + obj,state)
         if len(m.atom)==0:
-            print(" Warning: No atoms in state %d for object %s" % (state,obj))
+            print(ctr(" Warning: No atoms in state %d for object %s") % (state,obj))
         if implicit!=False:
             result += m.get_implicit_mass()
         else:
@@ -355,22 +356,22 @@ def protein_assign_charges_and_radii(obj_name,_self=cmd):
     # make sure all atoms are included...
     cmd.alter(obj_name,"q=1.0",quiet=1)
 
-    print(" Util: Fixing termini and assigning formal charges...")
+    print(ctr(" Util: Fixing termini and assigning formal charges..."))
 
     assign.missing_c_termini(obj_name,quiet=1,_self=_self)
 
     while not assign.formal_charges(obj_name,quiet=1,_self=_self):
-        print(" WARNING: unrecognized or incomplete residues are being deleted:")
+        print(ctr(" WARNING: unrecognized or incomplete residues are being deleted:"))
         cmd.iterate("(byres ("+obj_name+" and flag 23)) and flag 31",
                         'print("  "+model+"/"+segi+"/"+chain+"/"+resn+"`"+resi+"/")',quiet=1)
         cmd.remove("byres ("+obj_name+" and flag 23)") # get rid of residues that weren't assigned
         assign.missing_c_termini(obj_name,quiet=1,_self=_self)
 
-    print(" Util: Assigning Amber 99 charges and radii...")
+    print(ctr(" Util: Assigning Amber 99 charges and radii..."))
 
     cmd.h_add(obj_name)
     if not assign.amber99(obj_name,quiet=1,_self=_self):
-        print(" WARNING: some unassigned atoms are being deleted:")
+        print(ctr(" WARNING: some unassigned atoms are being deleted:"))
         cmd.iterate("byres ("+obj_name+" and flag 23)",
                         'print("  "+model+"/"+segi+"/"+chain+"/"+resn+"`"+resi+"/"+name+"? ["+elem+"]")',quiet=1)
         cmd.remove(obj_name+" and flag 23") # get rid of any atoms that weren't assigned
@@ -380,14 +381,14 @@ def protein_assign_charges_and_radii(obj_name,_self=cmd):
     formal = sum_formal_charges(obj_name,quiet=0,_self=_self)
     partial = sum_partial_charges(obj_name,quiet=0,_self=_self)
     if round(formal)!=round(partial):
-        print(" WARNING: formal and partial charge sums don't match -- there is a problem!")
+        print(ctr(" WARNING: formal and partial charge sums don't match -- there is a problem!"))
 
 def protein_vacuum_esp(selection, mode=2, border=10.0, quiet = 1, _self=cmd):
     cmd=_self
 
     if (selection.split() != [selection] or
          selection not in cmd.get_names('objects')):
-        print(" Error: must provide an object name")
+        print(ctr(" Error: must provide an object name"))
         raise cmd.QuietException
     obj_name = selection + "_e_chg"
     map_name = selection + "_e_map"
@@ -410,7 +411,7 @@ def protein_vacuum_esp(selection, mode=2, border=10.0, quiet = 1, _self=cmd):
 
     sep = max_length/50.0
     if sep<1.0: sep = 1.0
-    print(" Util: Calculating electrostatic potential...")
+    print(ctr(" Util: Calculating electrostatic potential..."))
     if mode==0: # absolute, no cutoff
         cmd.map_new(map_name,"coulomb",sep,obj_name,border)
     elif mode==1: # neutral, no cutoff
@@ -1178,7 +1179,7 @@ SEE ALSO
 
         if outfile:
             handle.close()
-            print(" Written results to %s" % (outfile))
+            print(ctr(" Written results to %s") % (outfile))
 
         if vis:
             _self.label('?%s & guide' % (sele), '"%.1f" % ' + var)

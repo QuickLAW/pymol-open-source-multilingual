@@ -15,6 +15,7 @@
 import pymol
 from pymol.shortcut import Shortcut
 from .constants import CURRENT_STATE, ALL_STATES
+from pymol.console_i18n import ctr
 
 
 class _AtomProxy:
@@ -1532,8 +1533,8 @@ SEE ALSO
                                    quiet, exe, is_v3, _self=_self)
             else:
                 if not quiet:
-                    print(" protonate: pdb2pqr not found, using "
-                          "textbook pKa values")
+                    print(ctr(" protonate: pdb2pqr not found, using "
+                          "textbook pKa values"))
                 _protonate_fallback(selection, obj_name, pH, state,
                                     quiet, _self=_self)
 
@@ -1595,7 +1596,7 @@ SEE ALSO
     '''
         r = DEFAULT_ERROR
         if "pk1" not in _self.get_names("selections"):
-            print(" Error: you must first pick an atom to replace.")
+            print(ctr(" Error: you must first pick an atom to replace."))
             raise pymol.CmdException
         try:
             if h_fill: # strip off existing hydrogens
@@ -3038,7 +3039,7 @@ DESCRIPTION
         _self.flag('ignore', '(%s) and resn MSE' % (selection), 'clear')
         _self.alter('(%s) and resn MSE' % selection, 'resn="MET";type="ATOM"')
         if not int(quiet):
-            print(' Altered %d MSE residues to MET' % (x))
+            print(ctr(' Altered %d MSE residues to MET') % (x))
 
 
     def _base(i, numerals, _emptyzero=False):
@@ -3156,6 +3157,6 @@ SEE ALSO
 
             if not int(quiet):
                 n = _self.count_atoms(temp)
-                print(' Copied %d atoms to object %s' % (n, name))
+                print(ctr(' Copied %d atoms to object %s') % (n, name))
         finally:
             _self.delete(temp)

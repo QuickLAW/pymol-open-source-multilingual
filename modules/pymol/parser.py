@@ -1,3 +1,4 @@
+from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -357,7 +358,7 @@ if True:
                                                     layer.embed_list = list
                                                     layer.embed_type = 0 # not a python block
                                                 else:
-                                                    print('Error: embed only legal in special files (e.g. p1m)')
+                                                    print(ctr('Error: embed only legal in special files (e.g. p1m)'))
                                                     raise None
                                             elif (layer.kw[4]==parsing.SKIP):
                                                 layer.next = []
@@ -389,13 +390,13 @@ if True:
                                                         layer.embed_type = 1 # python block
                                                     layer.embed_line = 0
                                                 else:
-                                                    print('Error: Python blocks disallowed in this file.')
+                                                    print(ctr('Error: Python blocks disallowed in this file.'))
                                                     raise None
                                             else:
                                                 print('Error: unknown keyword mode: '+str(layer.kw[4]))
                                                 raise QuietException
                                         else:
-                                            print('Error: invalid arguments for %s command.' % com)
+                                            print(ctr('Error: invalid arguments for %s command.') % com)
         #
         # non-keyword command handling
         #
@@ -408,7 +409,7 @@ if True:
                                             nest_securely = secure
                                         if re.search(r"\.py$|\.pym$",path) is not None:
                                             if self.cmd._feedback(fb_module.parser,fb_mask.warnings):
-                                                print("Warning: use 'run' instead of '@' with Python files?")
+                                                print(ctr("Warning: use 'run' instead of '@' with Python files?"))
                                         layer.script = open(path,'r')
                                         self.cmd._pymol.__script__ = path
                                         self.nest=self.nest+1
@@ -573,7 +574,7 @@ if True:
 
                     lf = len(flist)
                     if lf == 0:
-                        print(" parser: no matching files.")
+                        print(ctr(" parser: no matching files."))
                     elif lf==1:
                         result = flist[0]
                         if os.path.isdir(flist[0]):

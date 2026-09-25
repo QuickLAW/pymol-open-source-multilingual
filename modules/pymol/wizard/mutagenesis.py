@@ -6,6 +6,7 @@ from copy import deepcopy
 import pymol
 import os
 import traceback
+from pymol.console_i18n import ctr
 
 src_sele = "_mutate_sel"
 bump_name = "_bump_check"
@@ -331,7 +332,7 @@ class Mutagenesis(Wizard):
             try:
                 new_name = cmd.get_object_list(src_sele)[0]
             except IndexError:
-                print(" Mutagenesis: object not found.")
+                print(ctr(" Mutagenesis: object not found."))
                 return
 
             if True:
@@ -655,7 +656,7 @@ class Mutagenesis(Wizard):
             cmd.delete(mut_sele)
         else:
             cmd.create(obj_name,frag_name,1,1)
-            print(" Mutagenesis: no rotamers found in library.")
+            print(ctr(" Mutagenesis: no rotamers found in library."))
         cmd.set("seq_view",0,obj_name,quiet=1)
         pymol.util.cbaw(obj_name, _self=cmd)
         cmd.hide("("+obj_name+")")

@@ -14,6 +14,7 @@
 
 from pymol.shortcut import Shortcut
 from . import colorprinting
+from pymol.console_i18n import ctr
 
 if True:
 
@@ -694,7 +695,7 @@ SEE ALSO
             if True:
                 if (_self.get_setting_int("logging") != 0) and (output<3):
                     if not quiet:
-                        print(" get_view: matrix written to log file.")
+                        print(ctr(" get_view: matrix written to log file."))
                     _self.log("_ set_view (\\\n","cmd.set_view((\\\n")
                     _self.log("_  %14.9f, %14.9f, %14.9f,\\\n"%r[0:3]  ,
                               "  %14.9f, %14.9f, %14.9f,\\\n"%r[0:3])
@@ -881,7 +882,7 @@ PYMOL API
         if _self.get_setting_int("logging") and output < 3:
             _self.log(f"_ viewport {r[0]}, {r[1]}\n", f"cmd.viewport{r}\n")
             if not quiet:
-                print(" get_viewport: data written to log file.")
+                print(ctr(" get_viewport: data written to log file."))
             if output < 2:  # suppress if we have a log file open
                 output = 0
 
@@ -2024,7 +2025,7 @@ DESCRIPTION
             v_list = [float(v) for v in e_list if v is not None]
         except (TypeError, ValueError):
             if not quiet:
-                print(' Spectrum: Expression is non-numeric, enumerating values')
+                print(ctr(' Spectrum: Expression is non-numeric, enumerating values'))
             v_list = e_list = list(map(sorted(set(e_list)).index, e_list))
 
         if not v_list:

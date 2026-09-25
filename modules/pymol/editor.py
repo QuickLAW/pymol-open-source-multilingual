@@ -2,6 +2,7 @@ import math
 
 import re
 import pymol
+from pymol.console_i18n import ctr
 cmd = __import__("sys").modules["pymol.cmd"]
 from . import setting
 from . import parsing
@@ -126,7 +127,7 @@ ARGUMENTS
             object = amino_acid
         # create new object
         if amino_acid in _self.get_names("objects"):
-            print("Error: an object with than name already exists")
+            print(ctr("Error: an object with than name already exists"))
             raise QuietException
         r = _self.fragment(amino_acid,object)
         if not hydro:
@@ -136,15 +137,15 @@ ARGUMENTS
         elif _self.count_atoms("((%s) and name N)"%object):
             _self.edit("((%s) and name N)"%object)
     elif _self.select(tmp_connect,"(%s) & elem N,C"%selection) != 1:
-        print("Error: invalid connection point: must be one atom, name N or C.")
+        print(ctr("Error: invalid connection point: must be one atom, name N or C."))
         _self.delete(tmp_wild)
         raise QuietException
     elif amino_acid in ["nhh","nme"] and _self.select(tmp_connect,"(%s) & elem C"%selection) != 1:
-        print("Error: invalid connection point: must be C for residue '%s'"%(amino_acid))
+        print(ctr("Error: invalid connection point: must be C for residue '%s'")%(amino_acid))
         _self.delete(tmp_wild)
         raise QuietException
     elif amino_acid in ["ace"] and _self.select(tmp_connect,"(%s) & elem N"%selection) != 1:
-        print("Error: invalid connection point: must be N for residue '%s'"%(amino_acid))
+        print(ctr("Error: invalid connection point: must be N for residue '%s'")%(amino_acid))
         _self.delete(tmp_wild)
         raise QuietException
     else:
@@ -280,11 +281,11 @@ ARGUMENTS
             else:
                 _self.unpick()
         elif _self.count_atoms("((%s) and elem H)"%selection):
-            print("Error: please pick a nitrogen or carbonyl carbon to grow from.")
+            print(ctr("Error: please pick a nitrogen or carbonyl carbon to grow from."))
             _self.delete(tmp_wild)
             raise QuietException
         else:
-            print("Error: unable to attach fragment.")
+            print(ctr("Error: unable to attach fragment."))
             _self.delete(tmp_wild)
             raise QuietException
     _self.delete(tmp_wild)
@@ -353,7 +354,7 @@ def _fab(input,name,mode,resi,chain,segi,state,dir,hydro,ss,quiet,_self=cmd):
 
     if mode in [ 'peptide' ]:  # polymers
         if (seq_len>99) and not quiet:
-            print(" Generating a %d residue peptide from sequence..."%seq_len)
+            print(ctr(" Generating a %d residue peptide from sequence...")%seq_len)
         input.reverse()
         sequence = input
         if code is not None:
@@ -613,7 +614,7 @@ def attach_O5_phosphate(_self=cmd):
     if "pk1" not in _self.get_names("selections"):
         raise pymol.CmdException("Selection must be pk1 to attach O5' phosphate")
 
-    print("This building selection has an unphosphorylated O5' end.")
+    print(ctr("This building selection has an unphosphorylated O5' end."))
     attach_fragment("pk1","phosphite",4,0)
     # Initailize selection strings
     P_center = _prefix + "_P_center"
@@ -661,7 +662,7 @@ def check_DNA_base_pair(sele_oppo_atom, selection, *, _self=cmd):
         else:
             base_pair_bool = 0
     else:
-        print("check_DNA_base_pair has no opposing residue to check")
+        print(ctr("check_DNA_base_pair has no opposing residue to check"))
     return base_pair_bool
 
 def get_chains_oppo (chain, tmp_connect, *, _self=cmd):
@@ -686,10 +687,10 @@ def get_new_chain (chain, tmp_connect, *, _self=cmd):
             new_chain_back = chr(ord(last_chain_back)+1)
         elif last_chain_back == 'Z':
             new_chain_back = "ZA"
-            print("Z chain was detected. New chain will append A")
+            print(ctr("Z chain was detected. New chain will append A"))
         else:
             new_chain_back = "za"
-            print("z chain was detected. New chain will append a")
+            print(ctr("z chain was detected. New chain will append a"))
     else:
         new_chain_back = "A"
 
@@ -719,7 +720,7 @@ def bond_single_stranded(tmp_editor, object, chain, resv, last_resi_sele, atom_s
     object_fuse = _prefix + f"_{chain}_fuse"
     object_connect = _prefix + f"_{chain}_con"
 
-    print("The program did not detect a double stranded structure, so the opposing residue will not be attached.")
+    print(ctr("The program did not detect a double stranded structure, so the opposing residue will not be attached."))
 
     # Select and fuse
     _self.select(object_fuse, f"{last_resi_sele} & name {atom_selection_name}")
@@ -733,9 +734,9 @@ def bond_single_stranded(tmp_editor, object, chain, resv, last_resi_sele, atom_s
         if (_self.select(bond_dist, f"{object_connect} within 3.0 of {object_bond_target}") != 0):
             _self.bond(object_connect, object_bond_target)
         else:
-            print("Identified bond targets were too far apart, so this will not be bound")
+            print(ctr("Identified bond targets were too far apart, so this will not be bound"))
     else:
-        print("More than one bond target was identified, so this will not be bound")
+        print(ctr("More than one bond target was identified, so this will not be bound"))
 
 def bond_double_stranded(tmp_editor, object, chain, chain_oppo, resv, resv_oppo, last_resi_sele, prev_oppo_res, atom_selection_name,
                          atom_name_oppo, *, _self=cmd):
@@ -772,9 +773,9 @@ def bond_double_stranded(tmp_editor, object, chain, chain_oppo, resv, resv_oppo,
         if (_self.select(bond_dist, f"{object_connect} within 3.0 of {object_bond_target}") != 0):
             _self.bond(object_connect, object_bond_target)
         else:
-            print("Identified bond targets were too far apart, so this will not be bound")
+            print(ctr("Identified bond targets were too far apart, so this will not be bound"))
     else:
-        print("More than one bond target was found on selected chain, so this will not be bound.")
+        print(ctr("More than one bond target was found on selected chain, so this will not be bound."))
 
     if ((_self.select(object_oppo_bond_target, f"{object} & resi \\{resv_oppo} & name {atom_selection_name} & {_chain_sel(chain_oppo)}") == 1) and
         (_self.select(object_oppo_connect, f"{prev_oppo_res} & name {atom_name_oppo} & {_chain_sel(chain_oppo)}") == 1)):
@@ -782,9 +783,9 @@ def bond_double_stranded(tmp_editor, object, chain, chain_oppo, resv, resv_oppo,
         if (_self.select(bond_dist, f"{object_oppo_connect} within 3.0 of {object_oppo_bond_target}") != 0):
             _self.bond(object_oppo_connect, object_oppo_bond_target)
         else:
-            print("Identified bond targets were too far apart, so this will not be bound")
+            print(ctr("Identified bond targets were too far apart, so this will not be bound"))
     else:
-        print("More than one bond target was found on opposing chain, so this will not be bound.")
+        print(ctr("More than one bond target was found on opposing chain, so this will not be bound."))
 
 def attach_nuc_acid(selection, nuc_acid, nuc_type, object= "", form ="B",
                         dbl_helix=True, *, _self=cmd):
@@ -959,7 +960,7 @@ def extend_nuc_acid(nascent, nascent_partner, selection,
                 same_base_flag = _self.select(same_oppo_res, f"({object} and (byres {last_oppo_atom}) and (byres {first_oppo_atom}))")
 
                 if ((base_pair_first == 1 or base_pair_last == 1) and base_pair_result == 1 and same_base_flag == 0):
-                    print("Multiple residues meet base pairing requirements. Building as if no opposing strand detected.")
+                    print(ctr("Multiple residues meet base pairing requirements. Building as if no opposing strand detected."))
                     base_pair_result = 0
                     break
                 elif (base_pair_first == 1 and base_pair_last ==1):
@@ -985,7 +986,7 @@ def extend_nuc_acid(nascent, nascent_partner, selection,
                     chain_oppo = tmp_chain_oppo
                     _self.select(end_oppo_atom,first_oppo_atom)
                 else:
-                    print("No based pair was found on chain ", tmp_chain_oppo)
+                    print(ctr("No based pair was found on chain "), tmp_chain_oppo)
 
             if (base_pair_result == 1):
                 double_stranded_bool = True
@@ -1034,7 +1035,7 @@ def extend_nuc_acid(nascent, nascent_partner, selection,
                     _self.select(prev_oppo_res, f"byres ({prev_oppo_res})")
 
                     if (_self.select(tmp_phosphate_check, f"{prev_oppo_res} and name P")==1):
-                        print("Phosphate has been successfully added")
+                        print(ctr("Phosphate has been successfully added"))
 
             # Move the fragment
             move_new_res(frag_string, tmp_editor, last_resi_sele, prev_oppo_res, double_stranded_bool, nascent.form, antisense=reverse)
@@ -1143,7 +1144,7 @@ EXAMPLE
     if mode not in ('DNA', 'RNA'):
         raise pymol.CmdException("\"mode\" must be \"DNA\" or \"RNA\" only.")
     if mode == "RNA" and dbl_helix != 0:
-        print ("Double helix RNA building is not currently supported.")
+        print (ctr("Double helix RNA building is not currently supported."))
         dbl_helix = 0
 
     #first pass for error checking

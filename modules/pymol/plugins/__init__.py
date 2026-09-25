@@ -13,6 +13,7 @@ from pymol import cmd
 from pymol import colorprinting
 from pymol.shortcut import Shortcut
 from .legacysupport import *
+from pymol.console_i18n import ctr
 
 # variables
 

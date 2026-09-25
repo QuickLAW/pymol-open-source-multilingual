@@ -1,3 +1,4 @@
+from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -205,7 +206,7 @@ if True:
                         r'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
                     return winreg.QueryValueEx(key, "Personal")[0]
             except:
-                print(' Warning: failed to query "My Documents" from registry')
+                print(ctr(' Warning: failed to query "My Documents" from registry'))
         return os.path.expanduser('~')
 
     def get_user_config():
@@ -273,9 +274,9 @@ if True:
                             print(helptext2)
                         sys.exit()
                     elif a == "--retina":
-                        print("Warning: --retina option has been removed")
+                        print(ctr("Warning: --retina option has been removed"))
                     elif a == "--nospnav":
-                        print(' Warning: --nospnav not available in Open-Source PyMOL')
+                        print(ctr(' Warning: --nospnav not available in Open-Source PyMOL'))
                     elif a == "--gldebug":
                         options.gldebug = 1
                     elif a == "--testing":
@@ -438,7 +439,7 @@ if True:
                             # clear PYMOL_WD, which may be set by MacPyMOL
                             os.environ.pop('PYMOL_WD', None)
                         except OSError:
-                            print(" Error: could not chdir to", repr(path))
+                            print(ctr(" Error: could not chdir to"), repr(path))
                     if ("l" in a):
                         options.deferred.append("_do_spawn %s"%av.pop())
                     if ("r" in a):

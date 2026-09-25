@@ -4,6 +4,7 @@ from pymol import setting
 from pymol import save_shortcut as shortcut_saver
 from pymol.keyboard import get_default_keys
 from pymol.shortcut_dict import shortcut_dict_ref
+from pymol.console_i18n import ctr
 
 class ShortcutIndex(IntEnum):
     COMMAND = 0
@@ -104,7 +105,7 @@ class ShortcutManager():
                 elif isinstance(binding,tuple):
                     self.cmd.set_key(key,binding[0],binding[1],binding[2])
                 else:
-                    print("Incorrect type found when resetting defaults")
+                    print(ctr("Incorrect type found when resetting defaults"))
             else:
                 self.cmd.set_key(key,'')
                 delete_keys.append(key)
@@ -113,7 +114,7 @@ class ShortcutManager():
             del self.cmd.shortcut_dict[key]
             del self.cmd.key_mappings[key]
 
-        print("Restored default keybindings")
+        print(ctr("Restored default keybindings"))
 
     def create_new_shortcut(self, new_key, new_binding):
         '''
@@ -124,7 +125,7 @@ class ShortcutManager():
                 self.cmd.set_key(new_key,new_binding)
                 print('Assigning ',new_key, ' to ',new_binding)
             except Exception:
-                print("This cannot be bound.")
+                print(ctr("This cannot be bound."))
             else:
                 self.cmd.shortcut_dict.update({new_key:['','',new_binding]})
         elif new_key in self.cmd.shortcut_dict:
@@ -132,8 +133,8 @@ class ShortcutManager():
                 self.cmd.set_key(new_key,new_binding)
                 print('Assigning ',new_key, ' to ',new_binding)
             except Exception:
-                print("This cannot be bound.")
+                print(ctr("This cannot be bound."))
             else:
                 self.cmd.shortcut_dict[new_key][2] = new_binding
         else:
-            print("This key is reserved.")
+            print(ctr("This key is reserved."))

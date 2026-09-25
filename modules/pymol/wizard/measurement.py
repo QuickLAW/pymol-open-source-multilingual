@@ -3,6 +3,7 @@ from pymol import cmd
 import pymol
 
 import traceback
+from pymol.console_i18n import ctr
 
 sele_prefix = "_mw"
 sele_prefix_len = len(sele_prefix)
@@ -463,7 +464,7 @@ class Measurement(Wizard):
                 if cnt:
                     self.cmd.dist(obj_name,"(pk1)",sele_prefix,cutoff=cutoffType,reset=reset)
                 else:
-                    print(" Wizard: No neighbors found.")
+                    print(ctr(" Wizard: No neighbors found."))
                 self.clear_input()
                 self.cmd.unpick()
                 self.cmd.enable(obj_name)

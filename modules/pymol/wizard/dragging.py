@@ -3,6 +3,7 @@ from pymol import cmd
 import pymol
 import types
 import threading
+from pymol.console_i18n import ctr
 
 drag_sele = "_drag"
 
@@ -29,10 +30,10 @@ class Dragging(Wizard):
             if self.atom_count:
                 obj_list = self.cmd.get_object_list(drag_sele)
                 self.obj = obj_list[0]
-                print(' Dragging %s atoms in object "%s".'%(self.atom_count,self.obj))
+                print(ctr(' Dragging %s atoms in object "%s".')%(self.atom_count,self.obj))
             else:
                 self.obj = self.cmd.get_drag_object_name();
-                print(' Dragging whole object "%s".'%self.obj)
+                print(ctr(' Dragging whole object "%s".')%self.obj)
             self.cmd.refresh_wizard()
 #        self.cmd.enable(drag_sele)
 #        t = threading.Thread(target=delayed_disable,args=(drag_sele,0.5))

@@ -13,6 +13,7 @@
 #Z* -------------------------------------------------------------------
 
 from .constants import CURRENT_STATE, ALL_STATES
+from pymol.console_i18n import ctr
 
 if True:
 
@@ -170,7 +171,7 @@ PYMOL API
                         print(" get_symmetry: Alpha = %7.3f Beta = %7.3f Gamma = %7.3f"%tuple(r[3:6]))
                         print(" get_symmetry: SpaceGroup = %s"%r[6])
             else:
-                        print(" get_symmetry: No symmetry defined.")
+                        print(ctr(" get_symmetry: No symmetry defined."))
         return r
 
     def get_title(object, state, quiet=1, *, _self=cmd):
@@ -231,17 +232,17 @@ SEE ALSO
         if selection1=="(pk1)":
             if "pk1" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk1' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk1' selection is undefined."))
                 r = DEFAULT_ERROR
         if selection2=="(pk2)":
             if "pk2" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk2' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk2' selection is undefined."))
                 r = DEFAULT_ERROR
         if selection3=="(pk3)":
             if "pk3" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk3' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk3' selection is undefined."))
                 r = DEFAULT_ERROR
         if is_ok(r):
             r = DEFAULT_ERROR
@@ -316,22 +317,22 @@ SEE ALSO
         if selection1=="(pk1)":
             if "pk1" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk1' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk1' selection is undefined."))
                 r = DEFAULT_ERROR
         if selection2=="(pk2)":
             if "pk2" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk2' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk2' selection is undefined."))
                 r = DEFAULT_ERROR
         if selection3=="(pk3)":
             if "pk3" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk3' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk3' selection is undefined."))
                 r = DEFAULT_ERROR
         if selection3=="(pk4)":
             if "pk4" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk4' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk4' selection is undefined."))
                 r = DEFAULT_ERROR
         if is_ok(r):
             r = DEFAULT_ERROR
@@ -464,12 +465,12 @@ PYMOL API
         if selection1=="(pk1)":
             if "pk1" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk1' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk1' selection is undefined."))
                 r = DEFAULT_ERROR
         if selection2=="(pk2)":
             if "pk2" not in _self.get_names('selections'):
                 if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                    print("cmd-Error: The 'pk2' selection is undefined.")
+                    print(ctr("cmd-Error: The 'pk2' selection is undefined."))
                 r = DEFAULT_ERROR
         if is_ok(r):
             r = DEFAULT_ERROR
@@ -696,7 +697,7 @@ PYMOL API
             if result == 0:
                 print(' Save: wrote "' + filename + '".')
             else:
-                print(' Save-Error: no file written')
+                print(ctr(' Save-Error: no file written'))
 
         return result
 
@@ -832,7 +833,7 @@ NOTES
         if mode in (1, 2):
             print(' Warning: use get_color_indices instead of get_color_tuple(mode={})'.format(mode))
         elif mode == 3:
-            print(' Warning: use get_color_index instead of get_color_tuple(mode=3)')
+            print(ctr(' Warning: use get_color_index instead of get_color_tuple(mode=3)'))
         with _self.lockcm:
             r = _cmd.get_color(_self._COb,name,mode)
             if r is None:
@@ -870,7 +871,7 @@ DESCRIPTION
             r = _cmd.get_renderer(_self._COb)
 
         if not int(quiet):
-            print(" OpenGL graphics engine:")
+            print(ctr(" OpenGL graphics engine:"))
             print("  GL_VENDOR:   ", r[0])
             print("  GL_RENDERER: ", r[1])
             print("  GL_VERSION:  ", r[2])
@@ -1257,11 +1258,11 @@ PYMOL API
         ll = len(l)
         if not ll:
             if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                print("cmd-Error: atom %s not found by id_atom." % selection)
+                print(ctr("cmd-Error: atom %s not found by id_atom.") % selection)
             if _self._raising(_self=_self): raise pymol.CmdException
         elif ll>1:
             if _feedback(fb_module.cmd,fb_mask.errors,_self):
-                print("cmd-Error: multiple atoms %s found by id_atom." % selection)
+                print(ctr("cmd-Error: multiple atoms %s found by id_atom.") % selection)
             if _self._raising(_self=_self): raise pymol.CmdException
         else:
             r = l[0]
@@ -1578,7 +1579,7 @@ SEE ALSO
 
         com = cpv.scale(com, 1./totmass)
         if not quiet:
-            print(' Center of Mass: [%8.3f,%8.3f,%8.3f]' % tuple(com))
+            print(ctr(' Center of Mass: [%8.3f,%8.3f,%8.3f]') % tuple(com))
         return com
 
     def cif_get_array(name, key, dtype="s", quiet=1, *, _self=cmd):

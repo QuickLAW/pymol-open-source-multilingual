@@ -14,6 +14,7 @@
 
 from pymol.shortcut import Shortcut
 from . import colorprinting
+from pymol.console_i18n import ctr
 
 if True:
     import os
@@ -120,7 +121,7 @@ PYMOL API
                     _self.scene(scene_list[0],animate=0)
                 else:
                     if not quiet:
-                        print(" cache: no scenes defined -- optimizing current display.")
+                        print(ctr(" cache: no scenes defined -- optimizing current display."))
                     _self.rebuild()
                     _self.refresh()
             usage = _self._cache_purge(-1)
@@ -395,7 +396,7 @@ NOTES
         if True:
             legacypickle = (0 < pse_export_version < 1.9)
             if legacypickle:
-                print(' Using Python 2 compatible legacy pickler')
+                print(ctr(' Using Python 2 compatible legacy pickler'))
             cPickle.configure_legacy_dump(legacypickle)
 
         if legacyscenes:
@@ -462,7 +463,7 @@ NOTES
                 try:
                     _session_convert_legacy(session, pse_export_version, _self)
                 except Exception as e:
-                    print(' Warning: failed to backport session:', e)
+                    print(ctr(' Warning: failed to backport session:'), e)
 
             if(compress<0):
                 compress = _self.get_setting_boolean('session_compression')
@@ -593,7 +594,7 @@ PYMOL API
             if prior != PRIOR_TRY:
                 raise pymol.CmdException("no prior image available")
 
-            print("no prior image available, fall back to rendering")
+            print(ctr("no prior image available, fall back to rendering"))
             prior = PRIOR_NO
 
         if ray:
@@ -848,7 +849,7 @@ SEE ALSO
                     # always use unix-like path separators
                     filename.replace("\\", "/"), quiet=1)
             if not quiet:
-                print(" Save: Please wait -- writing session file...")
+                print(ctr(" Save: Please wait -- writing session file..."))
 
         func_type4 = {
             'mmod': io.mmd.toFile,
@@ -930,7 +931,7 @@ SEE ALSO
             if r == DEFAULT_SUCCESS:
                 print(' Save: wrote "' + filename + '".')
             else:
-                print(' Save-Error: no file written')
+                print(ctr(' Save-Error: no file written'))
 
         return r
 

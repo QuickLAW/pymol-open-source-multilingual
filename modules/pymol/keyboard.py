@@ -1,4 +1,5 @@
 from . import editor
+from pymol.console_i18n import ctr
 cmd = __import__("sys").modules["pymol.cmd"]
 from .cmd import DEFAULT_SUCCESS, DEFAULT_ERROR
 
@@ -55,14 +56,14 @@ ARGUMENTS
     if action in (_kPaste, "paste"):
         clipobj = space.get_clipboard_object()
         if not clipobj:
-            print("Nothing on clipboard")
+            print(ctr("Nothing on clipboard"))
         else:
             _self.copy(_self.get_unused_name("obj"), clipobj, zoom=0)
         return
 
     sels = _self.get_names("public_selections", enabled_only=1)
     if not sels:
-        print("No active selection")
+        print(ctr("No active selection"))
         return
 
     sel = sels[0]

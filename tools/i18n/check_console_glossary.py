@@ -1,0 +1,68 @@
+"""Guard the console glossary against the three ways it can silently break.
+
+A mistranslated console string is worse than an untranslated one: these
+messages go through Python's ``%`` operator, so reordering or dropping a
+specifier swaps or crashes values at runtime, and dropping the leading
+spaces misaligns indented output. Nothing else in the pipeline would notice.
+
+Checks every string the AST says is wrapped in ctr():
+  * it has a glossary entry            (coverage)
+  * no entry is orphaned               (typos in a key are otherwise invisible)
+  * %s/%d/%.3f specifiers match in ORDER
+  * leading/trailing whitespace matches
+"""
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
+import audit_coverage as ac
+from translations_console_zh import CONSOLE_ZH
+
+SPEC = re.compile(r'%(?:\d+\$)?[-+ #0]*[\d.]*[sdifgeExXcr%]')
+
+
+def specs(text: str) -> list[str]:
+    return [s for s in SPEC.findall(text) if s != '%%']
+
+
+def main() -> int:
+    _, wrapped, _ = ac.scan_sources()
+    runtime = {t for (c, t) in wrapped if c == 'Console'}
+
+    errors = []
+
+    missing = sorted(runtime - set(CONSOLE_ZH))
+    for t in missing:
+        errors.append(f'NO TRANSLATION: {t!r}')
+
+    orphan = sorted(set(CONSOLE_ZH) - runtime)
+    for t in orphan:
+        errors.append(f'UNUSED KEY (typo?): {t!r}')
+
+    for t in sorted(runtime & set(CONSOLE_ZH)):
+        z = CONSOLE_ZH[t]
+        if specs(t) != specs(z):
+            errors.append(
+                f'SPECIFIER MISMATCH {specs(t)} -> {specs(z)} for {t!r}')
+        if len(t) - len(t.lstrip(' ')) != len(z) - len(z.lstrip(' ')):
+            errors.append(f'LEADING SPACES CHANGED for {t!r}')
+        if len(t) - len(t.rstrip(' ')) != len(z) - len(z.rstrip(' ')):
+            errors.append(f'TRAILING SPACES CHANGED for {t!r}')
+        if not z.strip():
+            errors.append(f'EMPTY TRANSLATION for {t!r}')
+
+    print(f'{len(runtime)} console strings at runtime, '
+          f'{len(CONSOLE_ZH)} glossary entries')
+    for e in errors:
+        print('  ' + e)
+    print(f'{"FAIL" if errors else "OK"}: {len(errors)} problem(s)')
+    return 1 if errors else 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

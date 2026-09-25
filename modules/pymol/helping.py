@@ -1,3 +1,4 @@
+from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -83,7 +84,7 @@ USAGE
         if doc:
             print("\n" + textwrap.dedent(doc).strip() + "\n")
         else:
-            print("Error: sorry no help available on that command.")
+            print(ctr("Error: sorry no help available on that command."))
         return r
 
     def help_setting(name, quiet=1, *, _self=cmd):

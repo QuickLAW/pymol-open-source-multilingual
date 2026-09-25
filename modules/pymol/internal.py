@@ -1,5 +1,6 @@
 import os
 import sys
+from pymol.console_i18n import ctr
 cmd = sys.modules["pymol.cmd"]
 from pymol.shortcut import Shortcut
 from pymol import _cmd
@@ -335,7 +336,7 @@ def download_chem_comp(resn, quiet=1, _self=cmd):
             handle.write(contents)
     except IOError as e:
         print(e)
-        print('Your "fetch_path" setting might point to a read-only directory')
+        print(ctr('Your "fetch_path" setting might point to a read-only directory'))
         return ''
 
     if not quiet:
@@ -382,7 +383,7 @@ def _load(oname,finfo,state,ftype,finish,discrete,
                                             int(quiet),int(zoom))
         except:
 #            traceback.print_exc()
-            print("Load-Error: Unable to load file '%s'." % finfo)
+            print(ctr("Load-Error: Unable to load file '%s'.") % finfo)
     return r
 
 # function keys and other specials
@@ -433,7 +434,7 @@ def _invoke_key(key, quiet=0, _self=cmd):
 
     if not mapping:
         if not quiet:
-            print(" No key mapping for '%s'" % (key))
+            print(ctr(" No key mapping for '%s'") % (key))
         return False
 
     if is_string(mapping):
@@ -480,7 +481,7 @@ def _special(k,x,y,m=0,_self=cmd): # INTERNAL (invoked when special key is press
             fn(autocomp)
             return True
 
-    print(" No key mapping and no scene or view for '%s'" % (key))
+    print(ctr(" No key mapping and no scene or view for '%s'") % (key))
     return False
 
 # control keys

@@ -4,6 +4,7 @@
 
 License: BSD-2-Clause
 '''
+from pymol.console_i18n import ctr
 
 from pymol import cmd, CmdException
 
@@ -185,7 +186,7 @@ ARGUMENTS
     exe = cmd.exp_path(exe)
     if not _is_exe(exe):
         if 'SCHRODINGER' not in os.environ:
-            print(' Warning: SCHRODINGER environment variable not set')
+            print(ctr(' Warning: SCHRODINGER environment variable not set'))
         raise CmdException('no such script: ' + exe)
 
     args = [exe, '-mse', '-fillsidechains', '-WAIT']

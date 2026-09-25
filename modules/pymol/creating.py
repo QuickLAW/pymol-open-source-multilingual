@@ -14,6 +14,7 @@
 
 from pymol.shortcut import Shortcut
 from .constants import CURRENT_STATE, ALL_STATES
+from pymol.console_i18n import ctr
 
 if True:
 
@@ -148,7 +149,7 @@ SEE ALSO
             else:
                 action = 1  # add
         elif action == 7:
-            print('action=ungroup is deprecated, use the "ungroup" command')
+            print(ctr('action=ungroup is deprecated, use the "ungroup" command'))
         with _self.lockcm:
             return _cmd.group(_self._COb,str(name),str(members),int(action),int(quiet))
 
@@ -228,7 +229,7 @@ NOTES
         try:
             _self.lock(_self)
             if not os.path.isfile(reflection_file):
-                print(" MapGenerate-Error: Could not find file '%s'.\n Please check the filename and try again." % reflection_file)
+                print(ctr(" MapGenerate-Error: Could not find file '%s'.\n Please check the filename and try again.") % reflection_file)
                 raise pymol.CmdException
 
             # TODO: work for CIF, MTZ, and CNS
@@ -276,12 +277,12 @@ NOTES
                     print("Loading map '%s'" % (name))
                 r = _self.load(r, name, format="ccp4", finish=1)
             else:
-                print(' Error: Map generation failed')
+                print(ctr(' Error: Map generation failed'))
 
             os.remove(tempFileName)
 
         except ImportError:
-            print(" MapGenerate-Error: Cannot import headering module.  Cannot read MTZ file or make map.")
+            print(ctr(" MapGenerate-Error: Cannot import headering module.  Cannot read MTZ file or make map."))
         finally:
             _self.unlock(r,_self)
         if _self._raising(r,_self): raise pymol.CmdException
@@ -1022,7 +1023,7 @@ SEE ALSO
         elif extract in (1, '1'):
             extract = selection
         else:
-            print(' Warning: non-boolean extract values are deprecated!')
+            print(ctr(' Warning: non-boolean extract values are deprecated!'))
             extract = selector.process(extract)
 
         if extract:

@@ -5,6 +5,7 @@ PyMOL GUI Data (toolkit independant)
 import sys
 import os
 import webbrowser
+from pymol.console_i18n import ctr
 
 class PyMOLDesktopGUI(object):
     '''Superclass for PyMOL Desktop Applications'''
@@ -998,7 +999,7 @@ class PyMOLDesktopGUI(object):
                     'recent (filename text unique, timestamp integer)')
             self._recent_filenames_db = db
         except BaseException as e:
-            print(' Warning: failed to connect to recent DB:', e)
+            print(ctr(' Warning: failed to connect to recent DB:'), e)
             self._recent_filenames_db = False
             return False
 

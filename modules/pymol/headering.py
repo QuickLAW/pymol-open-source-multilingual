@@ -5,6 +5,7 @@ import struct
 import pymol
 import math
 from .xray import space_group_map
+from pymol.console_i18n import ctr
 
 
 if sys.byteorder == "big":
@@ -55,12 +56,12 @@ class baseHeader:
                     elif mapType.lower() == "fofc":
                         defaultF, defaultP = defaultNames[2], defaultNames[3]
                 else:
-                    print("Error: Please provide the setting 'default_%s_names' a comma separated string" % (prg))
-                    print("       with the values for 2FoFc and FoFc, amplitude and phase names, respectively.")
+                    print(ctr("Error: Please provide the setting 'default_%s_names' a comma separated string") % (prg))
+                    print(ctr("       with the values for 2FoFc and FoFc, amplitude and phase names, respectively."))
                     return [None]*3
             else:
-                print("Error: Please provide the setting 'default_%s_names' a comma separated string" % (prg))
-                print("       with the values for 2FoFc and FoFc, amplitude and phase names, respectively.")
+                print(ctr("Error: Please provide the setting 'default_%s_names' a comma separated string") % (prg))
+                print(ctr("       with the values for 2FoFc and FoFc, amplitude and phase names, respectively."))
                 return [None]*3
 
 
@@ -276,7 +277,7 @@ class MTZHeader(baseHeader):
             if self.wordsize is not None:
                 (header_start,) = struct.unpack(self.byteorder_int+"i", f.read(4))
             else:
-                print("Warning: Byte order of file unknown.  Guessing header location.")
+                print(ctr("Warning: Byte order of file unknown.  Guessing header location."))
                 (header_start,) = struct.unpack("i", f.read(4))
 
             # bAdjust is the byte adjustment to compensate for
@@ -293,8 +294,8 @@ class MTZHeader(baseHeader):
             header_start  = (header_start-1) * (bAdjust)
 
             if file_len<header_start:
-                print("Error: File '%s' cannot be parsed because PyMOL cannot find the header.  If you think")
-                print("       PyMOL should be able to read this, plese send the file and this mesage to ")
+                print(ctr("Error: File '%s' cannot be parsed because PyMOL cannot find the header.  If you think"))
+                print(ctr("       PyMOL should be able to read this, plese send the file and this mesage to "))
                 print("       help@schrodinger.com.  Thanks!")
 
             f.seek(header_start)
@@ -392,9 +393,9 @@ class MTZHeader(baseHeader):
                     elif field.startswith(H["BATCH"]):
                         self.batch = tokens
                     else:
-                        print("Error Parsing MTZ Header: bad column name: '%s'" % field)
+                        print(ctr("Error Parsing MTZ Header: bad column name: '%s'") % field)
                 except ValueError:
-                    print("Error: Parsing MTZ Header poorly formatted MTZ file")
+                    print(ctr("Error: Parsing MTZ Header poorly formatted MTZ file"))
                     print("       bad field: '%s'" % field)
                 except pymol.cmd.QuietException:
                     pass

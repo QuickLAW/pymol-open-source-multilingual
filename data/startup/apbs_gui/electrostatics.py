@@ -6,6 +6,7 @@ APBS wrapper
 
 License: BSD-2-Clause
 '''
+from pymol.console_i18n import ctr
 
 import os
 
@@ -169,7 +170,7 @@ SEE ALSO
             if r in (-6, -9):
                 grid *= 2.0
                 if not quiet:
-                    print(' Warning: retry with grid =', grid)
+                    print(ctr(' Warning: retry with grid ='), grid)
                 continue
 
             raise CmdException('apbs failed with code ' + str(r))

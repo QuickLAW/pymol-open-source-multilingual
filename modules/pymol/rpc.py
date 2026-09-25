@@ -13,6 +13,7 @@
 
   Modified 2013-04-17 Thomas Holder, Schrodinger, Inc.
 """
+from pymol.console_i18n import ctr
 
 import sys
 import xmlrpc.server as SimpleXMLRPCServer
@@ -434,7 +435,7 @@ def launch_XMLRPC(hostname='',port=_xmlPort,nToTry=_nPortsToTry):
     else:
       break
   if serv:
-    print('xml-rpc server running on host %s, port %d'%(hostname,port+i))
+    print(ctr('xml-rpc server running on host %s, port %d')%(hostname,port+i))
 
     # import PyMOL API
     from pymol import api
@@ -469,6 +470,6 @@ def launch_XMLRPC(hostname='',port=_xmlPort,nToTry=_nPortsToTry):
     t.setDaemon(1)
     t.start()
   else:
-    print('xml-rpc server could not be started')
+    print(ctr('xml-rpc server could not be started'))
 
 # vi:expandtab:smarttab:sw=2

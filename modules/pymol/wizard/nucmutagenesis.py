@@ -3,6 +3,7 @@ import collections
 from pymol.wizard import Wizard
 import pymol.cmd
 import pymol
+from pymol.console_i18n import ctr
 
 SRC_SELE = "_mutate_sel"
 
@@ -327,7 +328,7 @@ class Nucmutagenesis(Wizard):
         if mode_fixed in self._mode_labels:
             self.mode = mode_fixed
         else:
-            print('Improper Nucleic Acid')
+            print(ctr('Improper Nucleic Acid'))
         if self._status == Status.MUTAGENIZING:
             try:
                 self._do_mutation()
@@ -358,7 +359,7 @@ class Nucmutagenesis(Wizard):
         '''
         cmd = self.cmd
         if auto_center not in self._auto_center_str:
-            print("Improper Auto Center setting. 'ON' or 'OFF' accepted only")
+            print(ctr("Improper Auto Center setting. 'ON' or 'OFF' accepted only"))
         self._auto_center = auto_center
         cmd.refresh_wizard()
 
@@ -396,7 +397,7 @@ class Nucmutagenesis(Wizard):
         try:
             new_name = cmd.get_object_list(SRC_SELE)[0]
         except IndexError:
-            print(" Mutagenesis: object not found.")
+            print(ctr(" Mutagenesis: object not found."))
             return
 
         frag_name_three = self._mode_labels[self.mode]

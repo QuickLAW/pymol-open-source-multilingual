@@ -5,6 +5,7 @@ import os,sys
 from pymol.wizard import Wizard
 from pymol import cmd
 import traceback
+from pymol.console_i18n import ctr
 # global dictionary for saving result on a per-object basis
 
 static_dict = {}
@@ -144,20 +145,20 @@ class Filter(Wizard):
         # allow user to focus on only a subset of the compounds
         self.browse = browse
         if self.browse == 1:
-            print(" Filter: Browsing all compounds.")
+            print(ctr(" Filter: Browsing all compounds."))
             cmd.mset() # all states visible
         elif self.object is None:
-            print(" Filter-Error: please choose an object first")
+            print(ctr(" Filter-Error: please choose an object first"))
         else:
             self.check_object_dict()
             if self.browse == 2:
-                print(" Filter: Browsing accepted compounds.")
+                print(ctr(" Filter: Browsing accepted compounds."))
                 target = accept_str
             elif self.browse == 3:
-                print(" Filter: Browsing rejected compounds.")
+                print(ctr(" Filter: Browsing rejected compounds."))
                 target = reject_str
             elif self.browse == 4:
-                print(" Filter: Browsing deferred compounds.")
+                print(ctr(" Filter: Browsing deferred compounds."))
                 target = defer_str
             lst = []
             sd = self.state_dict
@@ -167,13 +168,13 @@ class Filter(Wizard):
                     if sdo[a]==target:
                         lst.append(sd[a])
             else:
-                print(" Filter: Browsing remaining compounds")
+                print(ctr(" Filter: Browsing remaining compounds"))
                 for a in sd.keys():
                     if a not in sdo:
                         lst.append(sd[a])
             lst.sort()
             if len(lst)==0:
-                print(" Filter-Error: No matching compounds.")
+                print(ctr(" Filter-Error: No matching compounds."))
             cmd.mset(' '.join(map(str,lst)))
             cmd.rewind()
         cmd.refresh_wizard()
@@ -291,7 +292,7 @@ class Filter(Wizard):
     def accept(self):
         # accept compound and advance
         if self.object is None:
-            print(" Filter-Error: Please choose an object first")
+            print(ctr(" Filter-Error: Please choose an object first"))
         else:
             state = cmd.get_object_state(self.object)
             ident = self.get_ident(self.object,state)
@@ -303,7 +304,7 @@ class Filter(Wizard):
     def reject(self):
         # reject compound and advance
         if self.object is None:
-            print(" Filter-Error: Please choose an object first")
+            print(ctr(" Filter-Error: Please choose an object first"))
         else:
             state = cmd.get_object_state(self.object)
             ident = self.get_ident(self.object,state)
@@ -316,7 +317,7 @@ class Filter(Wizard):
     def defer(self):
         # defer compound and advance
         if self.object is None:
-            print(" Filter-Error: Please choose an object first")
+            print(ctr(" Filter-Error: Please choose an object first"))
         else:
             state = cmd.get_object_state(self.object)
             ident = self.get_ident(self.object,state)
@@ -338,7 +339,7 @@ class Filter(Wizard):
 
     def create_object(self, what='Accept'):
         if not self.object:
-            print(" Filter-Error: Please choose an object first")
+            print(ctr(" Filter-Error: Please choose an object first"))
             return
         name = self.cmd.get_unused_name(self.object + '_' + what, 0)
         sdo = self.dict[self.object]
@@ -349,7 +350,7 @@ class Filter(Wizard):
     def save(self):
         # write compounds to a file
         if self.object is None:
-            print(" Filter-Error: please choose an object first")
+            print(ctr(" Filter-Error: please choose an object first"))
         else:
             self.check_object_dict()
             fname = self.object+".txt"
@@ -358,7 +359,7 @@ class Filter(Wizard):
                 f.close()
             except:
                 print(" Filter-Warning: '"+fname+"' in current directory is not writable.")
-                print(" Filter-Warning: attempting to write in home directory.")
+                print(ctr(" Filter-Warning: attempting to write in home directory."))
                 fname = cmd.exp_path(os.path.join('~', fname))
             try:
                 f=open(fname,'w')
@@ -386,7 +387,7 @@ class Filter(Wizard):
                 print(" Filter: Wrote '%s'."%fname)
             except:
                 traceback.print_exc()
-                print(" Filter-Error: Unable to write '%s'."%fname)
+                print(ctr(" Filter-Error: Unable to write '%s'.")%fname)
 
     def cleanup(self):
         # save current state in global vars...

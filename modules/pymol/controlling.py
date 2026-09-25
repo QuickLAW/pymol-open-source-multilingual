@@ -14,6 +14,7 @@
 
 from pymol.shortcut import Shortcut
 from pymol.Qt import QtCore
+from pymol.console_i18n import ctr
 _mtr = lambda text: QtCore.QCoreApplication.translate('Menu', text) if text else text
 
 if True:
@@ -201,7 +202,7 @@ SEE ALSO
                 print(" config_mouse: %s"%ring)
             _self.mouse(quiet=1)
         else:
-            print(" Error: unrecognized mouse ring: '%s'"%ring)
+            print(ctr(" Error: unrecognized mouse ring: '%s'")%ring)
 
     mouse_ring = ring_dict['three_button']
 

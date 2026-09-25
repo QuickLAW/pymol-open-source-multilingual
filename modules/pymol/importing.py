@@ -1,3 +1,4 @@
+from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -559,9 +560,9 @@ SEE ALSO
                                 if os.path.exists(root):
                                     launch_flag = 1
                                 else:
-                                    print("Error: requested path '%s' does not exist."%root)
+                                    print(ctr("Error: requested path '%s' does not exist.")%root)
                             else:
-                                print("Error: missing path to root content")
+                                print(ctr("Error: missing path to root content"))
                         elif keyword == 'browser':
                             # could perhaps interpret a browser name here
                             browser_flag = 1
@@ -576,7 +577,7 @@ SEE ALSO
                                         r = DEFAULT_SUCCESS
                                 except:
                                     colorprinting.print_exc()
-                                    print("Error: unable to launch web application'%s'."%mode_name)
+                                    print(ctr("Error: unable to launch web application'%s'.")%mode_name)
                         elif keyword == 'report':
                             if len(input)>1:
                                 report_url = input[1]
@@ -603,15 +604,15 @@ SEE ALSO
                 if report_url is not None: # report port back to server url (is this secure?)
                     try:
                         report_url = report_url + str(port)
-                        print(" Reporting back pymol port via: '%s'"%report_url)
+                        print(ctr(" Reporting back pymol port via: '%s'")%report_url)
                         urllib.urlretrieve(report_url)
                     except:
-                        print(" Report attempt may have failed.")
+                        print(ctr(" Report attempt may have failed."))
         except ImportError:
             colorprinting.print_exc()
 
         if is_error(r):
-            print("Error: unable to handle PWG file")
+            print(ctr("Error: unable to handle PWG file"))
         return r
 
     def _magic_check_cor_charmm(filename):
@@ -1535,7 +1536,7 @@ EXAMPLE
 
         if group:
             if kwargs.get('object', '') != '':
-                print(' Warning: group and object arguments given')
+                print(ctr(' Warning: group and object arguments given'))
                 members = [kwargs['object']]
             else:
                 members = map(_self.filename_to_objectname, filenames)

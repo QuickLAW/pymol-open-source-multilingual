@@ -343,6 +343,14 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
 }
 
 
+# Console (output-window) messages are kept in their own glossary: they go
+# through Python's % operator, so specifiers must survive translation in the
+# same order. tools/i18n/check_console_glossary.py enforces that.
+from translations_console_zh import CONSOLE_ZH
+
+TRANSLATIONS["zh_CN"].update(CONSOLE_ZH)
+
+
 # Context -> file basename (without language suffix)
 CONTEXT_FILES = {
     "PyMOLQtGUI": "pymolqtgui",
@@ -364,6 +372,8 @@ CONTEXT_FILES = {
     # UI form classes (used as Qt translation contexts for .ui files)
     "Form": "forms",
     "Dialog": "dialogs",
+    # Output-window text produced by the command layer via pymol.console_i18n
+    "Console": "console",
 }
 
 

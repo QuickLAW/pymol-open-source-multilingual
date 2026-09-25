@@ -2,6 +2,7 @@ import sys
 import os
 import threading
 import json
+from pymol.console_i18n import ctr
 
 _SHORTCUTS_SAVE_FILE = u'~/.pymol/shortcuts_save.json'
 
@@ -31,9 +32,9 @@ def save_shortcuts(shortcuts_dict):
     try:
         with open(save_file, 'w') as savefile:
             json.dump(shortcuts_dict, savefile)
-            print("Saved shortcuts to file ", save_file)
+            print(ctr("Saved shortcuts to file "), save_file)
     except Exception as e:
-        print("Unable to save to file.")
+        print(ctr("Unable to save to file."))
 
 def load_shortcuts_dict():
     '''
@@ -50,7 +51,7 @@ def load_shortcuts_dict():
         # This represents the case where no save file has been created yet and should pass quietly. 
         pass
     except Exception as e:
-        print("No shortcut save file has been loaded.")
+        print(ctr("No shortcut save file has been loaded."))
         print(e)
     return save_dict
 

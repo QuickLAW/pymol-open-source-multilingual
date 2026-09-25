@@ -3,6 +3,7 @@ Support for some less common file formats for PyMOL.
 
 Copyright (c) Schrodinger, LLC.
 '''
+from pymol.console_i18n import ctr
 
 import os
 
@@ -190,7 +191,7 @@ DESCRIPTION
                 atom.coord = [float(atom_node.get(a))
                         for a in ['x2', 'y2']] + [0.0]
             else:
-                print(' Warning: no coordinates for atom', atom.name)
+                print(ctr(' Warning: no coordinates for atom'), atom.name)
                 continue
 
             atom.symbol = atom_node.get('elementType', '')

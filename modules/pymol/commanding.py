@@ -14,6 +14,7 @@
 
 from pymol.shortcut import Shortcut
 from pymol.parser import __file__ as _parser_filename
+from pymol.console_i18n import ctr
 
 if True:
 
@@ -151,7 +152,7 @@ SEE ALSO
                 else:
                     _self.set("logging",1,quiet=1)
             except:
-                print("Error: unable to open log file '%s'"%filename)
+                print(ctr("Error: unable to open log file '%s'")%filename)
                 pymol._log_file = None
                 _self.set("logging",0,quiet=1)
                 traceback.print_exc()

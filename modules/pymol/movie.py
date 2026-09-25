@@ -13,6 +13,7 @@
 #Z* -------------------------------------------------------------------
 
 import sys
+from pymol.console_i18n import ctr
 cmd = sys.modules["pymol.cmd"]
 import math
 import os
@@ -56,7 +57,7 @@ def pause(pause=15,cycles=1,_self=cmd):
 def load(pattern, nam = "mov", _self=cmd, **kw):
     fils = glob.glob(pattern)
     if not fils:
-        print("Error: no matching files")
+        print(ctr("Error: no matching files"))
         return
     for a in sorted(fils):
         _self.load(a, nam, **kw)
@@ -721,13 +722,13 @@ def _encode(filename,first,last,preserve,
             from pymol import mpeg_encode
         except:
             ok = 0
-            print("produce-error: Unable to import module pymol.mpeg_encode.")
+            print(ctr("produce-error: Unable to import module pymol.mpeg_encode."))
         if ok:
             if not mpeg_encode.validate():
                 ok = 0
-                print("produce-error: Unable to validate pymol.mpeg_encode.")
+                print(ctr("produce-error: Unable to validate pymol.mpeg_encode."))
         if not ok:
-            print("produce-error: Unable to create mpeg file.")
+            print(ctr("produce-error: Unable to create mpeg file."))
         else:
             mpeg_quality = 1+int(((100-quality)*29)/100) # 1 to 30
             input = mpeg_encode.input(fn_rel, '.',

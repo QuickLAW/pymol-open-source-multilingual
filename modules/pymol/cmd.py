@@ -34,6 +34,7 @@
 # In rare cases, certain nonserious error or warning output should
 # also be suppressed.  Set "quiet" to 2 for this behavior.
 from pymol.shortcut import Shortcut
+from pymol.console_i18n import ctr
 
 def _deferred_init_pymol_internals(_pymol):
     # set up some global session tasks
@@ -307,7 +308,7 @@ with a slash (/) forces the interpreter to pass it to Python. See also the
             f.write("</BODY></HTML>")
             f.close()
 
-            print("PyMOL Command Reference written to %s" % (os.path.abspath(file)))
+            print(ctr("PyMOL Command Reference written to %s") % (os.path.abspath(file)))
 
 
         #####################################################################

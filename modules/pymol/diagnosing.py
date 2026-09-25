@@ -1,5 +1,6 @@
 import sys
 import os
+from pymol.console_i18n import ctr
 
 def _unicode(s):
     # Return - if possible - unicode, or if the byte string can't be
@@ -83,7 +84,7 @@ ARGUMENTS
 
         with open(filename, 'w') as handle:
             handle.write(body)
-        print('Diagnostics written to "%s"' % filename)
+        print(ctr('Diagnostics written to "%s"') % filename)
     elif not quiet:
         print(body.rstrip())
 

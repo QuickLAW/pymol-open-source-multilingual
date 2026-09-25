@@ -237,7 +237,7 @@ def exec_deferred(self):
         from socket import error as socket_error
     except ImportError:
         socket_error = None
-        print('import socket failed')
+        print(ctr('import socket failed'))
 
     cmd = self.cmd
     _pymol = cmd._pymol
@@ -287,7 +287,7 @@ def adapt_to_hardware(self):
     if vendor.startswith('NVIDIA'):
         if 'Quadro' in renderer:
             if invocation.options.show_splash:
-                print(" Adapting to Quadro hardware.")
+                print(ctr(" Adapting to Quadro hardware."))
             cmd.set('stereo_double_pump_mono', 1)
 
     elif vendor.startswith('Mesa'):
@@ -297,7 +297,7 @@ def adapt_to_hardware(self):
     elif vendor.startswith('ATI'):
         if renderer[0:17] == 'FireGL2 / FireGL3':  # obsolete ?
             if invocation.options.show_splash:
-                print(" Adapting to FireGL hardware.")
+                print(ctr(" Adapting to FireGL hardware."))
             cmd.set('line_width', 2, quiet=1)
 
         if IS_WINDOWS:
@@ -307,7 +307,7 @@ def adapt_to_hardware(self):
 
         if 'Radeon HD' in renderer:
             if invocation.options.show_splash:
-                print(" Adjusting settings to improve performance for ATI cards.")
+                print(ctr(" Adjusting settings to improve performance for ATI cards."))
 
             if cmd.get_setting_int("use_shaders")==0:
                 # limit frame rate to 30 fps to avoid ATI "jello"
@@ -322,13 +322,13 @@ def adapt_to_hardware(self):
     elif vendor.startswith("Intel"):
         if "Express" in renderer:
             if invocation.options.show_splash:
-                print(" Disabling shaders for Intel Express graphics")
+                print(ctr(" Disabling shaders for Intel Express graphics"))
             cmd.set("use_shaders", 0)
 
     elif (' R300 ' in vendor # V: X.Org R300 Project, R: Gallium 0.4 on ATI RV370
             ):
         if invocation.options.show_splash:
-            print(" Detected blacklisted graphics driver.  Disabling shaders.")
+            print(ctr(" Detected blacklisted graphics driver.  Disabling shaders."))
         cmd.set("use_shaders", 0)
 
     # find out how many processors we have, and adjust hash
@@ -341,7 +341,7 @@ def adapt_to_hardware(self):
              cmd.set("max_threads", ncpu)
              if invocation.options.show_splash:
                   print(" Detected %d CPU cores."%ncpu, end=' ')
-                  print(" Enabled multithreaded rendering.")
+                  print(ctr(" Enabled multithreaded rendering."))
     except:
         pass
 
@@ -556,6 +556,7 @@ if 'DISPLAY' in os.environ:
 ########## C MODULE ############################
 
 import pymol._cmd
+from pymol.console_i18n import ctr
 _cmd = sys.modules['pymol._cmd']
 
 get_capabilities = _cmd.get_capabilities

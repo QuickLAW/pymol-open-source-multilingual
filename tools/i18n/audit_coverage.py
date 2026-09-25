@@ -53,8 +53,10 @@ IGNORE_METHODS = {
 }
 
 # Functions that resolve a translation at runtime.
-TR_FUNCS = {'_tr', 'tr', 'i18n.tr', 'translate', '_mtr'}
+TR_FUNCS = {'_tr', 'tr', 'i18n.tr', 'translate', '_mtr', 'ctr'}
 MENU_CONTEXT = 'Menu'
+# pymol.console_i18n.ctr() has one argument and a fixed context.
+CONSOLE_CONTEXT = 'Console'
 
 # Console/output-window writers. Text here is shown to the user in the
 # PyMOL output window, so it belongs in a translation audit.
@@ -151,6 +153,8 @@ def _is_tr_call(node: ast.AST) -> tuple[bool, str | None]:
         return False, None
     if name == '_mtr':
         return True, MENU_CONTEXT
+    if name == 'ctr':
+        return True, CONSOLE_CONTEXT
     if short in ('_tr', 'tr', 'translate') and node.args:
         a0 = node.args[0]
         if isinstance(a0, ast.Constant) and isinstance(a0.value, str):
@@ -184,10 +188,11 @@ class Walk(ast.NodeVisitor):
             # Record the catalogued string, then look inside for anything
             # that escaped (a second positional literal is often user text).
             args = node.args
-            if name == '_mtr':
+            if name in ('_mtr', 'ctr'):
+                ctx = MENU_CONTEXT if name == '_mtr' else CONSOLE_CONTEXT
                 for a in args:
                     if isinstance(a, ast.Constant) and isinstance(a.value, str):
-                        self.wrapped.append((node.lineno, MENU_CONTEXT, a.value))
+                        self.wrapped.append((node.lineno, ctx, a.value))
             elif len(args) >= 2:
                 a0, a1 = args[0], args[1]
                 if (isinstance(a0, ast.Constant) and isinstance(a0.value, str)
@@ -215,13 +220,23 @@ class Walk(ast.NodeVisitor):
                     if not _benign(a.value):
                         self.unwrapped.append((node.lineno, short, a.value))
 
-        # Console output lands in the GUI text window, so it is as
+        # Console text lands in the GUI output window, so it is as
         # user-visible as a menu label -- but nothing audited it before.
-        if short in CONSOLE_FUNCS and not is_tr:
+        # print(..., file=f) writes generated source or data to disk, not to
+        # the user, and localising it would corrupt the emitted file.
+        to_file = any(k.arg == 'file' for k in node.keywords)
+        if short in CONSOLE_FUNCS and not is_tr and not to_file:
             for a in ast.iter_child_nodes(node):
+                lit = None
                 if isinstance(a, ast.Constant) and isinstance(a.value, str):
-                    if _prose(a.value):
-                        self.console.append((node.lineno, name, a.value))
+                    lit = a
+                elif (isinstance(a, ast.BinOp) and isinstance(a.op, ast.Mod)
+                      and isinstance(a.left, ast.Constant)
+                      and isinstance(a.left.value, str)):
+                    # "Error: no such %s" % name -- still user-visible prose
+                    lit = a.left
+                if lit is not None and _prose(lit.value):
+                    self.console.append((node.lineno, name, lit.value))
         # A bare literal that is itself a translated-value comparison, e.g.
         # `if text == 'x'`, is handled by the sink test above; nothing to do.
         self.generic_visit(node)

@@ -3,6 +3,7 @@ from pymol import cmd
 import pymol
 
 import traceback
+from pymol.console_i18n import ctr
 
 sele_prefix = "_dw"
 sele_prefix_len = len(sele_prefix)
@@ -186,7 +187,7 @@ class Distance(Wizard):
                 if cnt:
                     cmd.dist(name,"(pk1)",sele_prefix)
                 else:
-                    print(" Wizard: No neighbors found.")
+                    print(ctr(" Wizard: No neighbors found."))
                 cmd.delete(sele_prefix)
                 cmd.unpick()
                 cmd.enable(name)

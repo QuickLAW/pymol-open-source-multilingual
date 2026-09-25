@@ -1,3 +1,4 @@
+from pymol.console_i18n import ctr
 #A* -------------------------------------------------------------------
 #B* This file contains source code for the PyMOL computer program
 #C* Copyright (c) Schrodinger, LLC.
@@ -192,5 +193,5 @@ DESCRIPTION
                     _self.set_wizard_stack(wizards)
                 except Exception as e:
                     print(e)
-                    print("Session-Warning: unable to restore wizard.")
+                    print(ctr("Session-Warning: unable to restore wizard."))
         return 1
