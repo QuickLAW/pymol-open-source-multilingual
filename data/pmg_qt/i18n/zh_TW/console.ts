@@ -44,6 +44,12 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation> 質心：[%8.3f,%8.3f,%8.3f]</translation>
     </message>
     <message>
+      <source> Choices:
+</source>
+      <translation> 可選值：
+</translation>
+    </message>
+    <message>
       <source> Copied %d atoms to object %s</source>
       <translation> 已複製 %d 個原子到物件 %s</translation>
     </message>
@@ -609,6 +615,10 @@ Active "pymolrc" Files
       <translation>錯誤：此檔案不允許包含 Python 程式碼塊。</translation>
     </message>
     <message>
+      <source>Error: ambiguous %s\n %s</source>
+      <translation>錯誤：%s 存在歧義\n %s</translation>
+    </message>
+    <message>
       <source>Error: ambiguous feedback action '%s'.</source>
       <translation>錯誤：feedback 動作 '%s' 存在歧義。</translation>
     </message>
@@ -695,6 +705,10 @@ Active "pymolrc" Files
     <message>
       <source>Error: unable to open log file '%s'</source>
       <translation>錯誤：無法開啟日誌檔案 '%s'</translation>
+    </message>
+    <message>
+      <source>Error: unknown %s: '%s'.</source>
+      <translation>錯誤：未知的 %s：'%s'。</translation>
     </message>
     <message>
       <source>Error: unknown keyword mode: </source>

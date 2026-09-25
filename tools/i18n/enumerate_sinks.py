@@ -51,6 +51,21 @@ BENIGN_CALLS.discard('setWhatsThis')
 # Prefixes that mean "this is a Qt/PyMOL setter on some object we do not model".
 IGNORE_PREFIXES = ('cmd.', '_self.', 'self.cmd.')
 
+# Programmer-facing diagnostics, deliberately left in English: they name an
+# internal invariant the reader greps for in the source.
+PROGRAMMER_FACING = {
+    'ValueError', 'RuntimeError', 'TypeError', 'KeyError', 'Exception',
+    'UserWarning', 'AssertionError', 'NotImplementedError',
+}
+
+# Not shown to the user at all: SQL statements and HTTP status lines.
+NON_GUI_CALLS = {'execute', 'executescript', 'send_error',
+             # builds a PyMOL command line, not shown text
+             'append', 'insert', 'extend',
+             # its 2nd argument names a keyword domain whose choices the
+             # user types in English; only the sentence is translated
+             'auto_err'}
+
 
 def main(argv):
     ap = argparse.ArgumentParser()
@@ -68,6 +83,8 @@ def main(argv):
 
     for path in sorted(p for p in files if p.is_file()):
         rel = path.relative_to(ac.ROOT).as_posix()
+        if rel in ac.LEGACY_TK_MODULES:
+            continue
         try:
             tree = ast.parse(path.read_text(encoding='utf-8', errors='replace'))
         except SyntaxError:
@@ -95,6 +112,8 @@ def main(argv):
                         known[short] += len(prose)
                     elif (short not in BENIGN_CALLS
                           and short not in ac.USER_RAISES
+                          and short not in PROGRAMMER_FACING
+                          and short not in NON_GUI_CALLS
                           and not name.startswith(IGNORE_PREFIXES)
                           and short not in ('ctr', 'print', 'print_msg')):
                         unknown[short] += len(prose)

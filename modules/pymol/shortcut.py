@@ -15,6 +15,7 @@
 from typing import Iterable, Optional, Union
 from collections import defaultdict
 from pymol import parsing
+from pymol.console_i18n import ctr
 
 
 class Shortcut:
@@ -186,18 +187,21 @@ class Shortcut:
         result = self.interpret(keyword)
 
         if result is None and descrip is not None:
-            msg = f"Error: unknown {descrip}: '{keyword}'."
+            # descrip names a keyword domain whose choices stay English (the
+            # user has to type them), so only the surrounding grammar here is
+            # translatable.
+            msg = ctr("Error: unknown %s: '%s'.") % (descrip, keyword)
             lst = self.interpret("")
             if isinstance(lst, list) and len(lst) < 100:
                 lst.sort()
                 lst = parsing.list_to_str_list(lst)
-                msg += " Choices:\n" + "\n".join(lst)
+                msg += ctr(" Choices:\n") + "\n".join(lst)
             raise parsing.QuietException(msg)
 
         if isinstance(result, list) and descrip is not None:
             lst = parsing.list_to_str_list(result)
             options = "\n".join(lst)
-            msg = f"Error: ambiguous {descrip}\\n {options}"
+            msg = ctr("Error: ambiguous %s\\n %s") % (descrip, options)
             raise parsing.QuietException(msg)
 
         return result

@@ -124,4 +124,9 @@ RAISE_ZH = {
     'Empty sequence for key "{}"': '键 "{}" 的序列为空',
     'PyMOL: stopped on exception.': 'PyMOL：因异常而停止。',
     'ffmpeg failed with exit status {}': 'ffmpeg 运行失败，退出状态 {}',
+    # shortcut.auto_err grammar; the %s category noun is a keyword domain whose
+    # choices the user must type in English, so it stays untranslated on purpose
+    "Error: unknown %s: '%s'.": "错误：未知的 %s：'%s'。",
+    " Choices:\n": " 可选值：\n",
+    r"Error: ambiguous %s\n %s": r"错误：%s 存在歧义\n %s",
 }
