@@ -24,10 +24,13 @@ class cif_file;
 class cif_data;
 }; // namespace pymol
 
-/* retina scale factor for ortho gui. Must stay integral: the ortho draw path
- * segfaults on any fractional value (verified at 1.25 and 1.5, and it still
- * crashes with internal_gui=0), so callers must round up rather than truncate.
- * pymol_gl_widget.updateFbScale does exactly that. */
+/* retina scale factor for ortho gui. Must stay integral. Fractional values were
+ * tried so that a 125% display gets 1.25 rather than 1: the source-tree build
+ * tolerates them, but the PyInstaller-frozen app died with 0xC0000409 on 3/3
+ * launches at both 1.25 and 1.5, against 3/3 clean at 1 and 2 from the same
+ * packaging run. The cause was never isolated, so the Qt frontend rounds the
+ * device ratio up instead of passing it through -- see updateFbScale, whose
+ * earlier int() truncated 1.25 to 1 and left the overlay unreadably small. */
 extern int _gScaleFactor;
 inline int DIP2PIXEL(int v) { return v * _gScaleFactor; }
 inline float DIP2PIXEL(float v) { return v * _gScaleFactor; }

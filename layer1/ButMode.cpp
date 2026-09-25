@@ -38,6 +38,23 @@
 #define cButModeTopMargin DIP2PIXEL(1)
 #define cButModeBottomMargin DIP2PIXEL(2)
 
+/**
+ * Column at which to start the value that follows a label, given that `label`
+ * was just drawn through TextDrawStrAt and the renderer advanced the pen past
+ * it. The fixed offsets this file used to hardcode were tuned for the English
+ * strings in the 8x13 bitmap font; a CJK label, or any display scaling, makes
+ * the left column wider than the constant and the two columns overlap. The old
+ * constant is kept as a floor so untranslated text still lines up.
+ */
+static int ButModeColumnAfter(PyMOLGlobals* G, int x, int legacyOffset)
+{
+  const int minimum = x + DIP2PIXEL(legacyOffset);
+  /* if the label never rendered the pen has not moved, so this just returns
+   * the legacy floor */
+  const int afterLabel = static_cast<int>(TextGetPos(G)[0]) + DIP2PIXEL(2);
+  return (afterLabel > minimum) ? afterLabel : minimum;
+}
+
 struct CButMode : public Block {
   CodeType Code[cButModeCount + 1] {};
   int NCode {};
@@ -227,7 +244,8 @@ void CButMode::draw(CGO* orthoCGO)
     TextSetColor(m_G, textColor);
     TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_mouse_mode_text), x + 1, y, orthoCGO);
     TextSetColor(m_G, TextColor3);
-    TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_button_mode_name), x + DIP2PIXEL(88), y, orthoCGO);
+    TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_button_mode_name),
+                  ButModeColumnAfter(m_G, x, 88), y, orthoCGO);
     /*    TextDrawStrAt(m_G,"2-Bttn Selecting",x+88,y); */
     y -= cButModeLineHeight;
 
@@ -363,31 +381,33 @@ void CButMode::draw(CGO* orthoCGO)
       if(ButModeTranslate(m_G, P_GLUT_SINGLE_LEFT, 0) == cButModePickAtom) {
         TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_picking_text), x, y, orthoCGO);
         TextSetColor(m_G, TextColor3);
-        TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_atoms_joints), x + DIP2PIXEL(64), y, orthoCGO);
+        TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_atoms_joints),
+                      ButModeColumnAfter(m_G, x, 64), y, orthoCGO);
       } else {
         TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_selecting_text), x, y, orthoCGO);
         TextSetColor(m_G, TextColor3);
+        const int selColumn = ButModeColumnAfter(m_G, x, 80);
         switch (SettingGetGlobal_i(m_G, cSetting_mouse_selection_mode)) {
         case 0:
-          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_atoms), x + DIP2PIXEL(80), y, orthoCGO);
+          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_atoms), selColumn, y, orthoCGO);
           break;
         case 1:
-          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_residues), x + DIP2PIXEL(80), y, orthoCGO);
+          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_residues), selColumn, y, orthoCGO);
           break;
         case 2:
-          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_chains), x + DIP2PIXEL(80), y, orthoCGO);
+          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_chains), selColumn, y, orthoCGO);
           break;
         case 3:
-          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_segments), x + DIP2PIXEL(80), y, orthoCGO);
+          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_segments), selColumn, y, orthoCGO);
           break;
         case 4:
-          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_objects), x + DIP2PIXEL(80), y, orthoCGO);
+          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_objects), selColumn, y, orthoCGO);
           break;
         case 5:
-          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_molecules), x + DIP2PIXEL(80), y, orthoCGO);
+          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_molecules), selColumn, y, orthoCGO);
           break;
         case 6:
-          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_ca), x + DIP2PIXEL(80), y, orthoCGO);
+          TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_ca), selColumn, y, orthoCGO);
           break;
         }
       }
@@ -455,20 +475,21 @@ static bool ButModeDrawFastImpl(Block * block, short definitely , CGO *orthoCGO)
       TextDrawStrAt(G, SettingGetGlobal_s(G, cSetting_movie_state_text), x, y, orthoCGO);
     }
     TextSetColor(G, textColor2);
+    const int frameColumn = ButModeColumnAfter(G, x, 48);
     sprintf(rateStr, "%4d/%4d ", SceneGetFrame(G) + 1, nf);
-    TextDrawStrAt(G, rateStr, x + DIP2PIXEL(48), y, orthoCGO);
+    TextDrawStrAt(G, rateStr, frameColumn, y, orthoCGO);
     if(frame_rate) {
       sprintf(rateStr,"%5.1f",I->RateShown);
-      TextDrawStrAt(G, rateStr, x + DIP2PIXEL(144), y, orthoCGO);
+      TextDrawStrAt(G, rateStr, ButModeColumnAfter(G, x, 144), y, orthoCGO);
       TextSetColor(G, textColor);
-      TextDrawStrAt(G, "Hz ", x + DIP2PIXEL(192), y, orthoCGO);
+      TextDrawStrAt(G, "Hz ", ButModeColumnAfter(G, x, 192), y, orthoCGO);
       TextSetColor(G, textColor2);
     } else if(has_movie) {
       TextSetColor(G, textColor);
-      TextDrawStrAt(G, "State ", x + DIP2PIXEL(128), y, orthoCGO);
+      TextDrawStrAt(G, "State ", ButModeColumnAfter(G, x, 128), y, orthoCGO);
       TextSetColor(G, textColor2);
       sprintf(rateStr," %4d",SceneGetState(G)+1);
-      TextDrawStrAt(G, rateStr, x + DIP2PIXEL(168), y, orthoCGO);
+      TextDrawStrAt(G, rateStr, ButModeColumnAfter(G, x, 168), y, orthoCGO);
     } else if(frame_rate) {
     }
   }
