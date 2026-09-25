@@ -225,3 +225,10 @@ CONSOLE_ZH = {
         'xml-rpc 服务器已在主机 %s、端口 %d 上运行',
     'z chain was detected. New chain will append a': '检测到 z 链。新链将追加至 a',
 }
+
+# Messages raised or printed by the command layer, kept in their own module so the
+# printf/whitespace rules above are reviewed separately. Merged here so every
+# consumer of CONSOLE_ZH sees them.
+from translations_raise_zh import RAISE_ZH
+
+CONSOLE_ZH.update(RAISE_ZH)

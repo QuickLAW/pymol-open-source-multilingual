@@ -245,7 +245,7 @@ NOTES
                         ampColName in dataset["cols"]:
                     break
             else:
-                raise pymol.CmdException("no dataset found")
+                raise pymol.CmdException(ctr("no dataset found"))
 
             cellX, cellY, cellZ = dataset['x'], dataset['y'], dataset['z']
             cellAlpha, cellBeta, cellGamma = dataset['alpha'], dataset['beta'], dataset['gamma']
@@ -255,12 +255,12 @@ NOTES
 
             phases = phases.rsplit('/', 1)[-1]
             if not phases:
-                raise pymol.CmdException("phase name missing")
+                raise pymol.CmdException(ctr("phase name missing"))
 
             if weights and weights!="None":
                 weights = weights.rsplit('/', 1)[-1]
                 if not weights:
-                    raise pymol.CmdException("Improperly formatted weights name")
+                    raise pymol.CmdException(ctr("Improperly formatted weights name"))
 
             tempFile = tempfile.NamedTemporaryFile(delete=False)
             tempFileName = tempFile.name
@@ -968,7 +968,7 @@ USAGE
                         a.coord[c] += mean_c
             r = _self.load_model(model,str(object),quiet=quiet,zoom=zoom, _self=_self)
         except IOError:
-            raise pymol.CmdException("unable to load fragment '%s'." % name)
+            raise pymol.CmdException(ctr("unable to load fragment '%s'.") % name)
         if _self._raising(r,_self): raise pymol.CmdException
         return r
 

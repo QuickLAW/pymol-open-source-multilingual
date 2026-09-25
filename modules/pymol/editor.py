@@ -66,7 +66,7 @@ ARGUMENTS
 
     if selection not in _self.get_names("selections"):
         if fragment in _self.get_names("objects"):
-            raise pymol.CmdException("an object with that name already exists")
+            raise pymol.CmdException(ctr("an object with that name already exists"))
 
         _self.fragment(fragment)
 
@@ -454,7 +454,7 @@ def fit_sugars(mobile, target, *, _self=cmd):
                        f"{target} & name O4'", quiet=1)
     except:
         _self.delete(tmp_wild)
-        raise pymol.CmdException("Something went wrong when fitting the new residue.")
+        raise pymol.CmdException(ctr("Something went wrong when fitting the new residue."))
 
 def fit_DS_fragment(mobile_A, target_A, mobile_B, target_B, *, _self=cmd):
     """
@@ -493,7 +493,7 @@ def fit_DS_fragment(mobile_A, target_A, mobile_B, target_B, *, _self=cmd):
                        f"{target_B} & name O4'", quiet=1)
     except:
         _self.delete(tmp_wild)
-        raise pymol.CmdException("Something went wrong when fitting the new residue.")
+        raise pymol.CmdException(ctr("Something went wrong when fitting the new residue."))
 
 def add2pO(domain, nuc_acid, resv, *, _self=cmd):
     if nuc_acid == "utp": #utp comes with O2'
@@ -589,7 +589,7 @@ def move_new_res(frag_string, full_frag, old, old_oppo, double_stranded_bool=Fal
     elif double_stranded_bool == False:
         fit_sugars(dummy_res_A, old)
     else:
-        raise pymol.CmdException("Double stranded bool was not provided to move_new_res")
+        raise pymol.CmdException(ctr("Double stranded bool was not provided to move_new_res"))
 
     dummy_fragment_transform = _self.get_object_matrix(dummy_fragment)
     _self.transform_object(full_frag, dummy_fragment_transform)
@@ -612,7 +612,7 @@ class NascentNucAcidInfo:
 
 def attach_O5_phosphate(_self=cmd):
     if "pk1" not in _self.get_names("selections"):
-        raise pymol.CmdException("Selection must be pk1 to attach O5' phosphate")
+        raise pymol.CmdException(ctr("Selection must be pk1 to attach O5' phosphate"))
 
     print(ctr("This building selection has an unphosphorylated O5' end."))
     attach_fragment("pk1","phosphite",4,0)
@@ -849,7 +849,7 @@ def attach_nuc_acid(selection, nuc_acid, nuc_type, object= "", form ="B",
         _self.select("pk1","_tmp_editor_new_selection")
     else:
         _self.delete(tmp_wild)
-        raise pymol.CmdException("invalid connection point: must be one atom, name O3' or P")
+        raise pymol.CmdException(ctr("invalid connection point: must be one atom, name O3' or P"))
 
     _self.show("cartoon", f"byobject {selection}")
     _self.delete(tmp_wild)
@@ -886,7 +886,7 @@ def extend_nuc_acid(nascent, nascent_partner, selection,
         frag_string = nascent.nuc_acid + "_"+ _base_pair["DNA"][nascent.nuc_acid] + nascent.form
         _self.fragment(frag_string, tmp_editor, origin=0)
     else:
-        raise pymol.CmdException("No helix state selected")
+        raise pymol.CmdException(ctr("No helix state selected"))
 
     if _self.count_atoms(f"name {atom_selection_name}", domain=tmp_connect):
         tmp_resv = iterate_to_list(tmp_connect,"resv")
@@ -899,7 +899,7 @@ def extend_nuc_acid(nascent, nascent_partner, selection,
         elif atom_selection_name == "P":
             tmp_resv[0] = str(tmp_resv[0] - 1)
         else:
-            raise pymol.CmdException("Something went wrong with resv loop in extend_nuc")
+            raise pymol.CmdException(ctr("Something went wrong with resv loop in extend_nuc"))
 
         # Resv and resi assignment and testing
         resv = int(tmp_resv[0])
@@ -1005,7 +1005,7 @@ def extend_nuc_acid(nascent, nascent_partner, selection,
                 last_resv_oppo = -last_resv
                 chain_oppo = get_new_chain(chain, tmp_connect)
             else:
-                raise pymol.CmdException("Base pairing result is not returning 0 or 1")
+                raise pymol.CmdException(ctr("Base pairing result is not returning 0 or 1"))
 
             # Alter the opposing segi to match chain
             chain_oppo_sele = "_chain_oppo_sele"
@@ -1051,7 +1051,7 @@ def extend_nuc_acid(nascent, nascent_partner, selection,
             elif double_stranded_bool == False:
                 bond_single_stranded(tmp_editor, object, chain, resv, last_resi_sele, atom_selection_name, atom_name_oppo)
             else:
-                raise pymol.CmdException("double_stranded_bool is not returning True or False")
+                raise pymol.CmdException(ctr("double_stranded_bool is not returning True or False"))
 
         if nascent.nuc_type == "RNA":
             add2pO(tmp_domain, nascent.nuc_acid, resv)

@@ -35,12 +35,12 @@ DESCRIPTION
                 '/' + PDBxNS + 'atom_siteCategory'
                 '/' + PDBxNS + 'atom_site')
     except etree.XMLSyntaxError:
-        raise CmdException("File doesn't look like XML")
+        raise CmdException(ctr("File doesn't look like XML"))
     except etree.XPathEvalError:
-        raise CmdException("XML file doesn't look like a PDBML file")
+        raise CmdException(ctr("XML file doesn't look like a PDBML file"))
 
     if not atom_site_list:
-        raise CmdException("no PDBx:atom_site nodes found in XML file")
+        raise CmdException(ctr("no PDBx:atom_site nodes found in XML file"))
 
     # state -> model dictionary
     model_dict = defaultdict(models.Indexed)
@@ -163,7 +163,7 @@ DESCRIPTION
     try:
         root = etree.fromstring(_self.file_read(filename))
     except etree.XMLSyntaxError:
-        raise CmdException("File doesn't look like XML")
+        raise CmdException(ctr("File doesn't look like XML"))
 
     if root.tag != 'cml':
         raise CmdException('not a CML file')
@@ -229,7 +229,7 @@ DESCRIPTION
     STL geometry export
     '''
     raise pymol.IncentiveOnlyException(
-            "STL export not supported by this PyMOL build")
+            ctr("STL export not supported by this PyMOL build"))
 
 
 def read_stlstr(contents, object, state=0, zoom=-1, _self=cmd):
@@ -239,7 +239,7 @@ DESCRIPTION
     Load STL ASCII or binary content as a CGO object
     '''
     raise pymol.IncentiveOnlyException(
-            "STL import not supported by this PyMOL build")
+            ctr("STL import not supported by this PyMOL build"))
 
 
 def read_collada(contents: bytes, oname, state=0, zoom=-1, *, _self=cmd):
@@ -249,7 +249,7 @@ DESCRIPTION
     Load COLLADA content as a CGO object
     '''
     raise pymol.IncentiveOnlyException(
-            "COLLADA import not supported by this PyMOL build")
+            ctr("COLLADA import not supported by this PyMOL build"))
 
 
 def get_mmtfstr(selection='all', state=1, _self=cmd):

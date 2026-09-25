@@ -767,7 +767,7 @@ SEE ALSO
 
         if len(view)!=18:
             raise pymol.CmdException(
-                "bad view argument; should be a sequence of 18 floats")
+                ctr("bad view argument; should be a sequence of 18 floats"))
 
         with _self.lockcm:
             r = _cmd.set_view(_self._COb,(
@@ -1994,7 +1994,7 @@ DESCRIPTION
         try:
             from_rgb, to_rgb = _spectrumany_interpolations[interpolation]
         except KeyError:
-            raise CmdException('interpolation must be one of {}'.format(
+            raise CmdException(ctr('interpolation must be one of {}').format(
                 list(_spectrumany_interpolations)))
 
         if ' ' not in colors:
@@ -2004,7 +2004,7 @@ DESCRIPTION
 
         n_colors = len(colors)
         if n_colors < 2:
-            raise CmdException('please provide at least 2 colors')
+            raise CmdException(ctr('please provide at least 2 colors'))
 
         col_tuples = [_self.get_color_tuple(i) for i in colors]
         if None in col_tuples:
@@ -2196,7 +2196,7 @@ PYMOL API
 
         if not isinstance(rgb, (list, tuple)) or len(rgb) != 3:
             raise pymol.CmdException(
-                "color specification must be a list such as [ 1.0, 0.0, 0.0 ]")
+                ctr("color specification must be a list such as [ 1.0, 0.0, 0.0 ]"))
 
         rgb = [float(c) for c in rgb]
         if rgb[0] > 1.0 or rgb[1] > 1.0 or rgb[2] > 1.0:

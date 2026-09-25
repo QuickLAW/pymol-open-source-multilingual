@@ -296,7 +296,7 @@ def file_read(finfo, _self=cmd):
         contents = handle.read()
         handle.close()
     except IOError:
-        raise pymol.CmdException('failed to open file "%s"' % finfo)
+        raise pymol.CmdException(ctr('failed to open file "%s"') % finfo)
 
     if contents[:2] == b'\x1f\x8b': # gzip magic number
         import io, gzip

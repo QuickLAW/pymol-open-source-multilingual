@@ -9,6 +9,7 @@ Based on psico.seqalign
 License: BSD-2-Clause
 '''
 
+from pymol.console_i18n import ctr
 from pymol import cmd, CmdException
 
 import functools
@@ -172,7 +173,7 @@ SEE ALSO
                 space=locals())
 
         if n == 0:
-            print(" Warning: no atoms for object '{}'".format(oname))
+            print(ctr(" Warning: no atoms for object '{}'").format(oname))
             continue
 
         # align sequences from file to structures
@@ -184,7 +185,7 @@ SEE ALSO
         onames[r] = oname
 
     if len(onames) < 2:
-        raise CmdException('Failed to map alignment to objects')
+        raise CmdException(ctr('Failed to map alignment to objects'))
 
     # build alignment list
     raw = []

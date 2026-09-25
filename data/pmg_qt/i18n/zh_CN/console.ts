@@ -36,6 +36,10 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation> 已将 %d 个 MSE 残基改为 MET</translation>
     </message>
     <message>
+      <source> CEalign-Error: selection spans multiple objects, cannot create alignment object</source>
+      <translation> CEalign 错误：选择跨越多个对象，无法创建比对对象</translation>
+    </message>
+    <message>
       <source> Center of Mass: [%8.3f,%8.3f,%8.3f]</source>
       <translation> 质心：[%8.3f,%8.3f,%8.3f]</translation>
     </message>
@@ -242,6 +246,10 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation> 警告：同时给出了组参数和对象参数</translation>
     </message>
     <message>
+      <source> Warning: no atoms for object '{}'</source>
+      <translation> 警告：对象 '{}' 中没有原子</translation>
+    </message>
+    <message>
       <source> Warning: no coordinates for atom</source>
       <translation> 警告：该原子没有坐标</translation>
     </message>
@@ -256,6 +264,10 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
     <message>
       <source> Warning: use get_color_index instead of get_color_tuple(mode=3)</source>
       <translation> 警告：请改用 get_color_index，不要使用 get_color_tuple(mode=3)</translation>
+    </message>
+    <message>
+      <source> Warning: use get_color_indices instead of get_color_tuple(mode={})</source>
+      <translation> 警告：请改用 get_color_indices，不要使用 get_color_tuple(mode={})</translation>
     </message>
     <message>
       <source> Wizard: No neighbors found.</source>
@@ -298,8 +310,36 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
       <translation> 解析器：没有匹配的文件。</translation>
     </message>
     <message>
+      <source> protonate: added %d hydrogens at pH %.1f</source>
+      <translation> protonate：已添加 %d 个氢原子，pH 为 %.1f</translation>
+    </message>
+    <message>
+      <source> protonate: added %d hydrogens at pH %.1f (using textbook pKa values)</source>
+      <translation> protonate：已添加 %d 个氢原子，pH 为 %.1f（使用教科书 pKa 值）</translation>
+    </message>
+    <message>
       <source> protonate: pdb2pqr not found, using textbook pKa values</source>
       <translation> protonate：未找到 pdb2pqr，改用教科书 pKa 值</translation>
+    </message>
+    <message>
+      <source> tdroll: defined rotations for %d frames, starting at frame %d</source>
+      <translation> tdroll：已为 %d 帧定义旋转，从第 %d 帧开始</translation>
+    </message>
+    <message>
+      <source>%s format not supported with multisave</source>
+      <translation>%s 格式不支持 multisave</translation>
+    </message>
+    <message>
+      <source>%s not supported with multisave</source>
+      <translation>%s 不支持 multisave</translation>
+    </message>
+    <message>
+      <source>Archive must contain a single package.</source>
+      <translation>压缩包中只能包含一个插件包。</translation>
+    </message>
+    <message>
+      <source>Base pairing result is not returning 0 or 1</source>
+      <translation>碱基配对结果未返回 0 或 1</translation>
     </message>
     <message>
       <source>CEalign-Error: Your mobile selection is too short.</source>
@@ -312,6 +352,22 @@ Mail bug reports to https://lists.sourceforge.net/lists/listinfo/pymol-users
     <message>
       <source>CEalign-Error: window size must be an integer greater than 2.</source>
       <translation>CEalign 错误：窗口大小必须是大于 2 的整数。</translation>
+    </message>
+    <message>
+      <source>COLLADA import not supported by this PyMOL build</source>
+      <translation>此 PyMOL 构建不支持 COLLADA 导入</translation>
+    </message>
+    <message>
+      <source>Can't map regular letters with SHFT.</source>
+      <translation>无法与 SHFT 一起映射普通字母。</translation>
+    </message>
+    <message>
+      <source>Can't map regular letters.</source>
+      <translation>无法映射普通字母。</translation>
+    </message>
+    <message>
+      <source>Command disallowed in this file</source>
+      <translation>此文件不允许该命令</translation>
     </message>
     <message>
       <source>Copyright (C) Schrodinger, LLC
@@ -501,6 +557,10 @@ Active "pymolrc" Files
       <translation>目前不支持构建 RNA 双螺旋。</translation>
     </message>
     <message>
+      <source>Double stranded bool was not provided to move_new_res</source>
+      <translation>未向 move_new_res 提供双链布尔值</translation>
+    </message>
+    <message>
       <source>Error Parsing MTZ Header: bad column name: '%s'</source>
       <translation>解析 MTZ 头信息出错：无效的列名：'%s'</translation>
     </message>
@@ -577,6 +637,10 @@ Active "pymolrc" Files
       <translation>错误：没有匹配的文件</translation>
     </message>
     <message>
+      <source>Error: no such menu: </source>
+      <translation>错误：没有该菜单： </translation>
+    </message>
+    <message>
       <source>Error: please pick a nitrogen or carbonyl carbon to grow from.</source>
       <translation>错误：请拾取一个氮原子或羰基碳作为生长起点。</translation>
     </message>
@@ -605,6 +669,26 @@ Active "pymolrc" Files
       <translation>错误：无法打开日志文件 '%s'</translation>
     </message>
     <message>
+      <source>Error: unknown keyword mode: </source>
+      <translation>错误：未知关键字模式： </translation>
+    </message>
+    <message>
+      <source>Failed to map alignment to objects</source>
+      <translation>无法将比对映射到对象</translation>
+    </message>
+    <message>
+      <source>Failed to parse URL: </source>
+      <translation>解析 URL 失败： </translation>
+    </message>
+    <message>
+      <source>File doesn't look like XML</source>
+      <translation>文件看起来不是 XML</translation>
+    </message>
+    <message>
+      <source>File format not supported for export</source>
+      <translation>不支持导出为该文件格式</translation>
+    </message>
+    <message>
       <source>Identified bond targets were too far apart, so this will not be bound</source>
       <translation>识别到的成键目标相距过远，因此不会成键</translation>
     </message>
@@ -615,6 +699,14 @@ Active "pymolrc" Files
     <message>
       <source>Improper Nucleic Acid</source>
       <translation>核酸类型无效</translation>
+    </message>
+    <message>
+      <source>Improper selection of nucleic acid.</source>
+      <translation>核酸选择无效。</translation>
+    </message>
+    <message>
+      <source>Improperly formatted weights name</source>
+      <translation>权重名称格式不正确</translation>
     </message>
     <message>
       <source>Incorrect type found when resetting defaults</source>
@@ -637,8 +729,20 @@ Active "pymolrc" Files
       <translation>识别到多个成键目标，因此不会成键</translation>
     </message>
     <message>
+      <source>Movie commands disallowed in this file</source>
+      <translation>此文件不允许电影相关命令</translation>
+    </message>
+    <message>
       <source>Multiple residues meet base pairing requirements. Building as if no opposing strand detected.</source>
       <translation>有多个残基满足碱基配对要求，将按未检测到互补链的方式构建。</translation>
+    </message>
+    <message>
+      <source>Mutagenesis Wizard cannot be used with Movie</source>
+      <translation>突变向导不能与电影模式同时使用</translation>
+    </message>
+    <message>
+      <source>No &lt;source&gt; or &lt;syntaxhighlight&gt; block with cmd.extend found</source>
+      <translation>未找到包含 cmd.extend 的 &lt;source&gt; 或 &lt;syntaxhighlight&gt; 代码块</translation>
     </message>
     <message>
       <source>No active selection</source>
@@ -649,12 +753,32 @@ Active "pymolrc" Files
       <translation>该链上未找到碱基配对 </translation>
     </message>
     <message>
+      <source>No helix state selected</source>
+      <translation>未选择螺旋状态</translation>
+    </message>
+    <message>
+      <source>No objects in selection</source>
+      <translation>选择中没有对象</translation>
+    </message>
+    <message>
       <source>No shortcut save file has been loaded.</source>
       <translation>尚未加载任何快捷键保存文件。</translation>
     </message>
     <message>
+      <source>No such assembly: "%s"</source>
+      <translation>未找到该装配体："%s"</translation>
+    </message>
+    <message>
+      <source>Not a valid plugin filename (%s).</source>
+      <translation>不是有效的插件文件名（%s）。</translation>
+    </message>
+    <message>
       <source>Nothing on clipboard</source>
       <translation>剪贴板为空</translation>
+    </message>
+    <message>
+      <source>PSE contains objects which cannot be unpickled (%s)</source>
+      <translation>PSE 含有无法反序列化的对象（%s）</translation>
     </message>
     <message>
       <source>Phosphate has been successfully added</source>
@@ -665,16 +789,52 @@ Active "pymolrc" Files
       <translation>PyMOL 命令参考已写入 %s</translation>
     </message>
     <message>
+      <source>Python expressions disallowed in this file</source>
+      <translation>此文件不允许 Python 表达式</translation>
+    </message>
+    <message>
+      <source>Qt not available ({}), using GLUT/Tk interface</source>
+      <translation>Qt 不可用（{}），改用 GLUT/Tk 界面</translation>
+    </message>
+    <message>
       <source>Restored default keybindings</source>
       <translation>已恢复默认按键绑定</translation>
+    </message>
+    <message>
+      <source>STL export not supported by this PyMOL build</source>
+      <translation>此 PyMOL 构建不支持 STL 导出</translation>
+    </message>
+    <message>
+      <source>STL import not supported by this PyMOL build</source>
+      <translation>此 PyMOL 构建不支持 STL 导入</translation>
     </message>
     <message>
       <source>Saved shortcuts to file </source>
       <translation>已将快捷键保存至文件 </translation>
     </message>
     <message>
+      <source>Selection must be pk1 to attach O5' phosphate</source>
+      <translation>必须选择 pk1 才能连接 O5' 磷酸基团</translation>
+    </message>
+    <message>
+      <source>Selection spans multiple object states</source>
+      <translation>选择跨越多个对象状态</translation>
+    </message>
+    <message>
       <source>Session-Warning: unable to restore wizard.</source>
       <translation>会话警告：无法恢复向导状态。</translation>
+    </message>
+    <message>
+      <source>Something went wrong when fitting the new residue.</source>
+      <translation>拟合新残基时出现问题。</translation>
+    </message>
+    <message>
+      <source>Something went wrong with resv loop in extend_nuc</source>
+      <translation>extend_nuc 中的 resv 循环出现问题</translation>
+    </message>
+    <message>
+      <source>Symmetry-Error: Unrecognized space group symbol '%s'.</source>
+      <translation>对称性错误：无法识别的空间群符号 '%s'。</translation>
     </message>
     <message>
       <source>The program did not detect a double stranded structure, so the opposing residue will not be attached.</source>
@@ -697,6 +857,10 @@ Active "pymolrc" Files
       <translation>无法保存到文件。</translation>
     </message>
     <message>
+      <source>Unrecognized file format</source>
+      <translation>无法识别的文件格式</translation>
+    </message>
+    <message>
       <source>Warning: --retina option has been removed</source>
       <translation>警告：--retina 选项已被移除</translation>
     </message>
@@ -709,6 +873,10 @@ Active "pymolrc" Files
       <translation>警告：Python 文件请改用 'run' 而不是 '@'？</translation>
     </message>
     <message>
+      <source>XML file doesn't look like a PDBML file</source>
+      <translation>该 XML 文件看起来不是 PDBML 文件</translation>
+    </message>
+    <message>
       <source>Your "fetch_path" setting might point to a read-only directory</source>
       <translation>您的 "fetch_path" 设置可能指向只读目录</translation>
     </message>
@@ -717,8 +885,28 @@ Active "pymolrc" Files
       <translation>检测到 Z 链。新链将追加至 A</translation>
     </message>
     <message>
+      <source>ZIP file contains absolute path names</source>
+      <translation>ZIP 文件中包含绝对路径名</translation>
+    </message>
+    <message>
       <source>action=ungroup is deprecated, use the "ungroup" command</source>
       <translation>action=ungroup 已被弃用，请使用 "ungroup" 命令</translation>
+    </message>
+    <message>
+      <source>an object with that name already exists</source>
+      <translation>同名对象已存在</translation>
+    </message>
+    <message>
+      <source>apbs failed with code </source>
+      <translation>apbs 运行失败，返回码 </translation>
+    </message>
+    <message>
+      <source>bad view argument; should be a sequence of 18 floats</source>
+      <translation>view 参数无效；应为 18 个浮点数组成的序列</translation>
+    </message>
+    <message>
+      <source>cannot find "szybki" executable, please set OE_DIR environment variable</source>
+      <translation>找不到 "szybki" 可执行程序，请设置 OE_DIR 环境变量</translation>
     </message>
     <message>
       <source>check_DNA_base_pair has no opposing residue to check</source>
@@ -749,12 +937,116 @@ Active "pymolrc" Files
       <translation>命令错误：id_atom 找到多个原子 %s。</translation>
     </message>
     <message>
+      <source>color specification must be a list such as [ 1.0, 0.0, 0.0 ]</source>
+      <translation>颜色指定必须是一个列表，例如 [ 1.0, 0.0, 0.0 ]</translation>
+    </message>
+    <message>
+      <source>could not find collada2gltf</source>
+      <translation>找不到 collada2gltf</translation>
+    </message>
+    <message>
+      <source>double_stranded_bool is not returning True or False</source>
+      <translation>double_stranded_bool 未返回 True 或 False</translation>
+    </message>
+    <message>
+      <source>dpi &gt; 0 required with unit "%s" (hint: set the "image_dots_per_inch" setting)</source>
+      <translation>单位为 "%s" 时要求 dpi &gt; 0（提示：请设置 "image_dots_per_inch"）</translation>
+    </message>
+    <message>
+      <source>dx file missing</source>
+      <translation>缺少 dx 文件</translation>
+    </message>
+    <message>
+      <source>failed to open file "%s"</source>
+      <translation>打开文件失败："%s"</translation>
+    </message>
+    <message>
+      <source>filename must have .txt extension</source>
+      <translation>文件名必须使用 .txt 扩展名</translation>
+    </message>
+    <message>
       <source>import socket failed</source>
       <translation>导入 socket 失败</translation>
     </message>
     <message>
+      <source>interpolation must be one of {}</source>
+      <translation>插值方式必须是以下之一：{}</translation>
+    </message>
+    <message>
+      <source>invalid connection point: must be one atom, name O3' or P</source>
+      <translation>连接点无效：必须是单个原子，且名称为 O3' 或 P</translation>
+    </message>
+    <message>
+      <source>mass is zero</source>
+      <translation>质量为零</translation>
+    </message>
+    <message>
+      <source>name must not contain dots (%s).</source>
+      <translation>名称中不得包含圆点（%s）。</translation>
+    </message>
+    <message>
+      <source>need at least 2 selection</source>
+      <translation>至少需要 2 个选择</translation>
+    </message>
+    <message>
+      <source>need even number of selections</source>
+      <translation>需要偶数个选择</translation>
+    </message>
+    <message>
+      <source>neither "ffmpeg" nor "convert" available for video encoding</source>
+      <translation>未找到可用于视频编码的 "ffmpeg" 或 "convert"</translation>
+    </message>
+    <message>
+      <source>no PDBx:atom_site nodes found in XML file</source>
+      <translation>XML 文件中未找到 PDBx:atom_site 节点</translation>
+    </message>
+    <message>
+      <source>no dataset found</source>
+      <translation>未找到数据集</translation>
+    </message>
+    <message>
+      <source>no prior image available</source>
+      <translation>没有可用的上一帧图像</translation>
+    </message>
+    <message>
       <source>no prior image available, fall back to rendering</source>
       <translation>没有可用的上一帧图像，将回退为重新渲染</translation>
+    </message>
+    <message>
+      <source>no public objects</source>
+      <translation>没有公开对象</translation>
+    </message>
+    <message>
+      <source>no such chain: </source>
+      <translation>没有该链： </translation>
+    </message>
+    <message>
+      <source>no such plugin</source>
+      <translation>没有该插件</translation>
+    </message>
+    <message>
+      <source>no such script: </source>
+      <translation>没有该脚本： </translation>
+    </message>
+    <message>
+      <source>not a valid modifier key: '%s'.</source>
+      <translation>不是有效的修饰键：'%s'。</translation>
+    </message>
+    <message>
+      <source>pH value %s out of range (0-14)</source>
+      <translation>pH 值 %s 超出范围（0-14）</translation>
+    </message>
+    <message>
+      <source>phase name missing</source>
+      <translation>缺少相位列名</translation>
+    </message>
+    <message>
+      <source>please provide at least 2 colors</source>
+      <translation>请至少提供 2 种颜色</translation>
+    </message>
+    <message>
+      <source>pmo format not supported anymore</source>
+      <translation>不再支持 pmo 格式</translation>
     </message>
     <message>
       <source>produce-error: Unable to create mpeg file.</source>
@@ -769,6 +1061,26 @@ Active "pymolrc" Files
       <translation>生成错误：无法校验 pymol.mpeg_encode。</translation>
     </message>
     <message>
+      <source>special '%s' key not found.</source>
+      <translation>未找到特殊键 '%s'。</translation>
+    </message>
+    <message>
+      <source>trj magic test failed: </source>
+      <translation>trj 魔数校验失败： </translation>
+    </message>
+    <message>
+      <source>unable to load fragment '%s'.</source>
+      <translation>无法加载片段 '%s'。</translation>
+    </message>
+    <message>
+      <source>unknown unit, supported units are: </source>
+      <translation>未知单位，支持的单位有： </translation>
+    </message>
+    <message>
+      <source>unsupported file type: </source>
+      <translation>不支持的文件类型： </translation>
+    </message>
+    <message>
       <source>xml-rpc server could not be started</source>
       <translation>xml-rpc 服务器无法启动</translation>
     </message>
@@ -779,6 +1091,10 @@ Active "pymolrc" Files
     <message>
       <source>z chain was detected. New chain will append a</source>
       <translation>检测到 z 链。新链将追加至 a</translation>
+    </message>
+    <message>
+      <source>zipped (%s) trajectories not supported</source>
+      <translation>不支持压缩的 (%s) 轨迹文件</translation>
     </message>
     </context>
 </TS>

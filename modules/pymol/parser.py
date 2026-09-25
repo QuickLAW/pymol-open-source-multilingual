@@ -151,7 +151,7 @@ if True:
             reporting).
             """
             if secure:
-                raise SecurityException('Python expressions disallowed in this file')
+                raise SecurityException(ctr('Python expressions disallowed in this file'))
 
             layer = self.layer[self.nest]
             layer.literal_python_fallback = fallback
@@ -280,10 +280,10 @@ if True:
                                             if not secure:
                                                 layer.com2=layer.com1
                                             else:
-                                                raise SecurityException('Python expressions disallowed in this file')
+                                                raise SecurityException(ctr('Python expressions disallowed in this file'))
                                         if secure and (layer.kw[4]==parsing.SECURE):
                                             layer.next = []
-                                            raise SecurityException('Command disallowed in this file')
+                                            raise SecurityException(ctr('Command disallowed in this file'))
                                         else:
                                            (layer.args, layer.kw_args) = \
                                             parsing.prepare_call(
@@ -307,7 +307,7 @@ if True:
                                             if not secure:
                                                 layer.input = layer.com1.split(' ',1)
                                             else:
-                                                raise SecurityException('Movie commands disallowed in this file')
+                                                raise SecurityException(ctr('Movie commands disallowed in this file'))
                                         if len(layer.input)>1:
                                             layer.args = parsing.split(layer.input[1],layer.kw[3])
                                             while 1:
@@ -393,7 +393,7 @@ if True:
                                                     print(ctr('Error: Python blocks disallowed in this file.'))
                                                     raise None
                                             else:
-                                                print('Error: unknown keyword mode: '+str(layer.kw[4]))
+                                                print(ctr('Error: unknown keyword mode: ')+str(layer.kw[4]))
                                                 raise QuietException
                                         else:
                                             print(ctr('Error: invalid arguments for %s command.') % com)

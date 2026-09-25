@@ -27,7 +27,7 @@ import audit_coverage as ac
 
 ROOT = ac.ROOT
 IMPORT_LINE = 'from pymol.console_i18n import ctr'
-SKIP = {'modules/pymol/console_i18n.py', 'tools/i18n'}
+SKIP = {'modules/pymol/console_i18n.py', 'tools/i18n'} | ac.LEGACY_TK_MODULES
 
 
 def _targets(tree: ast.Module, src: str):
@@ -37,6 +37,38 @@ def _targets(tree: ast.Module, src: str):
     class V(ast.NodeVisitor):
         def __init__(self):
             self.in_tr = 0
+
+        def _lit_targets(self, call):
+            """Direct literals plus the prose head of "...%s" % x and "a" + x."""
+            out = []
+            for a in ast.iter_child_nodes(call):
+                nd = None
+                if isinstance(a, ast.Constant) and isinstance(a.value, str):
+                    nd = a
+                elif (isinstance(a, ast.BinOp)
+                      and isinstance(a.op, (ast.Mod, ast.Add))
+                      and isinstance(a.left, ast.Constant)
+                      and isinstance(a.left.value, str)):
+                    # wrapping the head keeps the substitution applied to the
+                    # translated text, exactly as Qt's own arg() workflow does
+                    nd = a.left
+                if nd is None or not ac._prose(nd.value):
+                    continue
+                out.append((nd, nd.value))
+            return out
+
+        def visit_Raise(self, node):
+            # raise CmdException("...") is rendered verbatim in the output
+            # window, so it is console text too.
+            exc = node.exc
+            if (isinstance(exc, ast.Call)
+                    and ac._func_name(exc.func).split('.')[-1] in ac.USER_RAISES):
+                for nd, text in self._lit_targets(exc):
+                    seg = ast.get_source_segment(src, nd)
+                    if seg is not None:
+                        out.append((nd.lineno, nd.col_offset, nd.end_lineno,
+                                    nd.end_col_offset, seg, text))
+            self.generic_visit(node)
 
         def visit_Call(self, node):
             is_tr, _ = ac._is_tr_call(node)
@@ -50,21 +82,11 @@ def _targets(tree: ast.Module, src: str):
             if short in ac.CONSOLE_FUNCS and not any(
                     k.arg == 'file' for k in node.keywords):
                 # print(..., file=f) emits generated source/data, not UI text
-                for a in node.args:
-                    lit = None
-                    if isinstance(a, ast.Constant) and isinstance(a.value, str):
-                        lit = a
-                    elif (isinstance(a, ast.BinOp) and isinstance(a.op, ast.Mod)
-                          and isinstance(a.left, ast.Constant)
-                          and isinstance(a.left.value, str)):
-                        lit = a.left
-                    if lit is None or not ac._prose(lit.value):
-                        continue
-                    seg = ast.get_source_segment(src, lit)
-                    if seg is None:
-                        continue
-                    out.append((lit.lineno, lit.col_offset, lit.end_lineno,
-                                lit.end_col_offset, seg, lit.value))
+                for nd, text in self._lit_targets(node):
+                    seg = ast.get_source_segment(src, nd)
+                    if seg is not None:
+                        out.append((nd.lineno, nd.col_offset, nd.end_lineno,
+                                    nd.end_col_offset, seg, text))
             self.generic_visit(node)
 
     V().visit(tree)
@@ -73,6 +95,8 @@ def _targets(tree: ast.Module, src: str):
 
 def _insert_import(lines, tree, nl='\n'):
     """Add the shim import after the module's leading import block."""
+    if any(l.strip() == IMPORT_LINE for l in lines):
+        return lines
     last = 0
     start = 0
     body = list(tree.body)
@@ -124,11 +148,6 @@ def main(argv):
             continue
         tg = _targets(tree, src)
         if not tg:
-            continue
-        if IMPORT_LINE in src:
-            # already wrapped; the literals are what matters now
-            for _ in tg:
-                collected.setdefault(_[5], rel)
             continue
         for _ in tg:
             collected.setdefault(_[5], rel)

@@ -781,7 +781,7 @@ SEE ALSO
         mod, _, pat = key.rpartition('-')
 
         if mod not in internal.modifier_keys:
-            raise pymol.CmdException("not a valid modifier key: '%s'." % mod)
+            raise pymol.CmdException(ctr("not a valid modifier key: '%s'.") % mod)
 
         if len(pat) > 1:
             if pat[0] != 'F':
@@ -789,11 +789,11 @@ SEE ALSO
                 key = pat if not mod else (mod + '-' + pat)
 
             if pat not in internal.special_key_names:
-                raise pymol.CmdException("special '%s' key not found." % pat)
+                raise pymol.CmdException(ctr("special '%s' key not found.") % pat)
         elif not mod:
-            raise pymol.CmdException("Can't map regular letters.")
+            raise pymol.CmdException(ctr("Can't map regular letters."))
         elif mod == 'SHFT':
-            raise pymol.CmdException("Can't map regular letters with SHFT.")
+            raise pymol.CmdException(ctr("Can't map regular letters with SHFT."))
 
         _self.key_mappings[key] = fn
 

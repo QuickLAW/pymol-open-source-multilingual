@@ -173,13 +173,13 @@ SEE ALSO
                     print(ctr(' Warning: retry with grid ='), grid)
                 continue
 
-            raise CmdException('apbs failed with code ' + str(r))
+            raise CmdException(ctr('apbs failed with code ') + str(r))
 
         dx_list = glob.glob(stem + '*.dx')
         if not dx_list:
             dx_list = glob.glob(stem + '*.dxbin')
         if len(dx_list) != 1:
-            raise CmdException('dx file missing')
+            raise CmdException(ctr('dx file missing'))
 
         # load map
         cmd.load(dx_list[0], name, quiet=quiet)

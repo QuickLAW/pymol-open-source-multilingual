@@ -21,6 +21,7 @@ GATES = [
     ('catalogue completeness', 'status.py'),
     ('console glossary (printf/whitespace safe)', 'check_console_glossary.py'),
     ('AST coverage: unwrapped/uncatalogued/ui/console', 'audit_coverage.py'),
+    ('every finished entry resolves via QTranslator', 'check_qm_resolution.py'),
     ('forms painted Chinese in real widgets', 'sweep_forms.py'),
     ('runtime lookups through QTranslator', 'test_translations.py'),
 ]
@@ -46,7 +47,8 @@ def main(argv) -> int:
         # the others default to zh_CN and take --lang.
         if script in ('status.py', 'test_translations.py'):
             cmd.append(args.lang)
-        elif script in ('audit_coverage.py', 'sweep_forms.py'):
+        elif script in ('audit_coverage.py', 'sweep_forms.py',
+                        'check_qm_resolution.py'):
             cmd.append(f'--lang={args.lang}')
         p = subprocess.run(cmd, cwd=str(ROOT), capture_output=True, text=True,
                            encoding='utf-8', errors='replace')

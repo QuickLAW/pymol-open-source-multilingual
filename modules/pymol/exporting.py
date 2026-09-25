@@ -488,12 +488,12 @@ NOTES
 
         upi = {'in': 1.0, 'mm': 25.4, 'cm': 2.54}
         if unit not in upi:
-            raise pymol.CmdException('unknown unit, supported units are: ' +
+            raise pymol.CmdException(ctr('unknown unit, supported units are: ') +
                     ', '.join(upi))
 
         if dpi < 1:
-            raise pymol.CmdException('dpi > 0 required with unit "%s" '
-                    '(hint: set the "image_dots_per_inch" setting)' % unit)
+            raise pymol.CmdException(ctr('dpi > 0 required with unit "%s" '
+                    '(hint: set the "image_dots_per_inch" setting)') % unit)
 
         return float(value) * dpi / upi[unit] + 0.5
 
@@ -592,7 +592,7 @@ PYMOL API
                 return r
 
             if prior != PRIOR_TRY:
-                raise pymol.CmdException("no prior image available")
+                raise pymol.CmdException(ctr("no prior image available"))
 
             print(ctr("no prior image available, fall back to rendering"))
             prior = PRIOR_NO
@@ -634,16 +634,16 @@ ARGUMENTS
         _, _, format_guessed, zipped = filename_to_format(filename)
 
         if zipped:
-            raise pymol.CmdException(zipped + ' not supported with multisave')
+            raise pymol.CmdException(ctr('%s not supported with multisave') % zipped)
 
         if not format:
             format = format_guessed or 'pdb'
 
         if format == 'pmo':
-            raise pymol.CmdException('pmo format not supported anymore')
+            raise pymol.CmdException(ctr('pmo format not supported anymore'))
 
         if format not in ('pdb', 'cif'):
-            raise pymol.CmdException(format + ' format not supported with multisave')
+            raise pymol.CmdException(ctr('%s format not supported with multisave') % format)
 
         s = _self.get_str(format, pattern, state, '', -1, 1, quiet)
 
@@ -840,7 +840,7 @@ SEE ALSO
         # file format
         if not format:
             if not format_guessed:
-                raise pymol.CmdException('Unrecognized file format')
+                raise pymol.CmdException(ctr('Unrecognized file format'))
             format = format_guessed
 
         # PyMOL session
@@ -902,7 +902,7 @@ SEE ALSO
             func_type4[format](_self.get_model(selection, state, ref, ref_state), filename)
             r = DEFAULT_SUCCESS
         else:
-            raise pymol.CmdException('File format not supported for export')
+            raise pymol.CmdException(ctr('File format not supported for export'))
 
         # function returned sequence of strings or bytes
         if isinstance(contents, (tuple, list)) and contents:

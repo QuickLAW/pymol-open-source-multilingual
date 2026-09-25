@@ -82,7 +82,7 @@ class Nucmutagenesis(Wizard):
         Wizard.__init__(self, _self)  #PyMOL pattern
         if self.cmd.get_movie_length() > 0:
             raise pymol.wizarding.WizardError(
-                'Mutagenesis Wizard cannot be used with Movie')
+                ctr('Mutagenesis Wizard cannot be used with Movie'))
 
         self.cmd.unpick()
 
@@ -255,7 +255,7 @@ class Nucmutagenesis(Wizard):
                 for name in ("C1'", "C2'", "C3'", "C4'", "O4'")):
             self.clear()
             raise pymol.wizarding.WizardError(
-                'Improper selection of nucleic acid.')
+                ctr('Improper selection of nucleic acid.'))
 
         frag_type_lower = self._mode_labels[self.mode].lower()
         cmd.fragment(frag_type_lower, FRAG_NAME, origin=0)

@@ -142,7 +142,7 @@ DESCRIPTION
     if len(plugins) == 0:
         initialize(-2)
     if name not in plugins:
-        raise pymol.CmdException('no such plugin')
+        raise pymol.CmdException(ctr('no such plugin'))
     info = plugins[name]
     if info.loaded:
         if not int(quiet):

@@ -677,7 +677,7 @@ PYMOL API
         import shutil
         exe = shutil.which('collada2gltf') or shutil.which('COLLADA2GLTF-bin')
         if exe is None:
-            raise pymol.CmdException('could not find collada2gltf')
+            raise pymol.CmdException(ctr('could not find collada2gltf'))
 
         # https://github.com/schrodinger/pymol-open-source/issues/107
         _self.set('collada_geometry_mode', 1, quiet=quiet)
@@ -831,7 +831,8 @@ NOTES
         name=str(name)
         mod = int(mode)
         if mode in (1, 2):
-            print(' Warning: use get_color_indices instead of get_color_tuple(mode={})'.format(mode))
+            print(ctr(' Warning: use get_color_indices instead of'
+                  ' get_color_tuple(mode={})').format(mode))
         elif mode == 3:
             print(ctr(' Warning: use get_color_index instead of get_color_tuple(mode=3)'))
         with _self.lockcm:
@@ -1529,7 +1530,7 @@ DESCRIPTION
         if len(state_set) != 1:
             if len(state_set) == 0:
                 return 1
-            raise pymol.CmdException('Selection spans multiple object states')
+            raise pymol.CmdException(ctr('Selection spans multiple object states'))
         return state_set.pop()
 
     def centerofmass(selection='(all)', state=CURRENT_STATE, quiet=1, *, _self=cmd):
@@ -1575,7 +1576,7 @@ SEE ALSO
                 totmass += m
 
         if not totmass:
-            raise pymol.CmdException('mass is zero')
+            raise pymol.CmdException(ctr('mass is zero'))
 
         com = cpv.scale(com, 1./totmass)
         if not quiet:

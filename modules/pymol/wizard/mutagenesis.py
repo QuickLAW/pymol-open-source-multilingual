@@ -46,7 +46,7 @@ class Mutagenesis(Wizard):
         cmd=self.cmd
 
         if self.cmd.get_movie_length() > 0:
-            raise pymol.wizarding.WizardError('Mutagenesis Wizard cannot be used with Movie')
+            raise pymol.wizarding.WizardError(ctr('Mutagenesis Wizard cannot be used with Movie'))
 
         cmd.unpick()
 

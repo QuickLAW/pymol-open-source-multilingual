@@ -16,6 +16,8 @@
 # This section contains python code for supporting
 # x-ray crystallography functions
 
+from pymol.console_i18n import ctr
+
 def sg_canonicalize(sg):
     import re
     sg = re.sub(r'\s+', ' ', sg.strip().upper())
@@ -43,7 +45,7 @@ def sg_sym_to_mat_list(sgsymbol): # TODO _self
             from .cmd import QuietException, \
                  _feedback,fb_module,fb_mask
             if(_feedback(fb_module.symmetry,fb_mask.errors)):
-                print("Symmetry-Error: Unrecognized space group symbol '"+sgsymbol+"'.")
+                print(ctr("Symmetry-Error: Unrecognized space group symbol '%s'.") % sgsymbol)
         except:
             pass
     return result

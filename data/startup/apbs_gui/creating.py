@@ -187,7 +187,7 @@ ARGUMENTS
     if not _is_exe(exe):
         if 'SCHRODINGER' not in os.environ:
             print(ctr(' Warning: SCHRODINGER environment variable not set'))
-        raise CmdException('no such script: ' + exe)
+        raise CmdException(ctr('no such script: ') + exe)
 
     args = [exe, '-mse', '-fillsidechains', '-WAIT']
 

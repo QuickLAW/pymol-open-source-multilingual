@@ -56,7 +56,7 @@ def block_entries() -> dict[str, str]:
 
 
 def main() -> int:
-    _, wrapped, _ = ac.scan_sources()
+    _, wrapped, _, _ = ac.scan_sources()
     runtime = {t for (c, t) in wrapped if c == 'Console'}
 
     entries = dict(CONSOLE_ZH)

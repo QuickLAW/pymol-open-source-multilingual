@@ -422,7 +422,7 @@ def launch(args=None, block_input_hook=0):
             from pmg_qt import pymol_qt_gui
             return pymol_qt_gui.execapp()
         except ImportError as ex:
-            print(f'Qt not available ({ex}), using GLUT/Tk interface')
+            print(ctr('Qt not available ({}), using GLUT/Tk interface').format(ex))
             invocation.options.gui = 'pmg_tk'
 
     prime_pymol()

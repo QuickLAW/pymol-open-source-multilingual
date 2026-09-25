@@ -80,7 +80,7 @@ ARGUMENTS
     if filename:
         filename = cmd.exp_path(filename)
         if not filename.endswith('.txt'):
-            raise CmdException('filename must have .txt extension')
+            raise CmdException(ctr('filename must have .txt extension'))
 
         with open(filename, 'w') as handle:
             handle.write(body)

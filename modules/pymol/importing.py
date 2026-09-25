@@ -121,7 +121,7 @@ if True:
             if magic in (b'CDF\001', b'CDF\002'):
                 return 'netcdf', loadable.plugin
         except IOError as e:
-            print('trj magic test failed: ' + str(e))
+            print(ctr('trj magic test failed: ') + str(e))
         return '', loadable.trj
 
     def _guess_trajectory_object(candidate, _self):
@@ -428,7 +428,7 @@ SEE ALSO
             fname = _self.exp_path(filename)
 
             if zipped:
-                raise pymol.CmdException('zipped (%s) trajectories not supported' % (zipped))
+                raise pymol.CmdException(ctr('zipped (%s) trajectories not supported') % (zipped))
 
             if not format:
                 format = format_guessed
@@ -764,7 +764,7 @@ SEE ALSO
                     format == 'plugin' and not plugin):
                 plugin = _cmd.find_molfile_plugin(_self._COb, ext)
                 if not plugin:
-                    raise pymol.CmdException('unsupported file type: ' + ext)
+                    raise pymol.CmdException(ctr('unsupported file type: ') + ext)
                 ftype = loadable.plugin
 
             # special handling for trj files (autodetect AMBER versus GROMACS)
@@ -832,7 +832,7 @@ SEE ALSO
             contents = _self.file_read(filename)
             session = io.pkl.fromString(contents)
         except AttributeError as e:
-            raise pymol.CmdException('PSE contains objects which cannot be unpickled (%s)' % str(e))
+            raise pymol.CmdException(ctr('PSE contains objects which cannot be unpickled (%s)') % str(e))
 
         r = _self.set_session(session, quiet=quiet, partial=partial, steal=1)
 
@@ -1324,7 +1324,7 @@ PYMOL API
             if chain and isinstance(r, str):
                 if _self.count_atoms(r'?%s & c. \%s' % (r, chain)) == 0:
                     _self.delete(r)
-                    raise pymol.CmdException('no such chain: ' + chain)
+                    raise pymol.CmdException(ctr('no such chain: ') + chain)
                 _self.remove(r'?%s & ! c. \%s' % (r, chain))
 
         return r
@@ -1569,7 +1569,7 @@ DESCRIPTION
                     for a in data.get(b'bioAssemblyList', ())
                     if a[b'name'] == assembly))
             except StopIteration:
-                raise pymol.CmdException('No such assembly: "%s"' % (assembly))
+                raise pymol.CmdException(ctr('No such assembly: "%s"') % (assembly))
 
             chainIdList = data.get(b'chainIdList')
 

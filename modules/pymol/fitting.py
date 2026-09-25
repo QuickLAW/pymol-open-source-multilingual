@@ -117,8 +117,8 @@ SEE ALSO
                             obj1 = _self.get_object_list("(" + target + ")")
                             obj2 = _self.get_object_list("(" + mobile + ")")
                             if len(obj1) > 1 or len(obj2) > 1:
-                                print(' CEalign-Error: selection spans multiple' + \
-                                        ' objects, cannot create alignment object')
+                                print(ctr(' CEalign-Error: selection spans multiple'
+                                          ' objects, cannot create alignment object'))
                                 raise pymol.CmdException
                             tmp1 = _self.get_unused_name('_1')
                             tmp2 = _self.get_unused_name('_2')
@@ -300,7 +300,7 @@ SEE ALSO
                 if not selection:
                     names = _self.get_names("public_objects", 1)
                     if not names:
-                        raise pymol.CmdException('no public objects')
+                        raise pymol.CmdException(ctr('no public objects'))
                     selection = '%' + ' %'.join(names)
                 return extra_fit(selection, target, method, 0, quiet, _self=_self, **kwargs)
 
@@ -809,9 +809,9 @@ SEE ALSO
             '''
             r = DEFAULT_ERROR
             if len(arg) < 2:
-                raise pymol.CmdException('need at least 2 selection')
+                raise pymol.CmdException(ctr('need at least 2 selection'))
             if len(arg) % 2:
-                raise pymol.CmdException('need even number of selections')
+                raise pymol.CmdException(ctr('need even number of selections'))
             new_arg = list(map(selector.process, arg))
             try:
                 _self.lock(_self)

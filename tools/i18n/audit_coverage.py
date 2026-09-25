@@ -65,6 +65,24 @@ CONSOLE_FUNCS = {
     'stdout.write',
 }
 
+# Exceptions whose message PyMOL renders as "CmdException: <msg>" in the
+# output window, or pops up via PopupOnException -- i.e. user-facing guidance.
+# ValueError/RuntimeError/KeyError/UserWarning are deliberately absent: those
+# carry programmer diagnostics ("uic not found", "positional-only arguments
+# not supported") which read worse translated.
+USER_RAISES = {
+    'CmdException', 'WizardError', 'IncentiveOnlyException',
+    'SecurityException', 'BadInstallationFile',
+}
+
+# Tk/Pmw-only modules. Their widgets are not provided by pmg_qt.mimic_pmg_tk
+# (no NoteBook / ButtonBox / MegaToplevel shim), so nothing in them can reach
+# the screen under the PySide6 frontend; listing them keeps the Qt-facing gate
+# honest instead of quietly passing over real untranslated text.
+LEGACY_TK_MODULES = {
+    'modules/pymol/plugins/managergui.py',
+}
+
 _UI_PROPS = {
     'windowTitle', 'title', 'text', 'label', 'toolTip', 'whatsThis',
     'statusTip', 'placeholderText', 'toolButtonText', 'html', 'plainText',
@@ -183,6 +201,30 @@ def _is_tr_call(node: ast.AST) -> tuple[bool, str | None]:
     return True, None
 
 
+def _message_constants(node, consts=None, wrapped=0):
+    """Every prose string constant in a message expression, and whether it is
+    already inside a translate call.
+
+    Only the *head* of ``"text: " + value`` used to be inspected, so a message
+    split across two literals -- ``ctr('part one') + 'part two'`` -- left the
+    second half permanently invisible.
+    """
+    if consts is None:
+        consts = []
+    if isinstance(node, ast.Call):
+        is_tr, _ = _is_tr_call(node)
+        for c in ast.iter_child_nodes(node):
+            _message_constants(c, consts, wrapped + (1 if is_tr else 0))
+        return consts
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        if _prose(node.value):
+            consts.append((node, wrapped > 0))
+        return consts
+    for c in ast.iter_child_nodes(node):
+        _message_constants(c, consts, wrapped)
+    return consts
+
+
 class Walk(ast.NodeVisitor):
     def __init__(self, path: Path):
         self.path = path
@@ -191,6 +233,7 @@ class Walk(ast.NodeVisitor):
         self.unwrapped = []   # (line, sink, text)
         self.wrapped = []     # (line, context_or_None, text)
         self.console = []     # (line, func, text)
+        self.raises = []      # (line, exception, text)
         self.consts = {}      # module-level str constants, by name
 
     def collect_consts(self, tree: ast.Module):
@@ -220,6 +263,17 @@ class Walk(ast.NodeVisitor):
         outer, self.class_name = self.class_name, node.name
         self.generic_visit(node)
         self.class_name = outer
+
+    def visit_Raise(self, node):
+        # raise CmdException("...") reaches the output window verbatim.
+        exc = node.exc
+        if isinstance(exc, ast.Call):
+            name = _func_name(exc.func).split('.')[-1]
+            if name in USER_RAISES:
+                for nd, wrapped in _message_constants(exc):
+                    if not wrapped:
+                        self.raises.append((node.lineno, name, nd.value))
+        self.generic_visit(node)
 
     def visit_Call(self, node):
         is_tr, ctx = _is_tr_call(node)
@@ -270,29 +324,24 @@ class Walk(ast.NodeVisitor):
         # the user, and localising it would corrupt the emitted file.
         to_file = any(k.arg == 'file' for k in node.keywords)
         if short in CONSOLE_FUNCS and not is_tr and not to_file:
-            for a in ast.iter_child_nodes(node):
-                lit = None
-                if isinstance(a, ast.Constant) and isinstance(a.value, str):
-                    lit = a
-                elif (isinstance(a, ast.BinOp) and isinstance(a.op, ast.Mod)
-                      and isinstance(a.left, ast.Constant)
-                      and isinstance(a.left.value, str)):
-                    # "Error: no such %s" % name -- still user-visible prose
-                    lit = a.left
-                if lit is not None and _prose(lit.value):
-                    self.console.append((node.lineno, name, lit.value))
+            for nd, wrapped in _message_constants(node):
+                if not wrapped:
+                    self.console.append((node.lineno, name, nd.value))
         # A bare literal that is itself a translated-value comparison, e.g.
         # `if text == 'x'`, is handled by the sink test above; nothing to do.
         self.generic_visit(node)
 
 
 def scan_sources():
-    unwrapped, console = [], []
+    unwrapped, console, raises = [], [], []
     wrapped = defaultdict(set)
     files = set()
     for g in SOURCE_GLOBS:
         files.update(ROOT.glob(g))
     for path in sorted(p for p in files if p.is_file()):
+        rel0 = path.relative_to(ROOT).as_posix()
+        if rel0 in LEGACY_TK_MODULES:
+            continue
         try:
             tree = ast.parse(path.read_text(encoding='utf-8', errors='replace'))
         except SyntaxError as e:
@@ -301,15 +350,17 @@ def scan_sources():
         w = Walk(path)
         w.collect_consts(tree)
         w.visit(tree)
-        rel = path.relative_to(ROOT).as_posix()
+        rel = rel0
         for line, sink, text in w.unwrapped:
             unwrapped.append((rel, line, sink, text))
         for line, func, text in w.console:
             console.append((rel, line, func, text))
+        for line, name, text in w.raises:
+            raises.append((rel, line, name, text))
         for line, ctx, text in w.wrapped:
             wrapped[(ctx, text)].add(f'{rel}:{line}')
     # Position 1 must stay `wrapped`: generate_ts.py indexes it.
-    return unwrapped, wrapped, console
+    return unwrapped, wrapped, console, raises
 
 
 def load_catalog(lang: str):
@@ -378,7 +429,7 @@ def main(argv):
     args = ap.parse_args(argv)
 
     cat = load_catalog(args.lang)
-    unwrapped, wrapped, console = scan_sources()
+    unwrapped, wrapped, console, raises = scan_sources()
     ui = scan_ui()
 
     uncataloged = []
@@ -420,12 +471,23 @@ def main(argv):
         seen.add(text)
         console_leaks.append((rel, line, func, text))
 
+    # Raised messages are catalogued under the Console context too: they are
+    # rendered in the same output window.
+    seen = set()
+    raise_leaks = []
+    for rel, line, name, text in sorted(raises):
+        if text in catalog_sources or text in seen:
+            continue
+        seen.add(text)
+        raise_leaks.append((rel, line, name, text))
+
     groups = [
         ('UNWRAPPED (never translated)', unwrapped),
         ('WRAPPED BUT NOT IN CATALOG', uncataloged),
         ('FAKE / UNFINISHED CATALOG ENTRY', fake),
         ('UI STRING NOT IN CATALOG', ui_missing),
         ('CONSOLE OUTPUT NOT IN CATALOG', [] if args.no_console else console_leaks),
+        ('RAISED MESSAGE NOT TRANSLATED', [] if args.no_console else raise_leaks),
     ]
     print(f'console prose candidates: {len(console_leaks)} '
           f'(suppressed by --no-console)' if args.no_console

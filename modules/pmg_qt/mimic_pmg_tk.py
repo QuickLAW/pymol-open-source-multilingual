@@ -2,6 +2,7 @@
 Mimic the pmg_tk API for plugin legacy support
 '''
 
+from pymol.console_i18n import ctr
 import sys
 
 tkinter = None
@@ -34,7 +35,7 @@ class PmwMenuBar:
         try:
             return self._menudict[menuName]
         except KeyError:
-            print('Error: no such menu: ' + repr(menuName))
+            print(ctr('Error: no such menu: ') + repr(menuName))
             return None
 
     def addmenu(self, menuName, *args, **kw):

@@ -5,6 +5,7 @@ from pymol.wizard import Wizard
 from pymol import cmd
 import pymol
 
+from pymol.console_i18n import ctr
 SZYBKI_EXE = ""
 
 undo_object = "_w_cleanup_undo"
@@ -50,8 +51,8 @@ class Cleanup(Wizard):
         Wizard.__init__(self,_self)
 
         if auto_configure() < 1:
-            raise pymol.CmdException('cannot find "szybki" executable, please '
-                    'set OE_DIR environment variable')
+            raise pymol.CmdException(ctr('cannot find "szybki" executable, please '
+                    'set OE_DIR environment variable'))
 
         self.ligand = ""
         for a in self.cmd.get_names("public_objects",1):

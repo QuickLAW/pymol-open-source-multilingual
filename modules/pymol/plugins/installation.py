@@ -6,6 +6,7 @@ License: BSD-2-Clause
 
 '''
 
+from pymol.console_i18n import ctr
 import os
 
 from pymol.Qt import QtCore
@@ -78,7 +79,7 @@ def get_name_and_ext(ofile):
     m = re.match(pattern, basename, re.IGNORECASE)
 
     if m is None:
-        raise BadInstallationFile('Not a valid plugin filename (%s).' % (basename))
+        raise BadInstallationFile(ctr('Not a valid plugin filename (%s).') % (basename))
 
     return m.group(1), m.group(2).lower()
 
@@ -87,7 +88,7 @@ def check_valid_name(name):
     Check if "name" is a valid python module name.
     '''
     if '.' in name:
-        raise BadInstallationFile('name must not contain dots (%s).' % repr(name))
+        raise BadInstallationFile(ctr('name must not contain dots (%s).') % repr(name))
 
 def extract_zipfile(ofile, ext):
     '''
@@ -106,7 +107,7 @@ def extract_zipfile(ofile, ext):
     for f in namelist:
         f = os.path.normpath(f)
         if not os.path.abspath(f).startswith(cwd):
-            raise BadInstallationFile('ZIP file contains absolute path names')
+            raise BadInstallationFile(ctr('ZIP file contains absolute path names'))
     # analyse structure
     namedict = dict()
     for f in namelist:
@@ -134,7 +135,7 @@ def extract_zipfile(ofile, ext):
         # filter out "tests" directory
         names = [n for n in names if n[-1] != 'tests']
     if len(names) > 1:
-        raise BadInstallationFile('Archive must contain a single package.')
+        raise BadInstallationFile(ctr('Archive must contain a single package.'))
     check_valid_name(names[0][-1])
 
     # extract

@@ -8,6 +8,7 @@ License: BSD-2-Clause
 
 '''
 
+from pymol.console_i18n import ctr
 import sys
 if True:
     import urllib.request as urllib2
@@ -304,7 +305,7 @@ ARGUMENTS
                 if m is not None:
                     title = m.group(1)
                 else:
-                    raise CmdException('Failed to parse URL: ' + title)
+                    raise CmdException(ctr('Failed to parse URL: ') + title)
 
         title = title[0].upper() + title[1:].replace(' ','_')
         url = "http://pymolwiki.org/index.php?title=%s&action=raw" % (title)
@@ -357,7 +358,7 @@ ARGUMENTS
             chunks = [s for s in chunks if 'cmd.extend' in s]
 
             if len(chunks) == 0:
-                raise CmdException('No <source> or <syntaxhighlight> block with cmd.extend found')
+                raise CmdException(ctr('No <source> or <syntaxhighlight> block with cmd.extend found'))
             if len(chunks) > 1:
                 print(_tr('PluginRepository', 'Warning: %d chunks found, only saving first') % (len(chunks)))
 

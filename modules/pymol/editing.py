@@ -1343,8 +1343,8 @@ SEE ALSO
 
         if not quiet:
             total_h = _self.count_atoms(f"hydro and (bymol ({obj_sele}))")
-            print(f" protonate: added {total_h} hydrogens at pH {pH:.1f}"
-                  " (using textbook pKa values)")
+            print(ctr(" protonate: added %d hydrogens at pH %.1f"
+                  " (using textbook pKa values)") % (total_h, pH))
 
     def _protonate_pdb2pqr(selection, obj_name, pH, ff, state, quiet,
                            exe, is_v3, _self):
@@ -1437,7 +1437,7 @@ SEE ALSO
             if not quiet:
                 total_h = _self.count_atoms(
                     f"hydro and (bymol ({obj_sele}))")
-                print(f" protonate: added {total_h} hydrogens at pH {pH:.1f}")
+                print(ctr(" protonate: added %d hydrogens at pH %.1f") % (total_h, pH))
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -1501,7 +1501,7 @@ SEE ALSO
         pH = float(pH)
         if not (0.0 <= pH <= 14.0):
             raise pymol.CmdException(
-                f"pH value {pH} out of range (0-14)")
+                ctr("pH value %s out of range (0-14)") % pH)
         state = int(state)
         quiet = int(quiet)
 
@@ -1509,7 +1509,7 @@ SEE ALSO
 
         obj_names = _self.get_object_list(selection)
         if not obj_names:
-            raise pymol.CmdException("No objects in selection")
+            raise pymol.CmdException(ctr("No objects in selection"))
 
         # Find pdb2pqr executable
         exe = (shutil.which('pdb2pqr') or

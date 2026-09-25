@@ -162,8 +162,8 @@ EXAMPLE
             axpos = axpos + 1
         else:
             axpos = axpos + 1
-    print((" tdroll: defined rotations for", frpos - 1,
-             "frames, starting at frame %d"%first))
+    print(ctr(" tdroll: defined rotations for %d"
+             " frames, starting at frame %d") % (frpos - 1, first))
 
 def zoom(first,last,step=1,loop=1,axis='z',_self=cmd):
     # Author: Peter Haebel
@@ -921,8 +921,8 @@ EXAMPLE
         elif has_exe('convert'):
             encoder = 'convert'
         else:
-            raise CmdException('neither "ffmpeg" nor "convert" available for '
-                    'video encoding')
+            raise CmdException(ctr('neither "ffmpeg" nor "convert" available for '
+                    'video encoding'))
         print('using encoder "%s"' % encoder)
 
     # check encoder
