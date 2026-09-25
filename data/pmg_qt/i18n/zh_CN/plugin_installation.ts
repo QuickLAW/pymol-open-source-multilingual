@@ -80,6 +80,14 @@
       <translation>此插件需要引用。立即显示信息？</translation>
     </message>
     <message>
+      <source>This plugin requires citation. Show information now?
+
+(You can always get this information from the Plugin Manager, click the "Info" button there)</source>
+      <translation>此插件需要引用文献。是否现在显示相关信息？
+
+（您也可以在插件管理器中点击 "信息" 按钮获取该信息）</translation>
+    </message>
+    <message>
       <source>Unable to install plugin "{}".
 {}</source>
       <translation>无法安装插件 "{}"。
@@ -89,6 +97,14 @@
       <source>Unable to write to the plugin directory.
 </source>
       <translation>无法写入插件目录。
+</translation>
+    </message>
+    <message>
+      <source>Unable to write to the plugin directory.
+Should a user plugin directory be created at
+</source>
+      <translation>无法写入插件目录。
+是否在以下位置创建用户插件目录
 </translation>
     </message>
     <message>

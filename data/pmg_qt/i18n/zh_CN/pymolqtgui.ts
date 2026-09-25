@@ -74,6 +74,10 @@ PyMOL&gt; color ye&lt;Tab&gt;    （将自动补全为 "yellow"）
 </translation>
     </message>
     <message>
+      <source>Copyright (C) Schrödinger, LLC.</source>
+      <translation>版权所有 (C) Schrödinger, LLC.</translation>
+    </message>
+    <message>
       <source>Could not read PyMOL stylesheet.</source>
       <translation>无法读取 PyMOL 样式表。</translation>
     </message>

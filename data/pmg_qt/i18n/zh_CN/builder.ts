@@ -12,6 +12,14 @@
 </translation>
     </message>
     <message>
+      <source>
+
+Enable "Undo" for these objects?</source>
+      <translation>
+
+要为这些对象启用 "撤销" 吗？</translation>
+    </message>
+    <message>
       <source>Alpha Helix</source>
       <translation>α 螺旋</translation>
     </message>
@@ -64,6 +72,10 @@
     <message>
       <source>Hint: Also check out </source>
       <translation>提示：也可以查看 </translation>
+    </message>
+    <message>
+      <source>Hint: Also check out &lt;a href="http://x3dna.org/articles/3dna-fiber-models"&gt;fiber&lt;/a&gt; and its &lt;a href="http://x3dna.org/articles/pymol-wrapper-to-3dna-fiber-models"&gt;PyMOL wrapper&lt;/a&gt;</source>
+      <translation>提示：也可以查看 &lt;a href="http://x3dna.org/articles/3dna-fiber-models"&gt;fiber&lt;/a&gt; 及其 &lt;a href="http://x3dna.org/articles/pymol-wrapper-to-3dna-fiber-models"&gt;PyMOL 封装工具&lt;/a&gt;</translation>
     </message>
     <message>
       <source>Nucleic Acid</source>

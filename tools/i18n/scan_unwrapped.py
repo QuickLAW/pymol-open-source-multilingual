@@ -3,7 +3,7 @@
 Reports strings that would show up untranslated in the GUI. Temporary
 noise (format templates, macOS hacks, numeric formats) must be
 reviewed manually.
-""".
+"""
 import re
 import glob
 

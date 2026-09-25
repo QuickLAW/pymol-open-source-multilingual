@@ -30,6 +30,14 @@
 </translation>
     </message>
     <message>
+      <source>Paste into a .pml or .py script or your pymolrc file and use this
+named color ramp on the PyMOL command line like this:
+</source>
+      <translation>将以上内容粘贴到 .pml 或 .py 脚本，或您的 pymolrc 文件中，
+然后在 PyMOL 命令行里像这样使用这个命名颜色梯度：
+</translation>
+    </message>
+    <message>
       <source>Reset Data Range</source>
       <translation>重置数据范围</translation>
     </message>

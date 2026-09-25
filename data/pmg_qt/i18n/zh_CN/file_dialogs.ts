@@ -30,6 +30,15 @@
       <translation>未加载比对对象</translation>
     </message>
     <message>
+      <source>No alignment objects loaded
+
+Hint: create alignment objects with "align" and
+"super" using the "object=..." argument.</source>
+      <translation>未加载比对对象
+
+提示：使用 "align" 和 "super" 命令的 "object=..." 参数创建比对对象。</translation>
+    </message>
+    <message>
       <source>No map objects loaded</source>
       <translation>未加载电子密度图对象</translation>
     </message>

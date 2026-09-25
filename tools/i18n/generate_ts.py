@@ -42,6 +42,16 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Build %s residue": "构建 %s 残基",
         "Builder": "构建器",
         'Building "Undo" is disabled for the following objects:': '以下对象未启用 "撤销" 功能：',
+        # Keys below are the full implicitly-concatenated literals that
+        # QCoreApplication.translate() actually receives; the embedded
+        # newlines are significant and must match byte-for-byte.
+        '\n\nEnable "Undo" for these objects?': '\n\n要为这些对象启用 "撤销" 吗？',
+        'Hint: Also check out <a href="http://x3dna.org/articles/3dna-fiber-models">fiber</a> and its <a href="http://x3dna.org/articles/pymol-wrapper-to-3dna-fiber-models">PyMOL wrapper</a>': '提示：也可以查看 <a href="http://x3dna.org/articles/3dna-fiber-models">fiber</a> 及其 <a href="http://x3dna.org/articles/pymol-wrapper-to-3dna-fiber-models">PyMOL 封装工具</a>',
+        'Paste into a .pml or .py script or your pymolrc file and use this\nnamed color ramp on the PyMOL command line like this:\n': '将以上内容粘贴到 .pml 或 .py 脚本，或您的 pymolrc 文件中，\n然后在 PyMOL 命令行里像这样使用这个命名颜色梯度：\n',
+        'No alignment objects loaded\n\nHint: create alignment objects with "align" and\n"super" using the "object=..." argument.': '未加载任何比对对象\n\n提示：请使用 "align" 和\n"super" 命令并通过 "object=..." 参数创建比对对象。',
+        'This plugin requires citation. Show information now?\n\n(You can always get this information from the Plugin Manager, click the "Info" button there)': '此插件需要引用文献。是否现在显示相关信息？\n\n（您也可以在插件管理器中点击 "信息" 按钮获取该信息）',
+        'Unable to write to the plugin directory.\nShould a user plugin directory be created at\n': '无法写入插件目录。\n是否在以下位置创建用户插件目录\n',
+        'Copyright (C) Schrödinger, LLC.': '版权所有 (C) Schrödinger, LLC.',
         "Chemical": "化学",
         "Confirm": "确认",
         "DNA": "DNA",
@@ -916,19 +926,22 @@ def _unescape(s: str) -> str:
 
 
 def extract_strings(root: Path) -> dict[str, set[str]]:
-    sources = _collect_sources(root)
+    """Collect (context, source) pairs exactly as the runtime will see them.
+
+    Uses the AST rather than a regex: QTranslator matches the source text
+    byte-for-byte (verified against pyside6-lrelease output), so a literal
+    written as several implicitly-concatenated lines must be catalogued as
+    the one string Python actually builds. The old regex stopped at the first
+    line and produced keys no call could ever look up.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import audit_coverage
+
     contexts: dict[str, set[str]] = {}
-    for path in sources:
-        content = path.read_text(encoding='utf-8', errors='replace')
-        for m in _TR_CALL_RE.finditer(content):
-            ctx = m.group('context')
-            text = _unescape(_strip_quotes(m.group('text')))
-            if text:
-                contexts.setdefault(ctx, set()).add(text)
-        for m in _MTR_CALL_RE.finditer(content):
-            text = _unescape(_strip_quotes(m.group('text')))
-            if text:
-                contexts.setdefault('Menu', set()).add(text)
+    for ctx, text in audit_coverage.scan_sources()[1]:
+        if ctx is None:
+            continue
+        contexts.setdefault(ctx, set()).add(text)
     return contexts
 
 

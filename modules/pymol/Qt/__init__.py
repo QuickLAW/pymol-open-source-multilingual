@@ -29,21 +29,18 @@ if os.path.exists(local_site) and local_site not in sys.path:
 
 qt_api = os.environ.get('QT_API', '')
 
-if not PYQT_NAME and qt_api in ('', 'pyqt5'):
+# PySide6 is the supported frontend for this fork: the i18n tooling
+# (pyside6-lupdate / pyside6-lrelease) and the Qt binding used by the test
+# scripts are PySide6, so the tried-first order must match or translations
+# silently come from a different binding's catalogue.
+if not PYQT_NAME and qt_api in ('', 'pyside6'):
     try:
-        from PyQt5 import QtGui, QtCore, QtOpenGL, QtWidgets
-        PYQT_NAME = 'PyQt5'
+        from PySide6 import QtGui, QtCore, QtOpenGL, QtWidgets
+        from PySide6 import QtOpenGLWidgets
+        PYQT_NAME = 'PySide6'
     except ImportError:
         if DEBUG:
-            print('import PyQt5 failed')
-
-if not PYQT_NAME and qt_api in ('', 'pyside2'):
-    try:
-        from PySide2 import QtGui, QtCore, QtOpenGL, QtWidgets
-        PYQT_NAME = 'PySide2'
-    except ImportError:
-        if DEBUG:
-            print('import PySide2 failed')
+            print('import PySide6 failed')
 
 if not PYQT_NAME and qt_api in ('', 'pyqt6'):
     try:
@@ -54,14 +51,21 @@ if not PYQT_NAME and qt_api in ('', 'pyqt6'):
         if DEBUG:
             print('import PyQt6 failed')
 
-if not PYQT_NAME and qt_api in ('', 'pyside6'):
+if not PYQT_NAME and qt_api in ('', 'pyside2'):
     try:
-        from PySide6 import QtGui, QtCore, QtOpenGL, QtWidgets
-        from PySide6 import QtOpenGLWidgets
-        PYQT_NAME = 'PySide6'
+        from PySide2 import QtGui, QtCore, QtOpenGL, QtWidgets
+        PYQT_NAME = 'PySide2'
     except ImportError:
         if DEBUG:
-            print('import PySide6 failed')
+            print('import PySide2 failed')
+
+if not PYQT_NAME and qt_api in ('', 'pyqt5'):
+    try:
+        from PyQt5 import QtGui, QtCore, QtOpenGL, QtWidgets
+        PYQT_NAME = 'PyQt5'
+    except ImportError:
+        if DEBUG:
+            print('import PyQt5 failed')
 
 if not PYQT_NAME:
     raise ImportError(__name__)
