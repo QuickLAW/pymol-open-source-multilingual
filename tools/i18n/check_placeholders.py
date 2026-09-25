@@ -36,6 +36,11 @@ BRACE = re.compile(r'\{[a-zA-Z_0-9]*\}')
 QTPos = re.compile(r'%(\d)')
 TAG = re.compile(r'</?[a-zA-Z][^>]*/?>')
 MNEM = re.compile(r'&([A-Za-z1-9])')
+# snake_case tokens are settings, commands or selection words the user has to
+# type. Translating one away silently removes the only actionable content from
+# the message -- "specular_intensity (=specular)" rendered as 镜面强度(...) did
+# exactly that, and every coverage gate was satisfied.
+SETTING_ID = re.compile(r'\b[a-z]+_[a-z_0-9]+\b')
 ENTITY = re.compile(r'&[a-zA-Z]+;|&#\d+;')
 
 
@@ -92,6 +97,12 @@ def main(argv) -> int:
             elif len(mnemonics(src)) != len(mnemonics(tr)):
                 problems.append((name, 'mnemonic', src, tr,
                                  f'{mnemonics(src)} -> {mnemonics(tr)}'))
+            else:
+                gone = [i for i in sorted(set(SETTING_ID.findall(src)))
+                        if i not in tr]
+                if gone:
+                    problems.append((name, 'dropped-identifier', src, tr,
+                                     f'{gone} absent from the translation'))
 
     print(f'{total} translated pairs checked for substitution safety')
     for name, kind, src, tr, detail in problems[:25]:

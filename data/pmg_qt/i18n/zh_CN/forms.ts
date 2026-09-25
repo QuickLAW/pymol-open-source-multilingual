@@ -695,7 +695,7 @@ best quality.</source>
     </message>
     <message>
       <source>Selection has ...</source>
-      <translation>选择有...</translation>
+      <translation>选择包含...</translation>
     </message>
     <message>
       <source>Selection:</source>

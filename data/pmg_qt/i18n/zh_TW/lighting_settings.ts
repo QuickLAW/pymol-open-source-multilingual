@@ -61,7 +61,7 @@
     </message>
     <message>
       <source>specular_intensity (=specular)</source>
-      <translation>鏡面強度(=specular)</translation>
+      <translation>specular_intensity (=specular) 鏡面強度</translation>
     </message>
     </context>
 </TS>

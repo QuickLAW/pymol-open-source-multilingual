@@ -353,7 +353,9 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Ambient Occlusion (Surface only)": "环境光遮蔽（仅表面）",
         "Ray trace only": "仅光线追踪",
         "direct (+reflect)": "直射（+反射）",
-        "specular_intensity (=specular)": "镜面强度（=specular）",
+        # the setting name is the whole point of this row -- it tells the user
+        # which setting the preset changes -- so it stays, with the gloss after
+        "specular_intensity (=specular)": "specular_intensity (=specular) 镜面强度",
     },
 }
 
@@ -602,7 +604,7 @@ UI_TRANSLATIONS: dict[str, dict[str, dict[str, str]]] = {
             "PDB Structure": "PDB 结构",
             "Range: +/-": "范围：+/-",
             "Red": "红色",
-            "Selection has ...": "选择有...",
+            "Selection has ...": "选择包含...",
             "Selection:": "选择：",
             "Settings": "设置",
             "State": "状态",
