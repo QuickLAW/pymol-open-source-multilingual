@@ -22,6 +22,7 @@ GATES = [
     ('console glossary (printf/whitespace safe)', 'check_console_glossary.py'),
     ('AST coverage: unwrapped/uncatalogued/ui/console', 'audit_coverage.py'),
     ('every string-taking call is classified', 'enumerate_sinks.py'),
+    ('data-table text catalogued or classified', 'scan_data_tables.py'),
     ('every finished entry resolves via QTranslator', 'check_qm_resolution.py'),
     ('forms painted Chinese in real widgets', 'sweep_forms.py'),
     ('runtime lookups through QTranslator', 'test_translations.py'),

@@ -181,7 +181,11 @@ class PyMOLShortcutMenu(QtWidgets.QWidget):
                     descript_text = _tr('ShortcutMenu', "Deleted")
             else:
                 command_text = shortcut_list[ShortcutIndex.COMMAND]
-                descript_text = shortcut_list[ShortcutIndex.DESCRIPT]
+                # DESCRIPT is data (it is compared against and written back to
+                # shortcut_dict), so translate on the way to the widget rather
+                # than in the table itself.
+                descript_text = _tr('ShortcutMenu',
+                                    shortcut_list[ShortcutIndex.DESCRIPT])
 
             command_item.setText(command_text)
             descript_item.setText(descript_text)
@@ -270,7 +274,8 @@ class PyMOLShortcutMenu(QtWidgets.QWidget):
                     reset_key][ShortcutIndex.DESCRIPT]
 
                 self.table.model().setData(table_colm_command, reset_command)
-                self.table.model().setData(table_colm_descipt, reset_description)
+                self.table.model().setData(table_colm_descipt,
+                        _tr('ShortcutMenu', reset_description))
 
                 self.shortcut_manager.cmd.shortcut_dict[reset_key][ShortcutIndex.USER_DEF] = ''
 

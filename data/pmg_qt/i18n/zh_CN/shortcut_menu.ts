@@ -84,8 +84,224 @@
       <translation>解绑选中的键绑定，并移除已创建的绑定</translation>
     </message>
     <message>
+      <source>attach ace</source>
+      <translation>连接 ace</translation>
+    </message>
+    <message>
+      <source>attach acetylene</source>
+      <translation>连接乙炔基</translation>
+    </message>
+    <message>
+      <source>attach ala</source>
+      <translation>连接 ala</translation>
+    </message>
+    <message>
+      <source>attach amide C-&gt;N</source>
+      <translation>连接酰胺 C-&gt;N</translation>
+    </message>
+    <message>
+      <source>attach amide N-&gt;C</source>
+      <translation>连接酰胺 N-&gt;C</translation>
+    </message>
+    <message>
+      <source>attach arg</source>
+      <translation>连接 arg</translation>
+    </message>
+    <message>
+      <source>attach asn</source>
+      <translation>连接 asn</translation>
+    </message>
+    <message>
+      <source>attach asp</source>
+      <translation>连接 asp</translation>
+    </message>
+    <message>
+      <source>attach benzene</source>
+      <translation>连接苯基</translation>
+    </message>
+    <message>
+      <source>attach cyclobutane</source>
+      <translation>连接环丁烷</translation>
+    </message>
+    <message>
+      <source>attach cycloheptane</source>
+      <translation>连接环庚烷</translation>
+    </message>
+    <message>
+      <source>attach cyclohexane</source>
+      <translation>连接环己烷</translation>
+    </message>
+    <message>
+      <source>attach cyclopentadiene</source>
+      <translation>连接环戊二烯</translation>
+    </message>
+    <message>
+      <source>attach cyclopentane</source>
+      <translation>连接环戊烷</translation>
+    </message>
+    <message>
+      <source>attach cys</source>
+      <translation>连接 cys</translation>
+    </message>
+    <message>
+      <source>attach formaldehyde</source>
+      <translation>连接甲醛</translation>
+    </message>
+    <message>
+      <source>attach gln</source>
+      <translation>连接 gln</translation>
+    </message>
+    <message>
+      <source>attach glu</source>
+      <translation>连接 glu</translation>
+    </message>
+    <message>
+      <source>attach gly</source>
+      <translation>连接 gly</translation>
+    </message>
+    <message>
+      <source>attach his</source>
+      <translation>连接 his</translation>
+    </message>
+    <message>
+      <source>attach ile</source>
+      <translation>连接 ile</translation>
+    </message>
+    <message>
+      <source>attach leu</source>
+      <translation>连接 leu</translation>
+    </message>
+    <message>
+      <source>attach lys</source>
+      <translation>连接 lys</translation>
+    </message>
+    <message>
+      <source>attach met</source>
+      <translation>连接 met</translation>
+    </message>
+    <message>
+      <source>attach nme</source>
+      <translation>连接 nme</translation>
+    </message>
+    <message>
+      <source>attach phe</source>
+      <translation>连接 phe</translation>
+    </message>
+    <message>
+      <source>attach pro</source>
+      <translation>连接 pro</translation>
+    </message>
+    <message>
+      <source>attach ser</source>
+      <translation>连接 ser</translation>
+    </message>
+    <message>
+      <source>attach sulfone</source>
+      <translation>连接砜基</translation>
+    </message>
+    <message>
+      <source>attach thr</source>
+      <translation>连接 thr</translation>
+    </message>
+    <message>
+      <source>attach trp</source>
+      <translation>连接 trp</translation>
+    </message>
+    <message>
+      <source>attach tyr</source>
+      <translation>连接 tyr</translation>
+    </message>
+    <message>
+      <source>attach val</source>
+      <translation>连接 val</translation>
+    </message>
+    <message>
+      <source>auto measure</source>
+      <translation>自动测量</translation>
+    </message>
+    <message>
+      <source>copy</source>
+      <translation>复制</translation>
+    </message>
+    <message>
+      <source>create bond</source>
+      <translation>创建化学键</translation>
+    </message>
+    <message>
+      <source>cut</source>
+      <translation>剪切</translation>
+    </message>
+    <message>
+      <source>find</source>
+      <translation>查找</translation>
+    </message>
+    <message>
+      <source>help</source>
+      <translation>帮助</translation>
+    </message>
+    <message>
+      <source>insert scene after current</source>
+      <translation>在当前场景后插入场景</translation>
+    </message>
+    <message>
+      <source>insert scene before current</source>
+      <translation>在当前场景前插入场景</translation>
+    </message>
+    <message>
+      <source>invert selection</source>
+      <translation>反选</translation>
+    </message>
+    <message>
+      <source>last scene</source>
+      <translation>末尾场景</translation>
+    </message>
+    <message>
+      <source>next movie frame</source>
+      <translation>下一电影帧</translation>
+    </message>
+    <message>
+      <source>next scene</source>
+      <translation>下一个场景</translation>
+    </message>
+    <message>
+      <source>paste</source>
+      <translation>粘贴</translation>
+    </message>
+    <message>
+      <source>play/pause movie</source>
+      <translation>播放/暂停电影</translation>
+    </message>
+    <message>
+      <source>previous movie frame</source>
+      <translation>上一电影帧</translation>
+    </message>
+    <message>
+      <source>previous scene</source>
+      <translation>上一个场景</translation>
+    </message>
+    <message>
+      <source>select all</source>
+      <translation>全选</translation>
+    </message>
+    <message>
+      <source>store auto scene</source>
+      <translation>存储自动场景</translation>
+    </message>
+    <message>
+      <source>store new scene</source>
+      <translation>存储新场景</translation>
+    </message>
+    <message>
       <source>user defined</source>
       <translation>用户自定义</translation>
+    </message>
+    <message>
+      <source>zoom all</source>
+      <translation>缩放至全部</translation>
+    </message>
+    <message>
+      <source>zoom next ligand</source>
+      <translation>缩放到下一个配体</translation>
     </message>
     </context>
 </TS>

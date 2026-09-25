@@ -365,6 +365,11 @@ from translations_console_zh import CONSOLE_ZH
 
 TRANSLATIONS["zh_CN"].update(CONSOLE_ZH)
 
+# Descriptions from pymol/shortcut_dict.py, translated at render time
+from translations_shortcut_zh import SHORTCUT_ZH
+
+TRANSLATIONS["zh_CN"].update(SHORTCUT_ZH)
+
 
 def _merge_cli_glossary():
     """Resolve long text blocks from their variable names.
@@ -992,6 +997,15 @@ def extract_strings(root: Path) -> dict[str, set[str]]:
         if ctx is None:
             continue
         contexts.setdefault(ctx, set()).add(text)
+
+    # Data-table text is translated at lookup time, so no call site names the
+    # individual strings and the scan above cannot see them. The registry in
+    # scan_data_tables says which tables are user-visible and under which
+    # context; without this their .ts entries would never be created.
+    import scan_data_tables
+    for rel, var, ctx, values in scan_data_tables.registered_tables():
+        for v in values:
+            contexts.setdefault(ctx, set()).add(v)
     return contexts
 
 
