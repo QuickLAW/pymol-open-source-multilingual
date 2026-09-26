@@ -38,19 +38,26 @@
 #define cButModeTopMargin DIP2PIXEL(1)
 #define cButModeBottomMargin DIP2PIXEL(2)
 
+/* Column the button grid's Code[] cells start at. The mode / selection / frame
+ * rows put their values here too so the whole block reads as one table. */
+#define cButModeDataColumn DIP2PIXEL(64)
+
 /**
  * Column at which to start the value that follows a label, given that `label`
  * was just drawn through TextDrawStrAt and the renderer advanced the pen past
- * it. The fixed offsets this file used to hardcode were tuned for the English
- * strings in the 8x13 bitmap font; a CJK label, or any display scaling, makes
- * the left column wider than the constant and the two columns overlap. The old
- * constant is kept as a floor so untranslated text still lines up.
+ * it. The fixed offsets this file used to hardcode per row (88, 80, 48, 144,
+ * 128, 168) disagreed with each other and with the grid, so a CJK label of a
+ * different width left the values floating out of alignment.
+ *
+ * Called repeatedly it also chains: the first call lands on the grid's data
+ * column, each later call continues after the pen, so a row of several values
+ * stays put whatever the text turns out to be.
  */
-static int ButModeColumnAfter(PyMOLGlobals* G, int x, int legacyOffset)
+static int ButModeValueColumn(PyMOLGlobals* G, int x)
 {
-  const int minimum = x + DIP2PIXEL(legacyOffset);
+  const int minimum = x + cButModeDataColumn;
   /* if the label never rendered the pen has not moved, so this just returns
-   * the legacy floor */
+   * the grid column */
   const int afterLabel = static_cast<int>(TextGetPos(G)[0]) + DIP2PIXEL(2);
   return (afterLabel > minimum) ? afterLabel : minimum;
 }
@@ -245,7 +252,7 @@ void CButMode::draw(CGO* orthoCGO)
     TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_mouse_mode_text), x + 1, y, orthoCGO);
     TextSetColor(m_G, TextColor3);
     TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_button_mode_name),
-                  ButModeColumnAfter(m_G, x, 88), y, orthoCGO);
+                  ButModeValueColumn(m_G, x), y, orthoCGO);
     /*    TextDrawStrAt(m_G,"2-Bttn Selecting",x+88,y); */
     y -= cButModeLineHeight;
 
@@ -265,7 +272,7 @@ void CButMode::draw(CGO* orthoCGO)
       TextDrawStrAt(m_G, "Keys", x + DIP2PIXEL(24), y, orthoCGO);
       TextSetColor(m_G, textColor2);
 
-      TextSetPos2i(m_G, x + DIP2PIXEL(64), y);
+      TextSetPos2i(m_G, x + cButModeDataColumn, y);
       for(a = 0; a < 3; a++) {
         mode = Mode[a];
         if(mode < 0)
@@ -287,7 +294,7 @@ void CButMode::draw(CGO* orthoCGO)
       TextSetColor(m_G, TextColor1);
       TextDrawStrAt(m_G, "Shft ", x + DIP2PIXEL(24), y, orthoCGO);
       TextSetColor(m_G, textColor2);
-      TextSetPos2i(m_G, x + DIP2PIXEL(64), y);
+      TextSetPos2i(m_G, x + cButModeDataColumn, y);
       for(a = 3; a < 6; a++) {
         mode = I->Mode[a];
         if(mode < 0)
@@ -307,7 +314,7 @@ void CButMode::draw(CGO* orthoCGO)
       TextSetColor(m_G, TextColor1);
       TextDrawStrAt(m_G, "Ctrl ", x + DIP2PIXEL(24), y, orthoCGO);
       TextSetColor(m_G, textColor2);
-      TextSetPos2i(m_G, x + DIP2PIXEL(64), y);
+      TextSetPos2i(m_G, x + cButModeDataColumn, y);
       for(a = 6; a < 9; a++) {
         mode = I->Mode[a];
         if(mode < 0)
@@ -328,7 +335,7 @@ void CButMode::draw(CGO* orthoCGO)
       TextSetColor(m_G, TextColor1);
       TextDrawStrAt(m_G, "CtSh ", x + DIP2PIXEL(24), y, orthoCGO);
       TextSetColor(m_G, textColor2);
-      TextSetPos2i(m_G, x + DIP2PIXEL(64), y);
+      TextSetPos2i(m_G, x + cButModeDataColumn, y);
       for(a = 9; a < 12; a++) {
         mode = Mode[a];
         if(mode < 0)
@@ -348,7 +355,7 @@ void CButMode::draw(CGO* orthoCGO)
       TextSetColor(m_G, TextColor1);
       TextDrawStrAt(m_G, " SnglClk", x - DIP2PIXEL(8), y, orthoCGO);
       TextSetColor(m_G, textColor2);
-      TextSetPos2i(m_G, x + DIP2PIXEL(64), y);
+      TextSetPos2i(m_G, x + cButModeDataColumn, y);
       for(a = 19; a < 22; a++) {
         mode = Mode[a];
         if(mode < 0)
@@ -363,7 +370,7 @@ void CButMode::draw(CGO* orthoCGO)
       TextSetColor(m_G, TextColor1);
       TextDrawStrAt(m_G, " DblClk", x, y, orthoCGO);
       TextSetColor(m_G, textColor2);
-      TextSetPos2i(m_G, x + DIP2PIXEL(64), y);
+      TextSetPos2i(m_G, x + cButModeDataColumn, y);
       for(a = 16; a < 19; a++) {
         mode = I->Mode[a];
         if(mode < 0)
@@ -382,11 +389,11 @@ void CButMode::draw(CGO* orthoCGO)
         TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_picking_text), x, y, orthoCGO);
         TextSetColor(m_G, TextColor3);
         TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_atoms_joints),
-                      ButModeColumnAfter(m_G, x, 64), y, orthoCGO);
+                      ButModeValueColumn(m_G, x), y, orthoCGO);
       } else {
         TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_selecting_text), x, y, orthoCGO);
         TextSetColor(m_G, TextColor3);
-        const int selColumn = ButModeColumnAfter(m_G, x, 80);
+        const int selColumn = ButModeValueColumn(m_G, x);
         switch (SettingGetGlobal_i(m_G, cSetting_mouse_selection_mode)) {
         case 0:
           TextDrawStrAt(m_G, SettingGetGlobal_s(m_G, cSetting_sel_mode_atoms), selColumn, y, orthoCGO);
@@ -475,21 +482,21 @@ static bool ButModeDrawFastImpl(Block * block, short definitely , CGO *orthoCGO)
       TextDrawStrAt(G, SettingGetGlobal_s(G, cSetting_movie_state_text), x, y, orthoCGO);
     }
     TextSetColor(G, textColor2);
-    const int frameColumn = ButModeColumnAfter(G, x, 48);
+    const int frameColumn = ButModeValueColumn(G, x);
     sprintf(rateStr, "%4d/%4d ", SceneGetFrame(G) + 1, nf);
     TextDrawStrAt(G, rateStr, frameColumn, y, orthoCGO);
     if(frame_rate) {
       sprintf(rateStr,"%5.1f",I->RateShown);
-      TextDrawStrAt(G, rateStr, ButModeColumnAfter(G, x, 144), y, orthoCGO);
+      TextDrawStrAt(G, rateStr, ButModeValueColumn(G, x), y, orthoCGO);
       TextSetColor(G, textColor);
-      TextDrawStrAt(G, "Hz ", ButModeColumnAfter(G, x, 192), y, orthoCGO);
+      TextDrawStrAt(G, "Hz ", ButModeValueColumn(G, x), y, orthoCGO);
       TextSetColor(G, textColor2);
     } else if(has_movie) {
       TextSetColor(G, textColor);
-      TextDrawStrAt(G, "State ", ButModeColumnAfter(G, x, 128), y, orthoCGO);
+      TextDrawStrAt(G, "State ", ButModeValueColumn(G, x), y, orthoCGO);
       TextSetColor(G, textColor2);
       sprintf(rateStr," %4d",SceneGetState(G)+1);
-      TextDrawStrAt(G, rateStr, ButModeColumnAfter(G, x, 168), y, orthoCGO);
+      TextDrawStrAt(G, rateStr, ButModeValueColumn(G, x), y, orthoCGO);
     } else if(frame_rate) {
     }
   }
