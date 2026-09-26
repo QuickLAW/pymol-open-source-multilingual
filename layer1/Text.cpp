@@ -486,22 +486,21 @@ int TextInit(PyMOLGlobals * G)
       FontTypeSetFallback(I->getFont(id), cjk);
     }
 
-    /* The in-viewport overlay (mouse mode, selection feedback, frame counter)
-     * went through Default_ID, which was the GLUT 8x13 bitmap font. That font
-     * covers codepoints 0-255 and substitutes '?' for anything above, so every
-     * translated string rendered as "??????".
+    /* Default_ID deliberately stays on the GLUT 8x13 bitmap font, so the
+     * in-viewport overlay still renders translated text as "??????".
      *
-     * Slot 11 (DejaVu Sans Mono) rather than a proportional face, because that
-     * bitmap font was also fixed-pitch and ButMode builds its button grid --
-     * "Buttons L M R Wheel" over "Rota Move MovZ Slab", "+Box -Box Clip MovS"
-     * and the rest -- by padding those untranslated English literals with
-     * spaces. Under a proportional face every column drifts. CJK still comes
-     * from the subset through the fallback above. */
-    if (I->getFont(11)) {
-      I->Default_ID = 11;
-    } else {
-      I->Default_ID = 19;
-    }
+     * The internal GUI assumes that font's exact metrics: Scene.cpp lays the
+     * contents/menu panel out as x + len * DIP2PIXEL(8), and ButMode pads its
+     * button grid with spaces. Any other face -- even a monospaced one, whose
+     * advance at size 12 is ~7.2 not 8 -- makes every row drift by an amount
+     * that depends on its own character mix, which looks like text sliding
+     * uphill to the right. Verified by bisect: switching Default_ID to slot 11
+     * staggered the panel and the grid; back to slot 0 both are exact again.
+     *
+     * Giving the overlay CJK therefore needs either a font whose advance is
+     * exactly 8 DIP, or replacing the fixed-8 arithmetic with measured widths
+     * throughout the internal GUI. Atom labels are unaffected: they go through
+     * label_font_id and get CJK from the fallback wired above. */
   }
 
   return true;
